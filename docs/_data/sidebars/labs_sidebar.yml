@@ -1,0 +1,303 @@
+# This is your sidebar TOC. The sidebar code loops through sections here and provides the appropriate formatting.
+
+entries:
+- title: sidebar
+  product: PoTs
+  folders:
+
+  - title:
+    output: pdf
+    type: frontmatter
+    folderitems:
+    - title:
+      url: /titlepage
+      output: pdf
+      type: frontmatter
+    - title:
+      url: /tocpage
+      output: pdf
+      type: frontmatter
+
+  - title: MQ
+    output: web, pdf
+    folderitems:
+
+    - title: Overview
+      url: /mq_basic_pot_overview.html
+      output: web, pdf
+
+    - title: Environment Setup
+      url: /mq_basic_pot_setup.html
+      output: web, pdf
+
+    - title: Lab 1 - Introduction to IBM MQ
+      url: /mq_basic_pot_lab1.html
+      output: web, pdf
+
+    - title: Lab 2 - Conifguring the IBM MQ JMS Provider
+      url: /mq_basic_pot_lab2.html
+      output: web, pdf
+
+    - title: Lab 3 - Publish / Subscribe Administration
+      url: /mq_basic_pot_lab3.html
+      output: web, pdf
+
+    - title: Lab 4 - IBM MQ Security
+      url: /mq_basic_pot_lab4.html
+      output: web, pdf
+
+    - title: Lab 5 - IBM MQ Web
+      url: /mq_basic_pot_lab5.html
+      output: web, pdf
+
+    - title: Lab 6 - Securing IBM MQ with Channel Authentication
+      url: /mq_basic_pot_lab6.html
+      output: web, pdf
+
+    - title: Lab 7 - Using Multiple Certificates in IBM MQ
+      url: /mq_basic_pot_lab7.html
+      output: web, pdf
+
+  - title: MQ High Availability
+    output: web,pdf
+    folderitems:
+
+    - title: Overview
+      url: /mq_ha_pot_overview.html
+      output: web, pdf
+
+    - title: Lab 1 - Multi-instance Queue Managers for High Availability
+      url: /mq_ha_pot_notavl.html
+      output: web, pdf
+
+    - title: Lab 2 - Replicated Data Queue Managers for High Availability
+      url: /mq_ha_pot_lab2.html
+      output: web, pdf
+
+    - title: Lab 3 - Replicated Data Queue Managers for Disaster Recovery
+      url: /mq_ha_pot_lab3.html
+      output: web, pdf
+
+  - title: MQ AMS
+    output: web, pdf
+    folderitems:
+
+    - title: Overview
+      url: /mq_ams_pot_overview.html
+      output: web, pdf
+
+    - title: Lab 1 - Creating Certificates using IKeyMan
+      url: /mq_ams_pot_lab1.html
+      output: web, pdf
+
+    - title: Lab 2 - Protecting Message Data with IBM MQ Advanced Message Security
+      url: /mq_ams_pot_lab2.html
+      output: web, pdf
+
+    - title: Lab 3 - Protecting IBM MQ Managed FIle Transfer with IBM MQ Advanced Message Security
+      url: /mq_ams_pot_notavl.html
+      output: web, pdf
+
+    - title: Lab 4 - Protecting Message Data on the IBM MQ Appliance
+      url: /mq_ams_pot_notavl.html
+      output: web, pdf
+
+  - title: MQ LDAP
+    output: web, pdf
+    folderitems:
+
+    - title: Prerequisites
+      url: /mq_ldap_pot_prereqs.html
+      output: web, pdf
+
+    - title: Lab Guide
+      url: mq_ldap_pot_lab_guide.html
+      output: web, pdf
+
+  - title: MQ MFT
+    output: web,pdf
+    folderitems:
+
+    - title: Overview
+      url: /mq_mft_pot_overview.html
+      output: web, pdf
+
+    - title: Lab 1 - Lab Setup
+      url: /mq_mft_pot_lab1.html
+      output: web, pdf
+
+    - title: Lab 2 - File transfer requests using WebSphere MQ Explorer and the command line
+      url: /mq_mft_pot_lab2.html
+      output: web, pdf
+
+    - title: Lab 3 - File Transfer Patterns
+      url: /mq_mft_pot_notavl.html
+      output: web, pdf
+
+  - title: MQ Salesforce Bridge
+    output: web,pdf
+    folderitems:
+
+    - title: Overview
+      url: /mq_sfdc_pot_overview.html
+      output: web, pdf
+
+    - title: Prerequisites
+      url: /mq_sfdc_pot_prereqs.html
+      output: web, pdf
+
+    - title: Create Salesforce Developer Account
+      url: /mq_sfdc_pot_setup_salesforce.html
+      output: web, pdf
+
+    - title: Lab Guide
+      url: /mq_sfdc_pot_lab_guide.html
+      output: web, pdf
+
+  - title: MQ Telemetry
+    output: web,pdf
+    folderitems:
+
+    - title: Overview
+      url: /mq_mqtt_pot_overview.html
+      output: web, pdf
+
+    - title: Lab 1 - Configuring MQTT Telemetry in IBM MQ
+      url: /mq_mqtt_pot_lab1.html
+      output: web, pdf
+
+    - title: Lab 2 - Creating MQTT Applications
+      url: /mq_mqtt_pot_lab2.html
+      output: web, pdf
+
+    - title: Lab 3 - Configuring MQTT with IBM App Connect Enterprise
+      url: /mq_mqtt_pot_lab3.html
+      output: web, pdf
+
+  - title: MQ on Cloud
+    output: web,pdf
+    folderitems:
+
+    - title: Overview
+      url: /mq_cld_pot_notavl.html
+      output: web, pdf
+
+    - title: Environment Setup
+      url: /mq_cld_pot_notavl.html
+      output: web, pdf
+
+    - title: Configure MQ on Cloud
+      url: /mq_cld_pot_notavl.html
+      output: web, pdf
+
+  - title: MQ on IBM Cloud Private
+    output: web,pdf
+    folderitems:
+
+    - title: Overview
+      url: /mq_icp_pot_notavl.html
+      output: web, pdf
+
+    - title: Environment Setup
+      url: /mq_icp_pot_notavl.html
+      output: web, pdf
+
+    - title: Lab 1 - Configuring MQ on ICp
+      url: /mq_icp_pot_notavl.html
+      output: web, pdf
+
+  - title: Event Streams
+    output: web, pdf
+    folderitems:
+
+    - title: Overview
+      url: /msghub_pot_overview.html
+      output: web, pdf
+
+    - title: Prerequisites
+      url: /msghub_pot_prereqs.html
+      output: web, pdf
+
+    - title: Lab 1 - Introduction to Event Streams on IBM Cloud
+      url: /msghub_pot_lab1.html
+      output: web, pdf
+
+    - title: Lab 2 - Event Streams MQ Bridge on IBM Cloud
+      url: /msghub_pot_lab2.html
+      output: web, pdf
+
+    - title: Lab 3 - Event Streams Installation on IBM Cloud Private
+      url: /msghub_pot_lab3.html
+      output: web, pdf
+
+    - title: Lab 4 - Event Streams ICP Installing Helm Chart
+      url: /msghub_pot_lab4.html
+      output: web, pdf
+
+    - title: Lab 5 - Event Streams ICP Toolbox
+      url: /msghub_pot_lab5.html
+      output: web, pdf
+
+    - title: Lab 6 - Kafka Source Connector for IBM MQ
+      url: /msghub_pot_lab6.html
+      output: web, pdf
+
+    - title: Lab 7 - Monitoring Event Streams ICP
+      url: /msghub_pot_lab7.html
+      output: web, pdf
+
+    - title: Lab 8 - Event Streams ICP Geo-Replication
+      url: /msghub_pot_lab8.html
+      output: web, pdf
+
+    - title: Lab 9 - Kafka Sink Connector for IBM MQ
+      url: /msghub_pot_lab9.html
+      output: web, pdf
+
+    - title: Appendix A - Create Event Steams Sample Applications on IBM Cloud
+      url: /msghub_pot_appendix_a.html
+      output: web, pdf
+
+  - title: IBM MQ Appliance
+    output: web, pdf
+    folderitems:
+
+    - title: Overview
+      url: /mq_appl_pot_overview.html
+      output: web, pdf
+
+    - title: Lab 1 - Getting Started with the MQ Appliance
+      url: /mq_appl_pot_lab1.html
+      output: web, pdf
+
+    - title: Lab 2 - Configure the MQ Appliance for High Availability (HA)
+      url: /mq_appl_pot_lab2.html
+      output: web, pdf
+
+    - title: Lab 3 - Exploring the IBM MQ Appliance Web UI and MQ Console
+      url: /mq_appl_pot_lab3.html
+      output: web,pdf
+
+    - title: Lab 4 - Monitoring and Troubleshooting the IBM MQ Appliance
+      url: /mq_appl_pot_lab4.html
+      output: web,pdf
+
+    - title: Lab 5 - IBM MQ Appliance Security
+      url: /mq_appl_pot_lab5.html
+      output: web,pdf
+
+    - title: Lab 6 - Migrating Queue Managers to the MQ Appliance
+      url: /mq_appl_pot_lab6
+      output: web,pdf
+
+    - title: Lab 7 - IBM MQ Appliance Service and Maintenance
+      url: /mq_appl_pot_lab7.html
+      output: web,pdf
+
+    - title: Lab 8 - Configure the IBM MQ Appliance for Disaster Recovery (DR)
+      url: /mq_appl_pot_lab8.html
+      output: web,pdf
+
+    - title: Lab 9 - Using the REST Interface with the IBM MQ Appliance
+      url: /mq_appl_pot_lab9.html
+      output: web,pdf

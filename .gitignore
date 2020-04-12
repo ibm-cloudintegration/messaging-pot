@@ -1,0 +1,9 @@
+_site/
+.sass-cache/
+.jekyll-metadata
+.idea/
+password.txt
+
+docs/jekyll-site-repo/
+
+docs/messaging-jekyll-site/
