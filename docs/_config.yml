@@ -1,4 +1,4 @@
-repository: cloudintegration/PoT-messaging
+repository: ibm-cloudintegration/messaging-pot
 
 output: web
 # this property is useful for conditional filtering of content that is separate from the PDF.
@@ -44,7 +44,7 @@ feedback_disable: false
 # feedback_link: "http://helpy.io/"
 # if you uncomment the previous line, it changes where the feedback link points to
 
-baseurl: '/PoT-messaging'
+baseurl: '/messaging-pot'
 
 highlighter: rouge
 # library used for syntax highlighting
