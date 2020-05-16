@@ -254,6 +254,26 @@ entries:
       url: /msghub_pot_lab9.html
       output: web, pdf
 
+    - title: Lab 10 - Event Streams on ICP4i
+      url: /msghub_pot_lab10.html
+      output: web, pdf
+
+    - title: Lab 11 - Event Streams Toolbox on ICP4i
+      url: /msghub_pot_lab11.html
+      output: web, pdf
+
+    - title: Lab 12 - Event Streams on ICP4i MQ Connectors
+      url: /msghub_pot_lab12.html
+      output: web, pdf
+
+    - title: Lab 13 - Event Streams on ICP4i Monitoring
+      url: /msghub_pot_lab13.html
+      output: web, pdf
+
+    - title: Lab 14 - Event Streams on ICP4i Schema Registry
+      url: /msghub_pot_lab14.html
+      output: web, pdf
+
     - title: Appendix A - Create Event Steams Sample Applications on IBM Cloud
       url: /msghub_pot_appendix_a.html
       output: web, pdf
