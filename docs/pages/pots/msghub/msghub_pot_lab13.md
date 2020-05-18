@@ -23,7 +23,7 @@ These ELK related features of OCP are useful to understand at a basic level and 
     preferred and consistent approach. This may be the case where OCP
     has been selected as the container orchestration and deployment
     platform or there may already be experience is configuring and using
-    ELK stacks.
+    ELK stacks
 
 *   Where trying to do problem determination by examining and searching
     information in the logs
@@ -37,6 +37,8 @@ To make this exercise meaningful, you will need to create some workload for Even
 * MQ source and sink connectors
 
 ### Start eslabtester
+
+1. If your Kafka MQ connectors are still running in the terminal windows, stop them now with the <ctrl>C command. 
 
 1. Open a command window and change to the Downloads directory. Enter the following command to start the application:
 
@@ -98,7 +100,7 @@ To make this exercise meaningful, you will need to create some workload for Even
 1. Open another terminal window. Edit the MQ source connector properties with the following command:
 
 	```
-	gedit ~/kafka_2.13-2.5.0/config/connect-standalone-source.properties
+	gedit ~/kafka_standalone/mq-source.properties
 	```
 	
 1. 	Change the following properties to the specified values. This will create an MQ source connector that will get messages from the *MQTOEVENT* queue and publish them to *eventtomq*.  This will produce some load into Event Streams that will make monitoring more interesting.
@@ -124,7 +126,7 @@ To make this exercise meaningful, you will need to create some workload for Even
 1. Open another terminal window. Edit the MQ sink connector properties with the following command:
 
 	```
-	gedit ~/kafka_2.13-2.5.0/config/connect-standalone-sink.properties
+	gedit ~/kafka_standalone/mq-sink.properties
 	```
 	
 1. 	Change the following properties to the specified values. This will create an MQ sink connector that will get messages from the *eslab* topic and put them on the MQ queue *MQTOEVENT*. When you start the MQ source connector, it will get the messages from MQTOEVENT and publish them to the topic mqtoevent. This will produce some load into Event Streams that will make monitoring more interesting.
@@ -146,13 +148,13 @@ To make this exercise meaningful, you will need to create some workload for Even
 	
 ## Monitoring
 
-The monitoring framework is built around Prometheus which allows features for rich customization of monitoring dashboards which may either be included with an ICP4i distribution, as samples with products available in the ICP4i catalog or created by the customer based on their specific requirements. 
+The monitoring framework is built around Prometheus which allows features for rich customization of monitoring dashboards which may either be included with an ICP4i distribution as samples with products available in the ICP4i catalog or created by the customer based on their specific requirements. 
 
 ### Monitoring topic health using the Event Streams UI
 
 To gain an insight into the overall health of topics and highlight potential performance issues with systems producing to Event Streams, you can use the Producer dashboard provided for each topic.
 
-The dashboard displays aggregated information about producer activity for the selected topic through metrics such as message produce rates, message size, and an active producer count. The dashboard also displays information about each producer that has been producing to the topic.
+The dashboard displays aggregated information about producer activity for the selected topic through metrics such as message production rates, message size, and an active producer count. The dashboard also displays information about each producer that has been producing to the topic.
 
 You can expand an individual producer record to gain insight into its performance through metrics such as messages produced, message size and rates, failed produce requests and any occurences where a producer has exceeded a broker quota.
 
@@ -180,7 +182,6 @@ The information displayed on the dashboard can also be used to provide insight i
 
 	In the display you can see the various components of Event Streams, the number of pods running for each component, and whether they are ready. You will dig into the details later in the OpenShift console. Close the display now.
 
-### OpenShift Monitor
 ### Monitoring Kafka cluster health in the OpenShift console
 
 Monitoring the health of your Kafka cluster ensures your operations run smoothly. Event Streams collects metrics from all of the Kafka brokers and exports them to a Prometheus-based monitoring platform. The metrics are useful indicators of the health of the cluster, and can provide warnings of potential problems.
@@ -188,18 +189,14 @@ Monitoring the health of your Kafka cluster ensures your operations run smoothly
 You can use the metrics as follows:
 
 * View a selection of metrics on a preconfigured dashboard in the Event Streams UI.
-* Create dashboards in the Grafana service that is provided in IBM Cloud Private, and use the dashboards to monitor your Event Streams instance, including Kafka health and performance details. You can create the dashboards in the IBM Cloud Private monitoring service by selecting to Export the Event Streams dashboards when configuring your Event Streams installation.
+* Create dashboards in the Grafana service that is provided in ICP4i, and use the dashboards to monitor your Event Streams instance, including Kafka health and performance details. You can create the dashboards in the ICP4i monitoring service by selecting to Export the Event Streams dashboards when configuring your Event Streams installation.
 
  You can also download the example Grafana dashboards for Event Streams from GitHub, including a dashboard for monitoring geo-replication health, which is useful if you have geo-replication set up in your environment.
 
  Ensure you select your namespace, release name, and other filters at the top of the dashboard to view the required information.
  
- For more information about the monitoring capabilities provided in IBM Cloud Private, including Grafana, see the IBM Cloud Private documentation.
-
 * Create alerts so that metrics that meet predefined criteria are used to send notifications to emails, Slack, PagerDuty, and so on. For an example of how to use the metrics to trigger alert notifications, see how you can set up notifications to Slack.
 You can also use external monitoring tools to monitor the deployed Event Streams Kafka cluster.
-
-For information about the health of your topics, check the producer activity dashboard.
 
 Important: By default, the metrics data used to provide monitoring information is only stored for a day. Modify the time period for metric retention to be able to view monitoring data for longer time periods, such as 1 week or 1 month.
 
@@ -225,8 +222,8 @@ Important: By default, the metrics data used to provide monitoring information i
 
 	![](./images/pots/msghub/lab13/image56.png)
 	
-	If you FireFox warns you of a security risk, click *Advanced* then *Accept the risk and continue*. If you are ask to sign in, click the password field then click *Log in*. Hover over the *Dashboards* icon and select *Manage*. 
-	
+	If FireFox warns you of a security risk, click *Advanced* then *Accept the risk and continue*. If you are asked to sign in, click the password field then click *Log in*. On the next screen click *Allow selected permissions*. Hover over the *Dashboards* icon and select *Manage*. 
+	 
 	![](./images/pots/msghub/lab13/image57.png)
 	
 1. 1. A list of dashboards is displayed. Select the *Kubernetes / Compute Resources / Namespace (Workloads)* dashboard.
@@ -239,14 +236,14 @@ Important: By default, the metrics data used to provide monitoring information i
 	
 1. There is lots of information here. Right away you see the *CPU Usage* for the workloads running in Event Streams.  
 
-* Kafka brokers
-* Zookeeper 
-* Schema Registry
-* Elastic Search
+	* Kafka brokers
+	* Zookeeper 
+	* Schema Registry
+	* Elastic Search
 	
 	![](./images/pots/msghub/lab13/image65.png)
 	
-	Right away you see the *CPU Usage* for each workload. As expected, the brokers and zookeeper are using the most resources in Event Streams.
+	Right away you see the *CPU Usage* for each workload. As expected, the Kafka brokers and zookeeper are using the most resources in Event Streams.
 	
 1. Scroll down to see memory usage. Again Kafka brokers and zookeeper using the most memory. The Memory Quota section shows the limits set for the workloads.
 
@@ -276,7 +273,7 @@ Important: By default, the metrics data used to provide monitoring information i
 
 	![](./images/pots/msghub/lab13/image62.png)
 
-1. Scroll even further and you will see the Network statistics, separate graphs for transmitting and receiving. This gives you an idea of how much data is being published or consumed. This is just one pod. You can scroll pack to the top and choose another pod.
+1. Scroll even further and you will see the Network statistics, separate graphs for transmitting and receiving. This gives you an idea of how much data is being published or consumed. This is just one pod. You can scroll back to the top and choose another pod.
 
 	![](./images/pots/msghub/lab13/image63.png)
 	
@@ -287,10 +284,9 @@ You have learned how to monitor Event Streams and view the logs.
 
 [Continue to Lab 14 - Event Streams Schema Registry](msghub_pot_lab14.html)
 
-[Continue to Lab 15 - Event Streams Geo-Replication](msghub_pot_lab15.html)
 
 
-####  Extra challenge - Problem Determination (if time allows)
+## Extra challenge - Problem Determination (if time allows)
 
 If the status display shows that a pod that was not ready, try this solution.
 
@@ -304,30 +300,7 @@ To find out more about the problem:
 
 1. Click the message to expand it, and then expand the section for the component that does not have a green tick next to it. 
 
-1. Click the Pod is not ready link to open more details about the problem. The link opens the IBM Cloud Private UI. Log in as an administrator. To understand why the IBM Event Streams resource is not available, click the Events tab to view details about the cause of the problem.
+1. Click the Pod is not ready link to open more details about the problem. The link opens the OCP UI. Log in as an administrator. To understand why the IBM Event Streams resource is not available, click the Events tab to view details about the cause of the problem.
 
 1. For more detailed information about the problem, click the Overview tab, and click More options icon More options > View logs on the right in the Pod details panel.
 
-## Produce load on ES and MQ 
-
-### run eslabtester web app
-
-### change sink connector to to get from eslab topic and send to MQTOEVENT queue
-
-### change source connector to to get from MQTOEVENT queue and send to eventtomq topic 
-
-#### run sink connector
-
-#### run source connector
-
-eslab > MQTOEVENT > mqtoevent
-
-### ES monitor topics
-
-### OpenShift monitoring
-
-#### broker pods
-
-#### zookeeper pods
-
-#### prometheus metrics

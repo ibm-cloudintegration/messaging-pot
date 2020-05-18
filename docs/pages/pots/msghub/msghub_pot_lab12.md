@@ -18,12 +18,12 @@ from IBM MQ into IBM Event Streams or Apache Kafka. The connector copies
 messages from a source MQ queue to a target Kafka topic. There is also
 an MQ sink connector that takes messages from a Kafka topic and
 transfers them to an MQ queue. Running it is very similar to the source
-connector. In this lab we will only be covering the source connector.
+connector. In this lab we will cover both the source and sink connectors.
 
-An IBM MQ instance has been preconfigured on IBM Cloud Pak for Integration (ICP4i) on Red Hat OpenShift. To begin with you will define a pair of queues on this MQ instance for our MQ messages. You will then configure the source connector to run some tests to a local
-stand-alone worker. We will then adjust our configuration to send the messages to a topic in Event Streams and run a standalone worker to consume the messages.
+An IBM MQ instance has been preconfigured on IBM Cloud Pak for Integration (ICP4i) on Red Hat OpenShift. To begin with you will define a pair of queues on this MQ instance for our MQ messages. You will also define a pair of topics in Event Streams. You will then configure the source connector to run some tests to a local
+stand-alone worker. You will then configure a sink connector, adjust your configuration to send the messages to a topic in Event Streams, and run a standalone worker to consume the messages.
 
-At the end of this lab you should be able to configure MQ on ICP4i and configure and test sending messages from MQ to Event Streams.
+At the end of this lab you should be able to configure MQ on ICP4i and configure and test sending messages from MQ to Event Streams and Event Streams to MQ.
 
 ### What is Kafka Connect? 
 
@@ -47,7 +47,7 @@ Kafka Connect connectors run inside Java processes called *workers*. Kafka Conne
 
 Standalone mode is intended for testing and temporary connections between systems, and all work is performed in a single process. Distributed mode is more appropriate for production use, as it benefits from additional features such as automatic balancing of work, dynamic scaling up or down, and fault tolerance.
 
-These instructions focus on standalone mode because it's easier tosee what's going on. When you run Kafka Connect with a standalone worker, there are two configuration files. The worker configuration file contains the properties needed to connect to Kafka. The connector configuration file contains the properties needed for the connector. So, configuration to connect to Kafka goes into the worker configuration file, while the MQ configuration goes into the connector configuration file.
+These instructions focus on standalone mode because it's easier to see what's going on. When you run Kafka Connect with a standalone worker, there are two configuration files. The worker configuration file contains the properties needed to connect to Kafka. The connector configuration file contains the properties needed for the connector. So, configuration to connect to Kafka goes into the worker configuration file, while the MQ configuration goes into the connector configuration file.
 
 It's simplest to run just one connector in each standalone worker. Kafka Connect workers throw out a lot of messages and it's much simpler to read them if the messages from multiple connectors are not interleaved.
 
@@ -91,9 +91,11 @@ IBM Event Streams helps you set up a Kafka Connect environment, prepare the conn
 	
 1. Click *Create \+* and enter the name **MQTOEVENT**. Accept the default queue type as *Local* and click *Create*. 
    
-    ```
-    MQTOEVENT - This queue will be the source for the IBM MQ source connector
-    ```
+    | Queue Name | Purpose | Queue Type |
+	|:----------:|:-------:|:----------:|
+	| MQTOEVENT | Source of messages to send to Event Streams|  Local |
+	| EVENTTOMQ | Destination of messages from Event Streams |  Local |
+    
     
     ![](./images/pots/msghub/lab12/image39.png)
     
@@ -103,7 +105,7 @@ IBM Event Streams helps you set up a Kafka Connect environment, prepare the conn
 
 	![](./images/pots/msghub/lab12/image40.png) 
 	
-	Notice that is already a predefined channel **DEF.SVRCONN** of type *server-connection* that has been preconfigured for connecting MQ clients to the MQ queue manager **mq**.
+	Notice that there is already a predefined channel **DEF.SVRCONN** of type *server-connection* that has been preconfigured for connecting MQ clients to the MQ queue manager **mq**.
 	
 ### Create topics
 
@@ -130,7 +132,7 @@ Now that you are familiar with topics and creating them from the previous labs, 
 	
 	The topic **mqtoevent** is the topic used by the IBM MQ source connector to get messages from the queue in IBM MQ and send to IBM Event Streams. 
 	
-1. Since you may also want test the IBM Event Streams sink connector, you can define the topic it will use to get messages from IBM Event Event StreamsStreams and put to a queue in IBM MQ. 
+1. Since you may also want test the IBM Event Streams sink connector, you can define the topic it will use to get messages from IBM Event Event Streams and put to a queue in IBM MQ. 
 
 	Create the topic **eventtomq** now.
 	
@@ -287,6 +289,8 @@ The connector properties file for the Event Streams side has been also been prov
 
 1. Change the path for *ssl.truststore.location* and *producer.ssl.truststore.location* to **/home/ibmuser/kafkaconnect/es-cert.jks**. 
 
+	Notice the *producer.ssl.* properties. The MQ source connector is a *Kafka producer* since it is getting messages from an MQ queue and publishing to an Event Streams topic. 
+
 1. Add the following lines after the consumer.ssl... lines. The default REST port for the connectors is 8083. When you run two connectors each must use a unique port. So you should give the MQ source connector port 8084. 
 
 	```
@@ -415,7 +419,7 @@ At the end of this part of the lab you should be able to install and configure t
 	Alternatively, you can clone the project from GitHub. However, if you clone from GitHub, you have to build the connector yourself as described in the README.
 	
 	{% include note.html content="The connector is also available in GitHub if you wish to build it yourself.
-[https://github.com/ibm-messaging/kafka-connect-mq-source] (https://github.com/ibm-messaging/kafka-connect-mq-source)" %}
+[https://github.com/ibm-messaging/kafka-connect-mq-sink] (https://github.com/ibm-messaging/kafka-connect-mq-sink)" %}
 
 ### Configure the sink standalone properties
 
@@ -511,9 +515,13 @@ You will use the producer.jar file to load messages into Event Streams just as y
 	
 	Change the path of the *ssl.truststore.location* to **/home/ibmuser/kafkaconnect/es-cert.jks**.
 	
+	Notice *consumer.ssl.* properties. The MQ sink connect is a Kafka consumer since it is reading Event Streams messages and putting them on an MQ queue. 
+	
 	Click *Save* and close the editor.
 	
 	![](./images/pots/msghub/lab12/image71.png)
+	
+	{% include important.html content="Make sure that the **rest.port=8084** is not present in this file as the MQ source connector is using that port. This MQ sink connector will use the default port. " %}
 
 1. In the terminal window, change to the esconfig and enter the following command:
 
@@ -548,3 +556,4 @@ You have successfully configured the MQ source and sink connector and moved mess
 
 **END OF LAB EXERCISES**	
 
+[Continue to Lab 13 - Monitoring Event Streams](msghub_pot_lab13.html)
