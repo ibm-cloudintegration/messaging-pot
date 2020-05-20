@@ -105,7 +105,7 @@ IBM Event Streams helps you set up a Kafka Connect environment, prepare the conn
 
 	![](./images/pots/msghub/lab12/image40.png) 
 	
-	Notice that there is already a predefined channel **DEF.SVRCONN** of type *server-connection* that has been preconfigured for connecting MQ clients to the MQ queue manager **mq**.
+	Notice that there is already a predefined channel **DEF.SVRCONN** of type *server-connection* that has been preconfigured for connecting MQ clients to the MQ queue manager **mq**. The channel is supposed to be in *Inactive* status. It will become *Active* when clients connect.
 	
 ### Create topics
 
@@ -220,7 +220,7 @@ To run a particular connector, Kafka Connect must have access to a JAR file or s
 	| SSL cipher suite | TLS_RSA_WITH_AES_256_CBC_SHA256 |
 	
 	
-	When complete click *Downlaod*, then *Save File*. The downloaded file is named **mq.source.json** and is stored in */home/ibmuser/Downloads* directory.
+	When complete click *Download*, then *Save File*. The downloaded file is named **mq-source.json** and is stored in */home/ibmuser/Downloads* directory.
 	
 	![](./images/pots/msghub/lab12/image26.png)
 	
@@ -265,19 +265,19 @@ The connector properties file for the Event Streams side has been also been prov
 	
 	![](./images/pots/msghub/lab12/image42.png)
 
-1. They should all match. 
+1. All the values must match. 
 
 	![](./images/pots/msghub/lab12/image43.png)
 
 1. The MQ source connector needs a stand-alone properties file for connecting to Event Streams. A preconfigured source connector properties file has been stored in /home/ibmuser/esconfig/connect-standalone-source.properties file. 
 
-	In a editor window open this file.
+	In an editor window open this file.
 	
 	![](./images/pots/msghub/lab12/image44.png)
 	
 1. Review this file. Pay particular attention to the *bootstrap.servers* field. This is the route exposed by OpenShift for the es-1 instance of Event Streams. 
 
-1. In another terminal window, retrieve the API key you stored in the *creds.txt* file.
+1. In another terminal window, retrieve the Kafka Connect API key you stored in the *creds.txt* file.
 
 	```
 	cat ~/creds.txt.
@@ -291,7 +291,7 @@ The connector properties file for the Event Streams side has been also been prov
 
 	Notice the *producer.ssl.* properties. The MQ source connector is a *Kafka producer* since it is getting messages from an MQ queue and publishing to an Event Streams topic. 
 
-1. Add the following lines after the consumer.ssl... lines. The default REST port for the connectors is 8083. When you run two connectors each must use a unique port. So you should give the MQ source connector port 8084. 
+1. The default REST port for the connectors is 8083. When you run two connectors, each must use a unique port. So the MQ source connector will use port 8084 defined by the following lines after the consumer.ssl... lines. 
 
 	```
 	#Run 2 connectors
@@ -323,12 +323,8 @@ You are now ready to run the MQ source connector. This image includes a a sample
 	![](./images/pots/msghub/lab12/image75.png)
 
 1. In the editor, review the script to see how it will execute the connector. 
-
-	```
-	CLASSPATH=/home/ibmuser/esconfig/connectors/kafka-connect-mq-source-1.3.0-jar-with-dependencies.jar bin/connect-standalone.sh config/connect-standalone-source.properties /home/ibmuser/kafka_standalone/mq-source.properties
-	```
 	
-	The script must be run from the Kafka root directory, so the bin and config directories are relative to */kafka_2.13-2.5.0*.It run the jar file pulling Nothing to change here. Close the editor. The CLASSPATH is specifying where the connector jar is located and you can see where the two property files are stored.
+	The script must be run from the Kafka root directory, so the bin and config directories are relative to */kafka_2.13-2.5.0*. The CLASSPATH is specifying where the connector jar is located and you can see where the two property files are stored. There is nothing to change here, so close the editor. 
 	
 	![](./images/pots/msghub/lab12/image76.png)
 	
