@@ -58,6 +58,10 @@ entries:
       url: /mq_basic_pot_lab7.html
       output: web, pdf
 
+    - title: Lab 9 - Uniform Clusters and Application Rebalancing
+      url: /mq_basic_pot_lab9.html
+      output: web, pdf
+
   - title: MQ High Availability
     output: web,pdf
     folderitems:
