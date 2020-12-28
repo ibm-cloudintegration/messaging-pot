@@ -82,6 +82,10 @@ entries:
       url: /mq_ha_pot_lab3.html
       output: web, pdf
 
+    - title: Lab 4  - Replicated Data Queue Managers for HA / DR
+      url: /mq_ha_pot_lab4.html
+      output: web, pdf
+
   - title: MQ AMS
     output: web, pdf
     folderitems:
