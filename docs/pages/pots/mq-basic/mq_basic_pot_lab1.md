@@ -1,4 +1,3 @@
-Rev: 06/28/2018
 ---
 title: Introduction to IBM MQ
 toc: false

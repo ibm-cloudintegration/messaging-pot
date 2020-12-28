@@ -8,56 +8,83 @@ summary: Replicated Data Queue Managers (RDQM) for Disaster Recovery
 applies_to: administrator
 ---
 
-# Introducing IBM MQ Replicated Data Queue Manager
+# Introducing Disaster Recovery for IBM MQ Replicated Data Queue Manager
 
-## Introduction
+## RDQM DR Background
+
+You can create a primary instance of a disaster recovery queue manager running on one server, and a secondary instance of the queue manager on another server that acts as the recovery node. Data is replicated between the queue manager instances. If you lose your primary queue manager, you can manually make the secondary instance into the primary instance and start the queue manager, then resume work from the same place. You cannot start a queue manager while it is in the secondary role. The replication of the data between the two nodes is handled by DRBD.
+
+![](./images/pots/mq-ha/lab3/image300a.png)
+
+You can choose between synchronous and asynchronous replication of data between primary and secondary queue managers. If you select the asynchronous option, operations such as IBM® MQ PUT or GET complete and return to the application before the event is replicated to the secondary queue manager. Asynchronous replication means that, following a recovery situation, some messaging data might be lost. But the secondary queue manager will be in a consistent state, and able to start running immediately, even if it is started at a slightly earlier part of the message stream.
+
+You cannot add disaster recovery to an existing queue manager, and a queue manager cannot be configured with both RDQM disaster recovery and RDQM high availability.
+
+You can have several pairs of RDQM queue managers running on a number of different servers. For example, you could have six primary DR queue managers running on the same node, while their secondaries are configured on six different nodes in six different data centers. 
+
+![](./images/pots/mq-ha/lab3/image300b.png)
+
+Equally you could have primary disaster recovery queue managers running on different nodes, while all their secondary disaster recovery queue manages run on the same node. Some example configurations are illustrated in the following diagrams.
+
+![](./images/pots/mq-ha/lab3/image300c.png)
+
+### Replication, synchronization, and snapshots
+
+While the two nodes in a disaster recovery configuration are connected, any updates to the persistent data for a disaster recovery queue manager are transferred from the primary instance of the queue manager to the secondary instance. This is known as *replication*.
+
+If the network connection between the two nodes is lost, the changes to the persistent data for the primary instance of a queue manager are tracked. When the network connection is restored, a different process is used to get the secondary instance up to speed as quickly as possible. This is known as *synchronization*.
+
+While synchronization is in progress, the data on the secondary instance is in an inconsistent state. A *snapshot* of the state of the secondary queue manager data is taken. If a failure of the main node or the network connection occurs during synchronization, the secondary instance reverts to this snapshot and the queue manager can be started. Any of the updates that happened since the original network failure are lost, however. 
+
+
+## RDQM DR Lab Introduction
 
 This lab provides a demonstration of a new approach to Disaster Recovery in MQ on Linux, with the following key features:
 
 * Use of Distributed Replicated Block Device (DRBD) storage rather than network shared storage* This is still using a Replicated Data Queue Manager (RDQM):	* Takeover will be manual, not automatic	* Both asynchronous and synchronous replication is supported	* An RDQM is active on only one node at any one time
 	* Each node can run different active RDQMs	* An individual DR RDQM is created to use one style of replication and it cannot be changed without recreating the RDQM	* In 9.0.5 (through 9.1.2) an RDQM can be either HA or DR but not both	* As only two nodes are involved, it will be possible to get into a split-brain situation; but only if a user has chosen to promote a DR Secondary and start a DR RDQM when the DR network is disconnected and the DR RDQM is still running, or is also started where it was Primary.
 
-The goals for RDQM-DR are:1. Allow an RDQM to be created which is configured to replicate its data to a single Secondary instance at a given IP address
+The goals for RDQM-DR are:* Allow an RDQM to be created which is configured to replicate its data to a single Secondary instance at a given IP address
 	* Asynchronous replication is supported provided the latency is no more than 50ms for a round trip time
 	
 	* Synchronous replication is subject to the same 5ms limits on latency as it is for HA
-2. Allow manual control of when a DR Secondary becomes a DR Primary and can then run the RDQM
-In this lab, instructions are provided to show the setup for both.For this lab exercise, node 02 has had some of the ‘pre-configuration’ already performed.
+* Allow manual control of when a DR Secondary becomes a DR Primary and can then run the RDQM
+In this lab, instructions are provided to show the setup for both.
+### Lab environment
 
-### Summary of lab environment
+1. 2 RHEL 7.7 x86_64 systems running in Skytap: 
 
-1. 3 RHEL 7.4 x86_64 systems running in Skytap: 
+	* dr1  - This will be our primary node	* dr2  - This will be a secondary node
 
-	* miqmp  - This will be our primary node	* miqms  - This will be a secondary node
-
-	(The third system is not used for this lab.)
-
-1. VMWare Workstation virtual networks: 
-	
-	|Name   | Type     |  Subnet  | DHCP |
-	|:-----:|:--------:|:--------:|:-----:|
-	|VMnet3 |Host-only | 10.0.3.0 |no     |
-	|VMnet4 |Host-only | 10.0.4.0 |no     |
-	|VMnet8 | NAT      | 10.0.0.0 |no     |
+	Note: There are four  additional VMs in the Skytap template which are not used; dr3, rdqm1, rdqm2, and rdqm3 should be suspended or powered off.
 	
 1. Network interfaces:
 
-	|Interface Purpose | Interface Name |  miqmp (Primary node)  | miqms (Secondary node) | 
+	|Interface Purpose | Interface Name |  dr1 (Primary node)  | dr2 (Secondary node) | 
 	|:------:|:--------:|:--------:|:-----:|:--------|
-	|Administration | ens34 | 10.0.0.1 |10.0.0.2 |
-	|DR Replication | ens38 | 10.0.4.1 |10.0.4.2 |
-	|MQ Fixed IP | ens37  | 10.0.3.1 |10.0.3.2 |
+	| Administration | ens34 | 10.0.0.1 |10.0.0.2 |
+	| DR Replication | ens36 | 10.0.2.1 |10.0.2.2 |
+	| MQ Fixed IP | ens35  | 10.0.1.1 |10.0.1.2 |
+	| MQ Floating IP | |10.0.1.10 | 10.0.1.10 | |
 
-DR interfaces are used as follows:* DR Replication - for synchronous / asynchronous data replication (the higher the bandwidth the better and the lower the latency the better)
-
- {% include note.html content="Hosts miqmp, miqms are tied to the Administration IP addresses above" %}
+	DR Replication - for synchronous / asynchronous data replication (the higher the bandwidth the better and the lower the latency the better)
 ### Pre-configuration steps 
+
 The following steps are necessary for configuring RDQM, and are shown for your reference. They have **already been completed** on the VMs. 
 
-* Although not required for this Lab, the following Pacemaker dependencies required for RDQM HA have already been installed. This list should be sufficient for a standard installation of RHEL 7.6 Server or Workstation. For your own environment setup, if you are using some other installation, then additional packages may be needed:
-	* OpenIPMI-modalias.x86_64	* OpenIPMI-libs.x86_64	* libyaml.x86_64	* PyYAML.x86_64	* libesmtp.x86_64	* net-snmp-libs.x86_64	* net-snmp-agent-libs.x86_64	* openhpi-libs.x86_64	* libtool-ltdl.x86_64	* perl-TimeDate
+* Although not required for this Lab, the following Pacemaker dependencies required for RDQM HA have already been installed. This list should be sufficient for a standard installation of RHEL 7.7 Server or Workstation. For your own environment setup, if you are using some other installation, then additional packages may be needed:
+	* cifs-utils
+	* gnutls
+	* libcgroup
+	* libtool-ltdl
+	* lvm2
+	* net-snmp-libs
+	* nfs-utils
+	* perl-TimeDate
+	* psmisc
+	* PyYAML
 
-* Extract and Install MQ 9.1.2
+* Extract and Install MQ 9.1.5
 
 	The code is provided as a compressed tar file in the directory /home/student/Downloads.
 	
@@ -86,545 +113,578 @@ The following steps are necessary for configuring RDQM, and are shown for your r
 	
 	If want to allow a normal user in the mqm group to create RDQM instances etc., you need to grant the user access to the certain commands via sudo. The user will also need to be part of the mqm group. 
 	
-	You will add the mqm user to the root and haclient group. Then add root, student, and ibmdemo to the mqm and haclient groups. 
+	You will add the mqm user to the root and haclient group. Then add root, and ibmuser to the mqm and haclient groups. 
 	
 	 The following groups set up: 
 
 	* **mqm** to allow user to run specific MQ commands, 
-	* A normal user "ibmdemo" has been defined for running applications and MQ commands.
+	* A normal user "ibmuser" has been defined for running applications and MQ commands.
 
 	|Name   | Password |  Purpose | Group |
 |:-----:|:--------:|:--------:|:-----:|
-|root | passw0rd | superuser |  |
-|ibmdemo | passw0rd | host vm user |mqm     |
-|ibmdemo | passw0rd | MQ user |mqm     |
-	
+|root | IBMDem0s! | superuser |  |
+|ibmuser | engageibm | host vm user - mq user | mqm     |
+
   	
 * Create the Logical Group for the QM data 
 
 	Each node requires a volume group named drbdpool. The storage for each replicated data queue manager is allocated as a separate logical volume per queue manager from this volume group. For the best performance, this volume group should be made up of one or more physical volumes that correspond to internal disk drives (preferably SSDs). 
 
-The above steps must be completed on each node before RDQM can be configured. At this point you are ready to begin RDQM configuration. 
+The above steps have already been completed on each node so at this point you are ready to begin RDQM configuration. 
 
 
 ### Setup the RHEL image (pre-configured on SkyTap):
 
-In the Skytap environment, there are 3 virtual machines miqmp, miqms, mqnfs4 which currently should be in a powered off or paused state.
+In the Skytap environment, there are 6 virtual machines rdqm1, rdqm2, rdqm3, dr1, dr2, and dr3 which currently should be in a powered off or paused state.
 
-![](./images/pots/mq-ha/lab2/image1.png)
-1. Click the **run** button to resume the VMs. 
+![](./images/pots/mq-ha/lab2/image200.png)
 
-2. Click the monitor icon for *miqmp* which will launch the desktop in another browser tab.
+This template is used for multiple labs and has been configured with the maximum number of VMs that are required for all labs. In this lab you will only need dr1 and dr2. The rest of the VMs can remain powered off or suspended.
+1. Leave the labels checked for *dr1* and *dr2*. Uncheck the labels for all other VMs. Then click the **run** button only for dr1 and dr2 to start or resume the VMs.
 
-	![](./images/pots/mq-ha/lab2/image2.png)
+	![](./images/pots/mq-ha/lab3/image300.png) 
+	
+	Wait for the monitor icons to turn green, approximately three minutes. Once both are green and running you can proceed to the next step.
+	
+2. Click the monitor icon for *dr1* which will launch the desktop in another browser tab.
 
-1. Log on to VM **miqmp** as user ibmdemo, using password passw0rd.
+	![](./images/pots/mq-ha/lab3/image302.png)
 
-	![](./images/pots/mq-ha/lab2/image3.png)
+1. Log on to VM *dr1* as user **ibmuser**, using password **engageibm**.
 
-## Configure RDQM-DRA primary instance of a disaster recovery queue manager is created on one server. A secondary instance of the same queue manager must be created on another server, which acts as the recovery node. Data is replicated between the queue manager instances. The replication of the data between the two nodes is handled by DRBD.
+	![](./images/pots/mq-ha/lab2/image203.png)
+
+## Configure RDQM-DR
+A primary instance of a disaster recovery queue manager is created on one server. A secondary instance of the same queue manager must be created on another server, which acts as the recovery node. Data is replicated between the queue manager instances. The replication of the data between the two nodes is handled by DRBD.
 Unlike the High Availability solution, there is no heartbeat detection between the two nodes. If the primary queue manager node is lost, the secondary instance can be manually made into the primary instance, the queue manager started, and work resumed.
 Data replication between primary and secondary queue managers can be done synchronously or asynchronously. If the asynchronous option is selected, operations such as PUT or GET complete and return to the application before the data is replicated to the secondary queue manager. Asynchronous replication means that, following a recovery situation, some messaging data might be lost. But the secondary queue manager will be in a consistent state, and able to start running immediately, even if it is started at a slightly earlier part of the message stream.
 You will configure a DR RDQM that uses asynchronous replication.
 
-### Create the DR RDQMYou will create a DR RDQM with asynchronous replication. You must first create a primary RDQM DR queue manager. Then you will create a secondary instance of the same queue manager on another node. The primary and secondary instances must have the same name and be allocated the same amount of storage.
+### Create the DR RDQM
+You will create a DR RDQM with asynchronous replication. You must first create a primary RDQM DR queue manager. Then you will create a secondary instance of the same queue manager on another node. The primary and secondary instances must have the same name and be allocated the same amount of storage.
 
-1. You should be logged on as *ibmdemo* on **miqmp**.
+#### Update firewall rules	
+
+1. You should be logged on as *ibmuser* on **dr1**.
+
+1. On each of the nodes, open the firewall port defined. Open the firewall from the top left of the screen, under *Applications -> Sundry -> Firewall*.
+
+	![](./images/pots/mq-ha/lab3/image305.png)
+	
+1. Enter the password for ibmuser, **engageibm**, then click *Authenticate*.
+
+	![](./images/pots/mq-ha/lab3/image306.png)
+	
+1. In the Ports pane, add TCP port 1502.
+
+	![](./images/pots/mq-ha/lab3/image307.png)
+	
+	Results should look like this:
+	
+	![](./images/pots/mq-ha/lab3/image308.png)
+	
+1. You must repeat this on **dr2**. 
+	
+	**Hint:** Click the arrow in the black bar at top of screen to open the Skytap menu. Click the monitors icon on left end. 
+	
+	![](./images/pots/mq-ha/lab2/image213a.png)
+	
+	Click *View all VMs (6)* to show the VMs.
+	 
+	![](./images/pots/mq-ha/lab2/image213c.png)	
+	Then ou can click the monitor icon for **dr2** which will launch the desktop in a new browser tab.
+	
+	![](./images/pots/mq-ha/lab2/image213b.png)
+	
+	Now open the firewall menu as you did on **dr1** and add port *1502*.
 
 1. Right-click on the desktop and select *Open Terminal* 
 
-	![](./images/pots/mq-ha/lab3/image1.png)
+	![](./images/pots/mq-ha/lab3/image303.png)
 
 1. Switch to root user with the command:
 
 	```
 	su -
 	```
-	Enter the *passw0rd* for root's password.
 	
-1. Enter the command to set the MQ environment.
+	Enter the *IBMDem0s!* for root's password.
+	
+	![](./images/pots/mq-ha/lab3/image304.png)
+	
+1. Start firewall by entering the following command.
 
 	```
-	. /opt/mqm/bin/setmqenv -s
+	systemctl start firewalld
 	```
 	
-1.	Create a primary queue manager on node **miqmp**. It will use asynchronous replication. The local IP for DR replication is 10.0.4.1. The recovery IP used for replication on the secondary instance is 10.0.4.2. Replication will take place using port 7001. The queue manager will be DRQM1. 
+	![](./images/pots/mq-ha/lab3/image309.png)
+	
+1. Return to **dr1** and repeat the previous step to start the firewall there also. 
+
+1.	Create a primary queue manager on node **dr1**. It will use asynchronous replication. The local IP for DR replication is 10.0.2.14. The recovery IP used for replication on the secondary instance is 10.0.2.15. Replication will take place using port 7001. The queue manager listener port will be 1502. The queue manager will be QMDR. 
 
 	In the terminal window, create the primary node: 
 
 	```
-	crtmqm -rr p -rt a -rl 10.0.4.1 -ri 10.0.4.2 -rn miqms -rp 7001 -p 1502 DRQM1
+	crtmqm -rr p -rt a -rl 10.0.2.14 -ri 10.0.2.15 -rn dr2 -rp 7001 -p 1502 QMDR
 	```
 	
-	![](./images/pots/mq-ha/lab3/image2.png)
+	![](./images/pots/mq-ha/lab3/image310.png)
 	
 	Notice at the end, the command needed to create the secondary instance is provided for you.
 	
-1. Switch to the **miqms** VM. Login as *ibmdemo / passw0rd* 
-
-1. As you did on miqmp, open a terminal window, switch user to **root**, and issue the command to set up the MQ environment.
-
-2. Create a secondary instance of the queue manager on node **miqms**. In the terminal window, enter the command which was **provided** for you when you ran the crtmqm command on miqmp. For example:
-	```
-	crtmqm -rr s -rt a -rl 10.0.4.2 -ri 10.0.4.1 -rn miqmp -rp 7001 DRQM1
+1. Switch to the **dr2** VM. In the terminal window as *root* create a secondary instance of the queue manager on node **dr2** with the following command: 
+ 	```
+	crtmqm -rr s -rt a -rl 10.0.2.15 -ri 10.0.2.14 -rn dr1 -rp 7001 QMDR
 	```
 
-	![](./images/pots/mq-ha/lab3/image3.png)
+	![](./images/pots/mq-ha/lab3/image312.png)
 	
-1. Check the status on both nodes with the command to ensure they are correct. On node **miqmp** use the command: 
+	This is the command which was provided for you when you ran the crtmqm command on dr1. Normally you would copy the command from *dr1* and paste it into the terminal window on *dr2*. 
+	
+1. Check the status on both nodes with the command to ensure they are correct. Use the following command on both nodes. You should be using the terminal where you are logged in as root so you can drop the sudo. 
 	
 	```
-	rdqmstatus -m DRQM1
-	```	On **miqms**: 
+	rdqmstatus -m QMDR
+	```	On **dr2**: 
 	
-	![](./images/pots/mq-ha/lab3/image4.png) 
+	![](./images/pots/mq-ha/lab3/image313.png) 
 	
-	On **miqmp**:
+	On **dr1**:
 	
-	![](./images/pots/mq-ha/lab3/image5.png)
+	![](./images/pots/mq-ha/lab3/image314.png)
 
 1. Issue the command again until it shows synchronization is complete. When initial synchronization has completed, it should look similar to the following:
 
-	![](./images/pots/mq-ha/lab3/image6.png)
+	![](./images/pots/mq-ha/lab3/image316.png)
 
 1. On the node with the secondary instance, the output should initially look similar to the following:
 
-	![](./images/pots/mq-ha/lab3/image7.png)
+	![](./images/pots/mq-ha/lab3/image315.png)
 	
-1. On node **miqms**, open a new terminal window (as the ibmdemo user), and enter the command to set the MQ environment.	
+1. On node **dr2** open a new terminal window as the ibmuser user to be used to enter the RDQM commands. 	
 
-1. On node **miqmp**, open a new terminal window (as the ibmdemo user), enter the command to set the MQ environment, and then start the queue manager with the following command:
+1. On node **dr1** open a new terminal window as the ibmuser user and then start the queue manager with the following command:
 
 	```
-	. /opt/mqm/bin/setmqenv -s
-	```
-	```
-	strmqm DRQM1
+	strmqm QMDR
 	```
 	
-	![](./images/pots/mq-ha/lab3/image7b.png)
+	![](./images/pots/mq-ha/lab3/image317.png)
 
 
 1. Now check the status on both nodes to ensure they are correct, using the command:	
 	```
-	rdqmstatus -m DRQM1
-	```	On **miqmp**, the output will initially look similar to the following:
+	sudo rdqmstatus -m QMDR
+	```	On **dr1**, the output will initially look similar to the following:
 	
-	![](./images/pots/mq-ha/lab3/image8.png)
+	![](./images/pots/mq-ha/lab3/image318.png)
 	
 	As the node with the secondary instance only runs the queue manager when DR is needed, the output will be unchanged and look as it did previously.
 	
-	![](./images/pots/mq-ha/lab3/image9.png)
+	![](./images/pots/mq-ha/lab3/image319.png)
 	
-## Test the DR SecondaryNow that the DR nodes have been set up, you will test the secondary DR queue manager.### Make the Primary instance the Secondary nodeOnly one node can be the Primary. Therefore, before another node can be designated the Primary, the original Primary needs to be designated the Secondary.
+## Test the DR SecondaryNow that the DR nodes have been set up, you will test the secondary DR queue manager.### Make the Primary instance the Secondary node
+Only one node can be the Primary. Therefore, before another node can be designated the Primary, the original Primary needs to be designated the Secondary.
 
-1. On node **miqmp**, in ibmdemo's terminal, stop the queue manager:
+1. On node **dr1**, in ibmuser's terminal, stop the queue manager:
 
-	```	endmqm DRQM1
+	```	endmqm QMDR
 	```
 	
-	![](./images/pots/mq-ha/lab3/image10.png)
-	
-1. On node **miqmp**, in the **root** terminal, designate node miqmp, as the secondary using the rdqmdr command:	
-	```	rdqmdr -m DRQM1 -s
+1. On node **dr1** designate node **dr1**, as the secondary using the rdqmdr command:	
+	```	sudo rdqmdr -m QMDR -s
 	```
 	
-	![](./images/pots/mq-ha/lab3/image12.png)
+	![](./images/pots/mq-ha/lab3/image320.png)
 		
-### Make the Secondary node the Primary instanceDesignate the Secondary node as the Primary instance. 
+### Make the Secondary node the Primary instanceDesignate the Secondary node as the Primary instance. 
 
-1. On the recovery node **miqms** in the **root** terminal, designate it as the primary instance using the rdqmdr command:	
+1. On the recovery node **dr2**, designate it as the primary instance using the rdqmdr command:	
 	```
-	rdqmdr -m DRQM1 -p
+	sudo rdqmdr -m QMDR -p
+	```
+
+1. Still on **dr2** start the queue manager:	```	strmqm QMDR
 	```
 	
-	![](./images/pots/mq-ha/lab3/image13.png)
-
-1. Still on **miqms** in the root terminal or ibmdemo's terminal, start the queue manager:	```	strmqm DRQM1
-	```
-	
-	![](./images/pots/mq-ha/lab3/image14.png)	
+	![](./images/pots/mq-ha/lab3/image321.png)	
 1. Confirm the status of both nodes:	
 	```
-	rdqmstatus -m DRQM1
+	sudo rdqmstatus -m QMDR
 	``` 
 	
-	On node **miqms**: 
+	On node **dr2**: 
 	
-	![](./images/pots/mq-ha/lab3/image15.png)
+	![](./images/pots/mq-ha/lab3/image322.png)
 	
-	On node **miqmp**:
+	On node **dr1**:
 	
-	![](./images/pots/mq-ha/lab3/image16.png)
+	![](./images/pots/mq-ha/lab3/image323.png)
 	
 	Provided that channels were defined with a list of alternative connection names specifying the primary and secondary queue managers, then applications will automatically connect to the new primary queue manager.
 	
-### Make the Primary instance the Primary againIf the loss of the Primary was only temporary, you would want to designate it as the Primary again. This would be achieved as described below.
+### Make the Primary instance the Primary againIf the loss of the primary node was only temporary, you would want to designate it as the *Primary* instance again. This would be achieved as described below.
 
-1. On node **miqms**, stop the queue manager:	
+1. On node **dr2** stop the queue manager:	
 	```
-	endmqm DRQM1
-	```
-	
-1. In the **root** terminal, designate node miqms as the secondary:	
-	```
-	rdqmdr -m DRQM1 -s
+	endmqm QMDR
 	```
 	
-	![](./images/pots/mq-ha/lab3/image17.png)
+1. With root access designate node **dr2** as the *Secondary* instance:	
+	```
+	sudo rdqmdr -m QMDR -s
+	```
+	
+	![](./images/pots/mq-ha/lab3/image324.png)
 		
 
-1. On the primary node **miqmp**, in the **root** terminal, designate it as the primary instance again:	
+1. On the primary node **dr1**, with root access, designate it as the *Primary* instance again:	
 	```
-	rdqmdr -m DRQM1 -p
-	```
-	
-1. On the primary node **miqmp** (in either root terminal or ibmdemo terminal), restart the queue manager:	
-	```
-	strmqm DRQM1
+	sudo rdqmdr -m QMDR -p
 	```
 	
-	![](./images/pots/mq-ha/lab3/image18.png)
+1. On the primary node **dr1** restart the queue manager:	
+	```
+	strmqm QMDR
+	```
+	
+	![](./images/pots/mq-ha/lab3/imag325.png)
 	
 1. Confirm the status of both nodes:	
 	```
-	rdqmstatus -m DRQM1
+	sudo rdqmstatus -m QMDR
 	```
 	
-	On **miqmp**:
+	On **dr1**:
 	
-	![](./images/pots/mq-ha/lab3/image19.png)
+	![](./images/pots/mq-ha/lab3/image326.png)
 	
-	On **miqms**:
+	On **dr2**:
 	
-	![](./images/pots/mq-ha/lab3/image20.png)
+	![](./images/pots/mq-ha/lab3/image327.png)
 	
-## Replace node that was running a DR PrimarySuppose the loss of the primary node was due to a failure, which resulted in the node having to be replaced. You would want to replace the primary node while the queue manager runs on the secondary node. Then restore the original disaster recovery configuration.### Simulate the loss of the Primary nodeAlthough the node has not been lost, you will simulate it by disabling the DR Replication Network adapter and deleting the queue manager. 
+## Replace node that was running as DR Primary
+Suppose the loss of the primary node was due to a failure, which resulted in the node having to be replaced. You would want to replace the primary node while the queue manager runs on the secondary node. Then restore the original disaster recovery configuration.### Simulate the loss of the Primary node
+Although the node has not been lost, you will simulate it by disabling the DR Replication Network adapter and deleting the queue manager. 
 
-1. On node **miqmp**, go to **Applications -> System Tools -> Settings**:
+1. On node **dr1**, navigate to **Applications -> System Tools -> Settings**:
 
-	![](./images/pots/mq-ha/lab3/image21.png)
+	![](./images/pots/mq-ha/lab3/image328.png)
 
-1. On the left list of entries, scroll down and select **Network**:
+1. On the left list of entries, scroll down and select **Network**.
 
-	![](./images/pots/mq-ha/lab3/image22.png)
+1. Click the **Settings** gear symbol on the **ens36** network adapter, to verify that it is the DR Replication adapter (IP address 10.0.2.14):
 
-1. Click the **Settings** gear symbol on the **ens38** network adapter, to verify that it is the DR Replication adapter (IP address 10.0.4.1):
-
-	![](./images/pots/mq-ha/lab3/image22a.png)
+	![](./images/pots/mq-ha/lab3/image329.png)
 	
-1. In the window that opens, validate the IP address of **10.0.4.1**, then click **Cancel**:
+1. In the window that opens, validate the IP address of **10.0.2.14**, then click **Cancel**:
 
-	![](./images/pots/mq-ha/lab3/image22b.png)
+	![](./images/pots/mq-ha/lab3/image330.png)
 	
-1. For the **ens38** adapter, click the button to switch it off.
+1. For the **ens36** adapter, click the button to switch it *off*.
 
-	![](./images/pots/mq-ha/lab3/image23.png)
+	![](./images/pots/mq-ha/lab3/image331.png)
+	
+	Note: You can leave the Network window open as you will need it in a later step.
 
-1. On node **miqmp**, stop the queue manager:	
+1. On node **dr1**, stop the queue manager:	
 	```
-	endmqm DRQM1
-	```
-	
-	![](./images/pots/mq-ha/lab3/image24.png)
-	
-1. In the **root** terminal, remove the queue manager:	
-	```
-	dltmqm DRQM1
+	endmqm QMDR
 	```
 	
-	![](./images/pots/mq-ha/lab3/image25.png)
-	
-### Make the Secondary instance the PrimaryDesignate the Secondary node as the Primary instance. 
-
-1. On the recovery node **miqms**, in the **root** terminal, designate it as the primary instance:	
+1. With root access remove the queue manager:	
 	```
-	rdqmdr -m DRQM1 -p
+	sudo dltmqm QMDR
+	```
+	
+	![](./images/pots/mq-ha/lab3/image332.png)
+	
+### Make the Secondary node the Primary instance
+Designate the Secondary node as the Primary instance. 
+
+1. On the recovery node **dr2** with root access designate it as the primary instance:	
+	```
+	sudo rdqmdr -m QMDR -p
 	``` 
 	
 1. Start the queue manager:	
 	```
-	strmqm DRQM1
+	strmqm QMDR
 	```
 	
-	![](./images/pots/mq-ha/lab3/image26.png)
+	![](./images/pots/mq-ha/lab3/image333.png)
 	
 1. Confirm the status of both nodes: 
 
 	```
-	rdqmstatus -m DRQM1
+	sudo rdqmstatus -m QMDR
 	```
 	
-	On **miqms**:
+	On **dr2**:
 	
-	![](./images/pots/mq-ha/lab3/image27.png)
+	![](./images/pots/mq-ha/lab3/image334.png)
 	
-	As there is no longer a queue manager defined on node **miqmp**, the output should look similar to the following:
+	As there is no longer a queue manager defined on node **dr1**, the output should look similar to the following:
 	
-	![](./images/pots/mq-ha/lab3/image28.png)
+	![](./images/pots/mq-ha/lab3/image335.png)
 	
-### Add the new Primary node into the DR configurationFor the replacement node to be brought back into the DR configuration, it must assume the identity of the failed node -- the name and IP address must therefore be the same. 
+### Add the new Primary node into the DR configuration
+For the replacement node to be brought back into the DR configuration, it must assume the identity of the failed node -- the name and IP address must therefore be the same. 
 
-1. Remember, *rdqmdr* commands require root authority. You will determine the command that needs to be run on the new Primary node. On node **miqms**, run the command :	
+1. Remember, *rdqmdr* commands require root authority. You will determine the command that needs to be run on the new Primary node. On node **dr2**, run the command:
+	
 	```
-	rdqmdr -m DRQM1 -d
+	sudo rdqmdr -m QMDR -d
 	```
 	
 	The output should look similar to the following: 
 	
-	![](./images/pots/mq-ha/lab3/image29.png)
+	![](./images/pots/mq-ha/lab3/image336.png)
 	
-1. On node **miqmp**, restart the DR Replication network interface. Go to **Applications -> System Tools -> Settings -> Network**, and click the button to turn on **ens38**. 
+1. Restart the DR Replication network interface. You should still have the network settings window open on node **dr1**. If not, go to **Applications -> System Tools -> Settings -> Network**. Click the button to turn on **ens36**.  
+ 
+	![](./images/pots/mq-ha/lab3/image337.png)
 
-	![](./images/pots/mq-ha/lab3/image30.png)
-
-1. Copy the command (as highlighted above) into the command line of the new Primary node, **miqmp**, to run it:	
+1. Copy the command (as highlighted above) into the command line of the new Primary node, **dr1**, to run it:	
 	```
-	crtmqm -rr s -rl 10.0.4.1 -ri 10.0.4.2 -rn miqms -rp 7001 DRQM1
+	crtmqm -rr s -rl 10.0.2.14 -ri 10.0.2.15 -rn dr2 -rp 7001 QMDR
 	```
 		The output should look similar to the following:
 	
-	![](./images/pots/mq-ha/lab3/image31.png)
+	![](./images/pots/mq-ha/lab3/image338.png)
 	
 1. Check the status of the synchronization on both nodes:	
 	```
-	rdqmstatus -m DRQM1
+	sudo rdqmstatus -m QMDR
 	```
 	
-	On **miqmp**:
+	On **dr1**:
 	
-	![](./images/pots/mq-ha/lab3/image32.png)
+	![](./images/pots/mq-ha/lab3/image339.png)
 	
-	On **miqms**:
+	On **dr2**:
 	
-	![](./images/pots/mq-ha/lab3/image33.png)
+	![](./images/pots/mq-ha/lab3/image340.png)
+	
+	Wait for synchronization to complete - *DR status = Normal* before continuing.
 
-### Restore the original DR configurationTo restore the original DR configuration, you would want to designate the Primary node as the Primary instance again.
+### Restore the original DR configuration
+To restore the original DR configuration, you would want to designate the Primary node as the Primary instance again.
 
-1. When the initial synchronization is complete on the primary node miqmp, you can designate the secondary node as the secondary instance again. End the queue manager on node **miqms**:	
+1. When the initial synchronization is complete on the primary node **dr1**, you can designate the secondary node as the secondary instance again. End the queue manager on node **dr2**:	
 	```
-	endmqm DRQM1
-	```
-	
-1. Designate node miqms as the secondary instance again:	
-	```
-	rdqmdr -m DRQM1 -s
+	endmqm QMDR
 	```
 	
-	![](./images/pots/mq-ha/lab3/image34.png)
-	
-1. On node miqmp, designate it as the primary instance again:	
+1. Designate node **dr2** as the secondary instance again:	
 	```
-	rdqmdr -m DRQM1 -p
+	sudo rdqmdr -m QMDR -s
+	```
+	
+	![](./images/pots/mq-ha/lab3/image341.png)
+	
+1. On node **dr1**, designate it as the Primary instance again:	
+	```
+	sudo rdqmdr -m QMDR -p
 	```
 	
 1. Start the queue manager on the primary node:	
 	```
-	strmqm DRQM1
+	strmqm QMDR
 	```	
 	
-	![](./images/pots/mq-ha/lab3/image35.png)
+	![](./images/pots/mq-ha/lab3/image342.png)
 		
 1. Confirm the status of both nodes:	
 	```
-	rdqmstatus -m DRQM1
+	sudo rdqmstatus -m QMDR
 	```
 	
-	On **miqmp**:
+	On **dr1**:
 	
-	![](./images/pots/mq-ha/lab3/image36.png)
+	![](./images/pots/mq-ha/lab3/image343.png)
 	
-	On **miqms**:
+	On **dr2**:
 	
-	![](./images/pots/mq-ha/lab3/image37.png)
+	![](./images/pots/mq-ha/lab3/image344.png)
 
 	
-## Replace node that was running a DR SecondaryIf it is a secondary node that needs to be replaced, you would just replace it and restore it to the original disaster recovery configuration.### Add the new Secondary node into the DR configurationTo simulate this, there is no need to change the DR designations, prior to the Secondary node being replaced. You will simply disable the DR Replication Network adapter.
+## Replace node that was running a DR Secondary instance
+If it is a secondary node that needs to be replaced, you would just replace it and restore it to the original disaster recovery configuration.### Add the new Secondary node into the DR configuration
+To simulate this, there is no need to change the DR designations prior to the Secondary node being replaced. You will simply disable the DR Replication Network adapter.
 For the replacement node to be brought back into the DR configuration, again it must assume the identity of the failed node -- the name and IP address must be the same.
 
-1. On node **miqms**, go to **Applications -> System Tools -> Settings**.
+1. On node **dr2**, go to **Applications -> System Tools -> Settings**.
 
-	![](./images/pots/mq-ha/lab3/image38.png)
+	![](./images/pots/mq-ha/lab3/image345.png)
 
 	Select **Network**. 
 	
-	![](./images/pots/mq-ha/lab3/image39.png)
+1. The DR Replication adapter (IP address 10.0.2.15) is the **ens36** adapter. Click the button to switch it off. 
+
+	![](./images/pots/mq-ha/lab3/image346.png)
 	
-1. The DR Replication adapter (IP address 10.0.4.2) is the **ens38** adapter. Click the button to switch it off. 
+	Note: You can leave the Network window open as you will need it in a later step.
 
-	![](./images/pots/mq-ha/lab3/image40.png)
-
-1. In **root's** command window, delete the queue manager.
+1. Still on **dr2** with root access delete the queue manager.
 
 	```
-	dltmqm DRQM1
-	```
-	
-	![](./images/pots/mq-ha/lab3/image40a.png)
-
-1. You will assume the secondary node has been replaced. Determine the command that needs to be run on the new Secondary node. On node **miqmp**, run the command :	
-	```
-	rdqmdr -m DRQM1 -d
+	sudo dltmqm QMDR
 	```
 	
-	![](./images/pots/mq-ha/lab3/image41.png)
-	
-1. On node **miqms**, go to **Applications -> System Tools -> Settings -> Network**. Click the button for the DR Replication adapter **ens38** (IP address 10.0.4.2), to switch it back on.
+	![](./images/pots/mq-ha/lab3/image347.png)
 
-	![](./images/pots/mq-ha/lab3/image42.png)
-
-1. Copy this command, that was displayed, into the command line of the new Secondary node, **miqms**, then run it:	
+1. Switch to **dr1**. You will assume the secondary node has been replaced. Determine the command that needs to be run on the new Secondary node. On node **dr1**, run the command:	
 	```
-	crtmqm -rr s -rl 10.0.4.2 -ri 10.0.4.1 -rn miqmp -rp 7001 DRQM1
+	sudo rdqmdr -m QMDR -d
 	```
 	
-	![](./images/pots/mq-ha/lab3/image43.png)
+	![](./images/pots/mq-ha/lab3/image348.png)
+	
+1. On node **dr2**, go to **Applications -> System Tools -> Settings -> Network**. Click the button for the DR Replication adapter **ens36** (IP address 10.0.2.15), to switch it back on.
+
+	![](./images/pots/mq-ha/lab3/image349.png)
+
+1. Copy this command, that was displayed on **dr1** into the command line of the new Secondary node, **dr2**, then run it:	
+	```
+	sudo crtmqm -rr s -rl 10.0.2.15 -ri 10.0.2.14 -rn dr1 -rp 7001 QMDR
+	```
+	
+	![](./images/pots/mq-ha/lab3/image350.png)
 			
 1. Confirm the status of the DR configuration on both nodes:	
 	```
-	rdqmstatus -m DRQM1
+	sudo rdqmstatus -m QMDR
 	```
 	
-	On **miqms**:
+	On **dr2**:
 	
-	![](./images/pots/mq-ha/lab3/image45.png)
+	![](./images/pots/mq-ha/lab3/image351.png)
 	
-	On **miqmp**:
+	On **dr1**:
 	
-	![](./images/pots/mq-ha/lab3/image46.png)
+	![](./images/pots/mq-ha/lab3/image352.png)
 	
-## Reverting to a snapshotSuppose a network connection between the nodes is lost; the changes to the persistent data for the primary instance of a queue manager are tracked. When the network connection is restored, a synchronization process is used to get the secondary instance up to speed as quickly as possible.
-While synchronization is in progress, the data on the secondary instance is in an inconsistent state. A snapshot of the state of the secondary queue manager data is taken.If a failure of the main node or the network connection occurs during synchronization, it would be necessary to revert the secondary instance back to this snapshot.
+	Wait for synchronization to complete - *DR status = Normal* before continuing.
+	
+## Reverting to a snapshot
+Suppose a network connection between the nodes is lost; the changes to the persistent data for the primary instance of a queue manager are tracked. When the network connection is restored, a synchronization process is used to get the secondary instance up to speed as quickly as possible.
+While synchronization is in progress, the data on the secondary instance is in an inconsistent state. A snapshot of the state of the secondary queue manager data is taken.
+If a failure of the main node or the network connection occurs during synchronization, it would be necessary to revert the secondary instance back to this snapshot.
 
-### Create a snapshotYou will first create an inconsistent state on your DR nodes.
+### Create a snapshot
+You will first create an inconsistent state on your DR nodes.
 
-1. On **miqmp**, open a new terminal (as ibmdemo), and run the command to set the MQ environment.
-
-	```
-	. /opt/mqm/bin/setmqenv -s
-	```
+1. On **dr1** in the terminal (as ibmuser) run the runmqsc command. 
 	
 1. Create a local queue for placing messages to provide some data for later synchronization. Use the runmqsc command to create a local, persistent queue, called Q1DR.
 
 	```
-	runmqsc DRQM1
+	runmqsc QMDR
 	```
 	
 	```
-	DEFINE QLOCAL(Q1DR) DEFPSIST(YES)
+	DEFINE QLOCAL(Q1DR) DEFPSIST(YES) MAXDEPTH(100000) REPLACE
 	```
 	
 	```
 	end
 	```
 	
-	![](./images/pots/mq-ha/lab3/image47.png)
+	![](./images/pots/mq-ha/lab3/image353.png)
 
-1. Check the status on both nodes is normal.	
+1. Check that the status on both nodes is normal.	
 	```
-	rdqmstatus -m DRQM1
-	```
-	
-1. Get ready to simulate a failure of the DR replication network adapter.On node **miqmp**, open a new window, as user *root / passw0rd*. Use the iptables rules to remove all output packets from the network adapter interface.
-	
-	Type the following command or copy / paste, but **DO NOT PRESS ENTER YET** - the rule will be applied BEFORE all the messages have been put on the queue. You will be instructed when to press enter in root's terminal window.
-	
-	
-	```
-	iptables -I OUTPUT -o ens38 -j DROP
+	sudo rdqmstatus -m QMDR
 	```
 	
-1. In the user ibmdemo window, start putting some messages onto the queue. Use the amqsblst sample to do this:	
+1. In this section you will simulate a failure of the DR replication network adapter. You should still have the network settings open. You will simulate the outage as you did before by turning off the *ens36* adapter on **dr1** when instructed to do so.
+	
+1. In the *ibmuser* window on **dr1**, start putting some messages onto the queue. Use the amqsblst sample to do this with the following commands:	
 	```
 	cd /opt/mqm/samp/bin
 	```
 		```
-	./amqsblst DRQM1 Q1DR -W -s 1000 -c 5000
-	```
-		The output should look similar to the following:
+	./amqsblst QMDR Q1DR -W -s 1000 -c 100000
+	```	
+	The output should look similar to the following:
 	
-	
-	![](./images/pots/mq-ha/lab3/image48.png)
+	![](./images/pots/mq-ha/lab3/image355.png)
 
 	
-1. Before all the messages have been put onto the queue, in the user **root** window,press **<enter>** to add the iptables rule. This will simulate a network outage on node miqmp.
+1. Before all the messages have been put onto the queue (approimately 50,000 messages), turn off the *ens36* network adapter in the network settings. This will simulate a network outage on node **dr1**.
 	There will be a short pause, then the placing of messages will resume.
 	
-	![](./images/pots/mq-ha/lab3/image49.png)
+	![](./images/pots/mq-ha/lab3/image356.png)
 
 	
-1. In another window as user ibmdemo, check the status on both nodes	
+1. As user *ibmuser*, check the status on both nodes.	
 	```
-	rdqmstatus -m DRQM1
+	sudo rdqmstatus -m QMDR
 	```
-		Notice on node **miqmp**, the DR status is showing as ‘Remote unavailable’.
+		Notice on node **dr1**, the DR status is showing as ‘Remote unavailable’.
 	
-	![](./images/pots/mq-ha/lab3/image51a.png)
+	![](./images/pots/mq-ha/lab3/image357.png)
 	
-	Similarly, on node **miqms**:
+	Similarly, on node **dr2**:
 	
-	![](./images/pots/mq-ha/lab3/image51.png)
+	![](./images/pots/mq-ha/lab3/image358.png)
 	
-1. Issuing the command again on node **miqmp**, when all the messages have been placed on the queue, you will notice the ‘DR out of sync data’ has changed. Your number will be different than the screenshot.
+1. Issuing the command again on node **dr1**, when all the messages have been placed on the queue, you will notice the ‘DR out of sync data’ has changed. Your number will be different than the screenshot.
 	
-	![](./images/pots/mq-ha/lab3/image50.png)
+	![](./images/pots/mq-ha/lab3/image359.png)
+	
+   {% include warning.html content="When you restore the network, synchronization will complete very quickly. If you don't display the status immediately you may not see the 'synchronization in progress' message. Be ready to run the status command as soon as you flip the network switch to *ON*. Once you run the status commands, immediately turn the switch *OFF* again."%}   
 
-1. Simulate the restoration of the network outage on node **miqmp** by issuing an iptables remove previous rule command. In the user **root** window:	
-	```
-	iptables -D OUTPUT -o ens38 -j DROP
-	```
+1. Simulate the restoration of the network outage on node **dr1** by turning on the *ens36* adapter in network settings. 
 	
 1. The nodes will start synchronizing as soon as this happens. Check the status on both nodes immediately, before switching off the network. They will look similar to the following:	
 	```
-	rdqmstatus -m DRQM1
+	sudo rdqmstatus -m QMDR
 	```
 	
-	![](./images/pots/mq-ha/lab3/image52.png)
+	![](./images/pots/mq-ha/lab3/image360.png)
 
 	
-	![](./images/pots/mq-ha/lab3/image53.png)	
-1. Immediately (before synchronization is *complete*), simulate a network outage on node **miqmp** again.	
-	```
-	iptables -I OUTPUT -o ens38 -j DROP
-	```
+	![](./images/pots/mq-ha/lab3/image361.png)	
+1. Immediately (before synchronization is *complete*), simulate a network outage on node **dr1** again by turning off the *ens36* adapter in network settings.
 	
-1. When the network is detected to have failed again, the status on the primary node, **miqmp** goes back to ‘Remote unavailable’.
+1. When the network is detected to have failed again, the status on the primary node, **dr1** goes back to ‘Remote unavailable’ and the amount of data that is out of synchronization.
 	
-	![](./images/pots/mq-ha/lab3/image81.png)
+	![](./images/pots/mq-ha/lab3/image362.png)
 
-	The status on the secondary node, **miqms** is ‘Inconsistent’.
-	
-	
-	![](./images/pots/mq-ha/lab3/image54.png)
-	
-	There is also an indication of the amount of data that is out of synchronization on both nodes.
-	
-### Revert to a snapshotYou will now see how the secondary instance reverts to its snapshot and the queue manager data. Note any updates that have happened since the original network failure, however, will be lost.
+	The status on the secondary node, **dr2** is ‘Inconsistent’.	
+	![](./images/pots/mq-ha/lab3/image363.png)
+		
+### Revert to a snapshot
+You will now see how the secondary instance reverts to its snapshot and the queue manager data. Note any updates that have happened since the original network failure, however, will be lost.
 
-1. The assumption now is that the Primary node is no longer usable, so the replication node must be made the new Primary instance. On the secondary node **miqms**, in the **root** user terminal, designate **miqms** as the primary instance:	
+1. The assumption now is that the Primary node is no longer usable, so the replication node must be made the new Primary instance. On the secondary node **dr2**, in the **root** user terminal, designate **dr2** as the primary instance:	
 	```
-	rdqmdr -m DRQM1 -p
+	sudo rdqmdr -m QMDR -p
 	```
 	
-1. Due to its former ‘Inconsistent’ state, miqms will revert to a snapshot. Check the status to confirm this.	
+1. Due to its former ‘Inconsistent’ state, **dr2** will revert to a snapshot. Check the status to confirm this.	
 	```
-	rdqmstatus -m DRQM1
+	rdqmstatus -m QMDR
 	```
 	
 	The output should look like the following:
 	
-	![](./images/pots/mq-ha/lab3/image55.png)
+	![](./images/pots/mq-ha/lab3/image364.png)
 
-1. When node miqms has completed reverting to the snapshot. Checking the status again.
+1. When node **dr2** has completed reverting to the snapshot check the status again.
 
 	```
-	rdqmstatus -m DRQM1
+	rdqmstatus -m QMDR
 	```
 	
-	should look similar to the following:
+	It should look similar to the following:
 	
 	
-	![](./images/pots/mq-ha/lab3/image56.png)
+	![](./images/pots/mq-ha/lab3/image365.png)
 	
 	Notice the status indicates the queue manager ‘*Ended unexpectedly*', and there is data that is out of synchronization.
 	
@@ -632,164 +692,193 @@ In the Skytap environment, there are 3 virtual machines miqmp, miqms, mqnfs4 whi
 
 	Once the new Primary node was part of the DR configuration again, you would follow the steps to ‘Restore the original DR configuration’ of the Primary node, being the primary instance of the queue manager.
 	
-	Here you will simulate something similar. You will start the queue manager on node miqms. You will delete the queue manager on node miqmp, and go through the latter of the steps mentioned above again, to show some additional screens not seen previously.1. Start the queue manager on node **miqms**, which is now the primary instance.	
+	Here you will simulate something similar. You will start the queue manager on node **dr2**. You will delete the queue manager on node **dr1**, and go through the latter of the steps mentioned above again, to show some additional screens not seen previously.
+	
+	Wait for the reversion process to complete before continuing.
+	
+	![](./images/pots/mq-ha/lab3/image365a.png)
+	1. Start the queue manager on node **dr2**, which is now the primary instance.	
 	```
-	strmqm DRQM1
+	strmqm QMDR
 	```
 	
-	![](./images/pots/mq-ha/lab3/image57.png)
-	
-1. Confirm the queue manager on node **miqms** is running as the primary instance by checking the status.	
+1. Confirm the queue manager on node **dr2** is running as the primary instance by checking the status.	
 	```
-	rdqmstatus -m DRQM1
+	rdqmstatus -m QMDR
 	```
 	
-	![](./images/pots/mq-ha/lab3/image58.png)
+	![](./images/pots/mq-ha/lab3/image366.png)
 
 	Notice that as a result of reverting to a snapshot there is data out of synchronization.
 
-1. ‘Simulate’ the replacement of node miqmp. On node **miqmp**, in the user **ibmdemo** window, stop the queue manager:	
+1. ‘Simulate’ the replacement of node **dr1**. On node **dr1**, in the *ibmuser* window, stop the queue manager:	
 	```
-	endmqm DRQM1
+	endmqm QMDR
 	```
-	
-	![](./images/pots/mq-ha/lab3/image59.png)
-	
-1. Confirm the queue manager on node **miqmp** ended normally by checking the status	
-	```
-	rdqmstatus -m DRQM1
-	```
-	
-	![](./images/pots/mq-ha/lab3/image60.png)
-	
-1. In the **root** terminal, delete the queue manager on node **miqmp**.	
-	```
-	dltmqm DRQM1
-	```
-	
-	![](./images/pots/mq-ha/lab3/image61.png)
-	
-1. On node **miqmp**, as user **root**, restart the network interface.	
-	```
-	iptables -D OUTPUT -o ens38 -j DROP
-	```
-	
-1. On node **miqms**, enter the command to determine the command needed to recreate the queue manager on node miqmp.	
-	```
-	rdqmdr -m DRQM1 -d
-	```
-	
-	![](./images/pots/mq-ha/lab3/image62.png)
 
-1. On node **miqmp**, as user **root**, issue the command to recreate the queue manager:	
+1. Confirm the queue manager on node **dr1** ended normally by checking the status	
 	```
-	crtmqm -rr s -rl 10.0.4.1 -ri 10.0.4.2 -rn miqms -rp 7001 DRQM1
+	rdqmstatus -m QMDR
 	```
 	
-	![](./images/pots/mq-ha/lab3/image63.png)
+1. In the **root** terminal, delete the queue manager on node **dr1**.	
+	```
+	dltmqm QMDR
+	```
+	
+	![](./images/pots/mq-ha/lab3/image368.png)
+	
+1. On node **dr1**, restart the network interface by turning on the *ens36* adapter in network settings.
+	
+1. On node **dr2**, enter the command to determine the command needed to recreate the queue manager on node dr1.	
+	```
+	sudo rdqmdr -m QMDR -d
+	```
+	
+	![](./images/pots/mq-ha/lab3/image369.png)
+
+1. On node **dr1**, as user **root**, issue the command to recreate the queue manager:	
+	```
+	sudo crtmqm -rr s -rl 10.0.2.1 -ri 10.0.2.2 -rn dr2 -rp 7001 QMDR
+	```
+	
+	![](./images/pots/mq-ha/lab3/image370.png)
 	
 1. Check the status on both nodes:	
 	```
-	rdqmstatus -m DRQM1
+	sudo rdqmstatus -m QMDR
 	```
 	
-	On **miqmp**:
+	On **dr1**:
 	
-	![](./images/pots/mq-ha/lab3/image64.png)
+	![](./images/pots/mq-ha/lab3/image377.png)
 	
-	On **miqms**:
+	On **dr2**:
 	
-	![](./images/pots/mq-ha/lab3/image65.png)
+	![](./images/pots/mq-ha/lab3/image378.png)
 	
 	Notice that synchronization of data is taking place between the nodes. Indications are given on its progress and estimated completion time.
 	
 1. When data synchronization has completed the status of the nodes will look similar to the following:
 
-	On **miqmp**:
+	On **dr1**:
 	
-	![](./images/pots/mq-ha/lab3/image66.png)
+	![](./images/pots/mq-ha/lab3/image371.png)
 	
-	On **miqms**:
+	On **dr2**:
 	
-	![](./images/pots/mq-ha/lab3/image67.png)
+	![](./images/pots/mq-ha/lab3/image372.png)
 	
-1. Restore the DR configuration. On node **miqms**, as user **root**, stop the queue manager:	
+1. Restore the DR configuration. On node **dr2**, as *ibmuser*, stop the queue manager:	
 	```
-	endmqm DRQM1
-	```
-	
-	![](./images/pots/mq-ha/lab3/image68.png)
-	
-1. Make node **miqms** the secondary instance:	
-	```
-	rdqmdr -m DRQM1 -s
+	endmqm QMDR
 	```
 	
-	![](./images/pots/mq-ha/lab3/image69.png)
-	
-1. On node **miqmp**, as user **root**, make it the primary instance of the queue manager:	
+1. Make node **dr2** the secondary instance:	
 	```
-	rdqmdr -m DRQM1 -p
+	sudo rdqmdr -m QMDR -s
 	```
 	
-	![](./images/pots/mq-ha/lab3/image70.png)
+	![](./images/pots/mq-ha/lab3/image373.png)
+	
+1. On node **dr1**, as user **root**, make it the primary instance of the queue manager:	
+	```
+	sudo rdqmdr -m QMDR -p
+	```
 
-1. Start the queue manager on node **miqmp**:	
+1. Start the queue manager on node **dr1**:	
 	```
-	strmqm DRQM1
+	strmqm QMDR
 	```
 	
-	![](./images/pots/mq-ha/lab3/image71.png)
+	![](./images/pots/mq-ha/lab3/image374.png)
 
 1. Confirm the DR configuration by checking the status on both nodes:	
 	```
-	rdqmstatus -m DRQM1
+	sudo rdqmstatus -m QMDR
 	```
 	
-	![](./images/pots/mq-ha/lab3/image72.png)
+	![](./images/pots/mq-ha/lab3/image375.png)
 	
-	![](./images/pots/mq-ha/lab3/image73.png)
+	![](./images/pots/mq-ha/lab3/image376.png)
 
-## Delete a DR RDQMIf Disaster Recovery is no longer required for a queue manager, the queue manager needs to be deleted to be removed from the DR configuration. This is achieved as follows:
+## Delete a DR RDQM
+If Disaster Recovery is no longer required for a queue manager, the queue manager needs to be deleted to be removed from the DR configuration. This is achieved as follows:
 
-1. On **miqmp** stop the queue manager:	
+1. On **dr1** stop the queue manager:	
 	```
-	endmqm DRQM1
+	endmqm QMDR
 	```
 	
 1. View the status to confirm that has happened :	
 	```
-	rdqmstatus -m DRQM1
+	sudo rdqmstatus -m QMDR
 	```
 	
-	![](./images/pots/mq-ha/lab3/image75.png)
+	![](./images/pots/mq-ha/lab3/image379.png)
 
-1. On **miqmp** remove the queue manager:	
+1. On **dr1** remove the queue manager:	
 	```
-	dltmqm DRQM1
+	sudo dltmqm QMDR
 	```
 	
 1. Viewing the status:	
 	```
-	rdqmstatus -m DRQM1
+	sudo rdqmstatus -m QMDR
 	```
 	
 	will confirm the queue manager no longer exists on the primary node.
 	
-	![](./images/pots/mq-ha/lab3/image76.png)
+	![](./images/pots/mq-ha/lab3/image380.png)
 	
-1. Also remove the queue manager on **miqms**:	
+1. Also remove the queue manager on **dr2**:	
 	```
-	dltmqm DRQM1
+	sudo dltmqm QMDR
 	```
 
 1. Again, viewing the status:	
 	```
-	rdqmstatus -m DRQM1
+	sudo rdqmstatus -m QMDR
 	```
 		will confirm the queue manager no longer exists on the secondary node either.
 	
-	![](./images/pots/mq-ha/lab3/image77.png)
+	![](./images/pots/mq-ha/lab3/image381.png)
 	
+## Cleanup environment 
+
+Before continuing to Lab 4, you must clean the environment by removing any RDQM definitions.
+
+1. On **dr1**, open a terminal window and stop running queue managers. Issue the following commands. Your displays and queue managers may not match the screenshots. Substitute your queue managers.
+
+
+	```
+	dsmpmq -o all 
+	```
 	
-## CONGRATULATIONS! ### You have completed this hands-on lab.You have created replicated data queue managers to provide disaster recovery for IBM MQ. 
+	There should not be any remaining queue managers, but if you have defined any then stop and delete the queue managers.
+	
+	```
+	endmqm xxxx
+	sudo dltmqm xxxx
+	```
+	
+	![](./images/pots/mq-ha/lab3/image382.png)
+		
+1. On **dr2**, open a terminal window and stop running queue managers. Issue the following commands. Your displays and queue managers may not match the screenshots. Substitute your queue managers.
+
+	```
+	dsmpmq -o all 
+	```
+	There should not be any remaining queue managers, but if you have defined any then stop and delete the queue managers.
+		
+	```
+	endmqm xxxx
+	sudo dltmqm xxxx
+	```
+		
+	![](./images/pots/mq-ha/lab3/image383.png)
+
+	
+## CONGRATULATIONS! ### You have completed this hands-on lab.You have created replicated data queue managers to provide disaster recovery for IBM MQ. [Continue to Lab 4](mq_ha_pot_lab4.html)
+
+[Return MQ HA Menu](mq_ha_pot_overview.html)
