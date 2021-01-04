@@ -71,7 +71,7 @@ entries:
       output: web, pdf
 
     - title: Lab 1 - Multi-instance Queue Managers for High Availability
-      url: /mq_ha_pot_notavl.html
+      url: /mq_ha_pot_lab1.html
       output: web, pdf
 
     - title: Lab 2 - Replicated Data Queue Managers for High Availability
