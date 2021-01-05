@@ -697,6 +697,66 @@ In this lab you have:
 * Seen MQ Explorer with the multiple instance data.
 
 
+## Cleanup environment 
+
+If you plan to continue to use this environment for further labs it is a good idea to remove the queue managers you have been testing. 
+
+On Multiplatforms, to delete a multi-instance queue manager completely, you use the *dltmqm* command to delete the queue manager, and then remove instances from other servers using either the *rmvmqinf* or *dltmqm* commands.
+
+Run the *dltmqm* command to delete a queue manager that has instances defined on other servers, on any server where that queue manager is defined. You do not need to run the *dltmqm* command on the same server that you created it on. Then run the *rmvmqinf* or *dltmqm* command on all the other servers which have a definition of the queue manager.
+
+You can only delete a queue manager when it is stopped. At the time you delete it no instances are running, and the queue manager, strictly speaking, is neither a single or a multi-instance queue manager; it is simply a queue manager that has its queue manager data and logs on a remote share. When you delete a queue manager, its queue manager data and logs are deleted, and the queue manager stanza is removed from the mqs.ini file on the server on which you issued the dltmqm command. You need to have access to the network share containing the queue manager data and logs when you delete the queue manager.
+
+On other servers where you have previously created instances of the queue manager there are also entries in the mqs.ini files on those servers. You need to visit each server in turn, and remove the queue manager stanza by running the command *rmvmqinf* Queue manager stanza name. 
+
+### Stop and remove queue managers
+
+1. On either *dr1* or *dr2* display the status of the queue manager.
+
+	```
+	dspmq -x -o all
+	```
+
+	![](./images/pots/mq-ha/lab1/image94.png)
+	
+	![](./images/pots/mq-ha/lab1/image95.png)	
+1. End the queue manager on the server where it is running. In this case it is running on *dr1*. Issue the *endmqm* on *dr1*. 
+
+	```
+	endmqm QMMI 
+	```
+	
+	![](./images/pots/mq-ha/lab1/image96.png)	
+1. Use the *dspmq* command to determine when it is stopped. 
+
+	```
+	dsmpmq -m QMMI
+	```
+	
+	![](./images/pots/mq-ha/lab1/image97.png)
+	
+1. 	Once it is stopped delete the queue manager on *dr1*.
+
+	```
+	dltmqm QMMI
+	```
+		
+	![](./images/pots/mq-ha/lab1/image98.png)
+	
+1. Delete the queue manager *QMMI* on the standby node (*dr2* in this case) with the following commnad:
+
+	```
+	rmvmqinf QMMI
+	```
+	
+	![](./images/pots/mq-ha/lab1/image99.png)
+
+
+1. Finally power off the VMs. Click the pull down menu and go to the *View VMs* display. The three VMs for this lab should still be running and their labels checked. Click the power icon and select *Power off*.
+
+	![](./images/pots/mq-ha/lab1/image100.png)
+	
+	
 ## CONGRATULATIONS! 
 
 ### You have completed this hands-on lab.
