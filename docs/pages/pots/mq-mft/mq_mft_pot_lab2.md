@@ -128,7 +128,7 @@ In this scenario you will discover how to reuse a transfer that has already been
 
 6.  Click **Add** and provide the same information as you did previously. Hint: Use the pull-down to select the previously entered file names.
 
-    ![](./images/pots/mq-mft/lab2/image19.png)
+    ![](./images/pots/mq-mft/lab2/image18a.png)
 
 7.  Click **OK**.
 
@@ -424,4 +424,13 @@ In this next exercise you will create a monitor that is very similar to the prev
 
     This is the expected result. When the monitor recognized the file pattern **\*\_Process.txt** in directory C:\\Demo\\Test\_Files, it initiated the transfer request for the agent **CSM1AGT1** on the MFT client machine to send the file to agent **MFT4AGT1** on the MFT server machine and store it in the directory **C:\\Temp**. This is exactly what we expected the monitor to do.
 
-    This concludes Lab 2. You may now continue with Lab 3.
+This concludes Lab 2. You may now continue with Lab 3.
+
+## CONGRATULATIONS! 
+
+### You have completed this hands-on lab.
+
+ 
+[Continue to Lab 3](mq_mft_pot_lab3.html)
+
+[Return MQ MFT Menu](mq_mft_pot_overview.html)

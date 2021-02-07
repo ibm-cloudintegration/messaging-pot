@@ -133,6 +133,8 @@ Looking at **Figure 1**, there are a few points to understand before continuing.
 2. If you receive a pop-up about *Networks*, click **Yes**. 
 
 	![](./images/pots/mq-mft/lab1/image0.png)
+	
+1. If you receive a Docker error pop-up just click *OK*. Docker is no longer supported on this platform and is not needed for this lab. 
 
 1. Minimize the **Server Manager Dashboard** window.
 
@@ -217,7 +219,7 @@ This topology can exchange files between the two agents. Each partner agent must
 
     ![](./images/pots/mq-mft/lab1/image19.png)
 
-You are now ready to configure the MFT environment. Return to the Windows 
+You are now ready to configure the MFT environment. 
  
 ### Configure coordination queue manager   
 
@@ -405,6 +407,14 @@ A file or database logger is required to keep history and audit information abou
 
 1. Then review the agent output0.log file to see results in the log. 
 
+1. Restart MQ Explorer. You can now see that *Managed File Transfer* is configured.
+
+	![](./images/pots/mq-mft/lab1/image38a.png)
+
+1. Expand *Managed File Transfer*, right-click **MFT5** and select *Connect*.
+
+	![](./images/pots/mq-mft/lab1/image38b.png)
+	
 ### Configure partner server
 You will now set upt the partner on the Windows 10 x64 image. The same assumptions made about IBM® MQ and the security configuration, as well as the IBM MQ path also apply to the partner server.
 
@@ -499,7 +509,7 @@ You will now set upt the partner on the Windows 10 x64 image. The same assumptio
     
     ![](./images/pots/mq-mft/lab1/image53.png)
 
-1. Display the agent by typing 
+1. Display the agent by typing:
 
 	```
 	fteListAgents
@@ -509,5 +519,25 @@ You will now set upt the partner on the Windows 10 x64 image. The same assumptio
 
     ![](./images/pots/mq-mft/lab1/image54.png)
     
-12. This concludes this lab. You are now ready to continue with Lab 2 
+1. Restart MQ Explorer to connect to the new MQ MFT configuration.
 
+1. Then review the agent output0.log file to see results in the log. 
+
+1. Restart MQ Explorer. You can now see that *Managed File Transfer* is configured.
+
+	![](./images/pots/mq-mft/lab1/image55.png)
+	
+1. Connect to *MFT4* and *MFT5* queue managers as you did at the beginning of this lab. Expand *Managed File Transfer*, right-click **MFT5** and select *Connect*.
+
+	![](./images/pots/mq-mft/lab1/image56.png) 
+
+12. This concludes this lab. You are now ready to continue with Lab 2.
+
+## CONGRATULATIONS! 
+
+### You have completed this hands-on lab.
+
+ 
+[Continue to Lab 2](mq_mft_pot_lab2.html)
+
+[Return MQ MFT Menu](mq_mft_pot_overview.html)
