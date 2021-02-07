@@ -139,7 +139,7 @@ entries:
       output: web, pdf
 
     - title: Lab 3 - File Transfer Patterns
-      url: /mq_mft_pot_notavl.html
+      url: /mq_mft_pot_lab3.html
       output: web, pdf
 
   - title: MQ Salesforce Bridge
