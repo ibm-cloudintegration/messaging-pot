@@ -137,7 +137,7 @@ Perform the following steps to create a new queue manager with a default configu
 
    ![](./images/pots/mq/lab4/Security_Define_Topics.png)
 
-5. You are now ready to begin exploring **OAM** capabilities. Use the mqsc **END** command to exit the **runmqsc** command shell.  Leave the command prompt window open, but minimize it.  Finally, launch the IBM MQ Explorer by clicking on the Windows **Start Menu**, expanding the **IBM MQ** folder and then clicking on the **MQ Explorer (Installation1)** menu item.
+5. You are now ready to begin exploring **OAM** capabilities. Use the mqsc **END** command to exit the **runmqsc** command shell.  Leave the command prompt window open, but minimize it.  Finally, launch the IBM MQ Explorer by clicking on the Windows **Start Menu**, expanding the **IBM MQ** folder and then clicking on the **MQ Explorer (Installation1)** menu item. There also is a shortcut on the desktop which you can just double-click.
 
    ![](./images/pots/mq/lab4/Security_Launch_MQExplorer.png)
 
@@ -232,7 +232,7 @@ Perform the following steps to create a new queue manager with a default configu
 
 20. Enter **mqusers** as the **Entity name:** and then click on the **Put** checkbox to enable all members of the **mqusers** group to perform **PUT** operations against the queue.  Click on the **OK** button to save your changes.  
 
-    ![](./images/pots/mq/lab4/Security_Manage_Mqusers.png)
+    ![](./images/pots/mq/lab4/Security_Mqusers_Group_Q1.png)
 
 21. Go back to the "runas" command window for the **wmbuser** userid and retry the **amqsput Q1 LAB4QM** command.  This time it should be successful.
 
@@ -389,11 +389,13 @@ This portion of the lab will explore how to use **Administrative Topic** objects
 	amqspub sport/football LAB4QM
 	```
 	
+	
 	**(P2) Command**
 	
 	```
 	amqspub sport/football/players/hursley LAB4QM
 	```
+	
 	
 	**(P3) Command**
 	
@@ -401,11 +403,13 @@ This portion of the lab will explore how to use **Administrative Topic** objects
 	amqspub sport/football/players/liverpool LAB4QM
 	```
 	
+	
 	**(S1) Command**
 	
 	```
 	amqssub sport/football LAB4QM
 	```
+	
 	
 	**(S2) Command**
 	
@@ -413,11 +417,13 @@ This portion of the lab will explore how to use **Administrative Topic** objects
 	amqssub sport/football/players/hursley LAB4QM
 	```
 	
+	
 	**(S3) Command**
 	
 	```
 	amqssub sport/football/players/liverpool LAB4QM
 	```
+	
 	
 	**Tests**
 	
@@ -439,6 +445,6 @@ This portion of the lab will explore how to use **Administrative Topic** objects
 	
 ***This concludes the IBM MQ security lab 4.***
 
-[Continue to Lab 5](mq_basic_pot_lab5.html)
+[Continue to Lab 5](mq_basic_pot_lab5-underrepair.html)
 
 [Return MQ Basic Menu](mq_basic_pot_overview.html)
