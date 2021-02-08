@@ -86,7 +86,7 @@ You may use the same demo environment that you used for Lab 1. If you are doing 
 
     ![](./images/pots/mq/lab3/image14.png)
 
-14. Now click the “+” symbol to the left of **finance** – a level of the hierarchy opens; repeat on the “+” in front of **cash**, then **gettingit**, then **frombanks** which is the bottom of the “*tree*”.
+14. Now click the “\>” symbol to the left of **finance** – a level of the hierarchy opens; repeat on the “\>” in front of **cash**, then **gettingit**, then **frombanks** which is the bottom of the “*tree*”.
 
     In the Topic Status notice that all the intermediate nodes have been created and that they have inherited properties from the parent **finance**. These intermediate nodes have no related Topic Objects and so cannot have their properties altered by MQSC or MQ Explorer.
 
@@ -103,7 +103,7 @@ In this section you will be using the tools that come with IBM MQ Explorer that 
 
     ![](./images/pots/mq/lab3/image16.png)
 
-3.  You are going to focus on the **sport** topic tree. Expand the “+” symbols on the **sport** topic tree and you should see something similar to the screen capture below. Notice that Publish is *allowed* for the topic string **sport/football/results/hursley**. Also, following the tree “up”, you should notice that the topic string **sport/football** has the publish attribute **Inhibited.** *Remember this* as you complete the next steps of this lab. Click **Close** to dismiss the status window.
+3.  You are going to focus on the **sport** topic tree. Expand the “\>” symbols on the **sport** topic tree and you should see something similar to the screen capture below. Notice that Publish is *allowed* for the topic string **sport/football/results/hursley**. Also, following the tree “up”, you should notice that the topic string **sport/football** has the publish attribute **Inhibited.** *Remember this* as you complete the next steps of this lab. Click **Close** to dismiss the status window.
 
     ![](./images/pots/mq/lab3/image17.png)
 
@@ -202,7 +202,7 @@ Explorer. This is a subscription to a topic string that delivers messages to a q
 
     ![](./images/pots/mq/lab3/image35.png)
 
-2.  Name the queue **ALL_FOOTBALL_Q** and press **Finish**.
+2.  Name the queue **ALL_FOOTBALL_QUEUE** and press **Finish**.
 
     ![](./images/pots/mq/lab3/image36.png)
 
@@ -218,7 +218,7 @@ Explorer. This is a subscription to a topic string that delivers messages to a q
 
     ![](./images/pots/mq/lab3/image39.png)
 
-6.  Leave the Topic Name blank, and enter **sport/football/\#** as the Topic string. Leave the Destination Queue Manager blank and enter **ALL_FOOTBALL_Q** in the Destination Name. Then click **Finish**.
+6.  Leave the Topic Name blank, and enter **sport/football/\#** as the Topic string. Leave the Destination Queue Manager blank and enter **ALL_FOOTBALL_QUEUE** in the Destination Name. Then click **Finish**.
 
     ![](./images/pots/mq/lab3/image40.png)
 
@@ -236,7 +236,7 @@ Explorer. This is a subscription to a topic string that delivers messages to a q
 
     ![](./images/pots/mq/lab3/image43.png)
 
-    This subscription will now route all qualifying messages to the local queue **ALL_FOOTBALL_Q**.
+    This subscription will now route all qualifying messages to the local queue **ALL_FOOTBALL_QUEUE**.
 
 10. Close the properties window by clicking **Cancel**.
 
@@ -280,7 +280,7 @@ You will now use two more sample programs that are supplied with IBM MQ to furth
 
     ![](./images/pots/mq/lab3/image50.png)
 
-1.  Right-click the queue **ALL_FOOTBALL_Q** and select **Browse Messages**.
+1.  Right-click the queue **ALL_FOOTBALL_QUEUE** and select **Browse Messages**.
 
     ![](./images/pots/mq/lab3/image51.png)
 
