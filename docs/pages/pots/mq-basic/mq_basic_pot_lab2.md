@@ -95,17 +95,12 @@ connection factory in the JNDI namespace.
     ![](./images/pots/mq/lab2/image10.png)
 
 1. This will open the **New Connection Factory** property sheet. Select
-    **General** on the left hand menu. Use the Provider version ‘8’. This
-    represents IBM MQ V8. Selecting this will enable JMS programs using
-    this connection factory to utilize the new features of IBM MQ V8.   
+    **General** on the left hand menu **CF1** for *Name*. Use the pull-down to '8' for *Provider version*. This represents IBM MQ V8. Selecting this will enable JMS programs using this connection factory to utilize the new features of IBM MQ V8.   
     
     ![](./images/pots/mq/lab2/image11.png)
     
-1. On the left hand hand menu. Select **Connection Factories**  and on the right hand, click on **CF1**.
-
-    ![](./images/pots/mq/lab2/image11a.png)
+1. Select **Connection** on the left hand menu. Click the **Select** button for **Base queue manager**.
     
-1. Select **Connection** on the left hand menu. Click the **Select** button for **Base queue manager**.    
     ![](./images/pots/mq/lab2/image12.png)
 
 1. Select the previously-defined Queue Manager **MQPOT** and then click **OK**.   
@@ -117,14 +112,14 @@ connection factory in the JNDI namespace.
 1. Click **OK** to dismiss the confirmation box.    
     ![](./images/pots/mq/lab2/image15.png)
 
-1. Observe that Connection Factory **CF1** now appears in the Content list.    
+1. Observe that Connection Factory **CF1** now appears in the Context list.    
     ![](./images/pots/mq/lab2/image16.png)
 
     This concludes this portion of Lab 2.
 
 ## Create a Destination for the JMS Application to put a message onto
 
-1. Right-click **Destinations** and click **New Destination…**
+1. Right-click **Destinations** and click **New Destination…**.
 
     ![](./images/pots/mq/lab2/image17.png)
 
@@ -169,13 +164,21 @@ Some very good code samples ship with IBM MQ. You will use one of them to create
 1.  Open a **command prompt**. A shortcut for this is on the desktop.    
     ![](./images/pots/mq/lab2/image27.png) 
 
-2.  Change the directory to C:\\Program Files\\IBM\\MQ\\Tools\\jms\\samples. Type in the following commands to add the required JMS jar files to your classpath and then run the sample application:
+2.  Change the directory to C:\\Program Files\\IBM\\MQ\\Tools\\jms\\samples. Enter the following commands to add **Java** to the *Path* and the required *JMS jar files* to your *Classpath*. 
 
-    ```set CLASSPATH=C:\Program Files\IBM\MQ\java\lib\com.ibm.mqjms.jar;C:\Program Files\IBM\MQ\java\lib\com.ibm.mq.jar;.;```
+    ```
+    set PATH=%PATH%C:\Program Files\Java\jre1.8.0_jre
+    ```
     
-    Type **Enter**
+    ```
+    set CLASSPATH=%CLASSPATH%C:\Program Files\IBM\MQ\java\lib64;C:\Program Files\IBM\MQ\java\lib\com.ibm.mqjms.jar;C:\Program Files\IBM\MQ\java\lib\com.ibm.mq.jar;.;
+    ```
     
-    ```java JmsJndiProducer -i file:/c:/Pot-messaging/MQ-POT/JMS -c CF1 -d JMS1```
+1. Now run the sample application:
+
+    ```
+    java JmsJndiProducer -i file:/c:/Pot-messaging/MQ-POT/JMS -c CF1 -d JMS1
+    ```
 
     This will run the Java JMS sample program JmsJndiProducer. The **“-i”**
     argument points the program to the location of your JNDI directory. The
