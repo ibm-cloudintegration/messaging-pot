@@ -60,9 +60,7 @@ Before you can do any useful work in an IBM MQ environment you must have a queue
 1. Create a new queue manager and name it **MQPOT**. Check the box to make this the **default queue manager**. Note that the use of a default queue manager is not recommended in a production environment as it allows requests from a program or command to complete successfully without the inclusion of a queue manager name. We are using this option here in the labs as a convenience to reduce typing for you.               
 
     {% include important.html content="**Default Queue Manager** 
-Important!!!!! Be sure to check the box that indicates this is the default queue manager!!!
-If you do not do this you will have issues in future labs!!!!!!" %}          
-                        
+Important!!!!! Be sure to check the box that indicates this is the default queue manager!!!  If you do not do this you will have issues in future labs!!!!!!" %}                                
 
 1. Specify *SYSTEM.DEAD.LETTER.QUEUE* as the dead letter queue, and then click the Next button.   
     ![](./images/pots/mq/lab1/image9.png) 
