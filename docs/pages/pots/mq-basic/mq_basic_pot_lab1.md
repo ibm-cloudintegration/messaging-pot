@@ -73,7 +73,7 @@ If you do not do this you will have issues in future labs!!!!!!" %}
 1.  Also leave the defaults on the next pane and click Next.   
     ![](./images/pots/mq/lab1/image9b.png)   
     
-1. The default listener port (1414) is being used for another Queue manager. Use another listener port: **2414** .
+1. The default listener port (1414) is being used for another Queue manager. Use another listener port: **2414**.
 
     ![](./images/pots/mq/lab1/image9c.png)
                                              
