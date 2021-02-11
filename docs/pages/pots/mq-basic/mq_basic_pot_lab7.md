@@ -81,22 +81,32 @@ You should be logged in as ibmdemo / passw0rd and MQ Explorer should be running.
 
 5.  Alternatively, you can use the command prompt to create the queue manager by providing the following command. 
 
-    *crtmqm QMC*
+    ```
+    crtmqm QMC
+    ```
 
     Also, start the queue manager QM8 using the command below. 
     
-    *strmqm QMC*
+    ```
+    strmqm QMC
+    ```
 
     If the queue manager is created on the command prompt, ensure that you
     create a listener by using the runmqsc editor provided by IBM MQ.
 
     The command to create the listener is: 
     
-    *DEFINE LISTENER('LISTENER.TCP') TRPTYPE(TCP) PORT(1444)*
+    ```
+    runmqsc QMC
+    DEFINE LISTENER('LISTENER.TCP') TRPTYPE(TCP) PORT(1444)
+    ```
 
     Start the listener using the command below:
     
-    *START LISTENER('LISTENER.TCP')*
+    ```
+    START LISTENER('LISTENER.TCP')
+    END
+    ```
 
     ![](./images/pots/mq/lab7/image14.png)
     
@@ -147,7 +157,10 @@ To configure QMC queue manager SSL properties:
 
     Alternatively, you could use runmqsc command to enter the following command:
     
-    *ALTER QMGR CERTLABL('ALL QMGR cert')*
+    ```
+    runmqsc QMC
+    ALTER QMGR CERTLABL('ALL QMGR cert')
+    ```
 
 ###  Configure QM8 queue manager SSL properties
 
@@ -170,7 +183,10 @@ To configure QMC queue manager SSL properties:
 
     Alternatively, you could use runmqsc command to enter the following command:
     
-    *ALTER QMGR CERTLABL(‘QM8 cert')*
+    ```
+    runmqsc QM8
+    ALTER QMGR CERTLABL(‘QM8 cert')
+    ```
 
 ###  Copy SSL keystore with certificates 
 
@@ -182,8 +198,8 @@ For QMC copy the SSL keystore files
 
     ![](./images/pots/mq/lab7/image27.png)
 
-2.  Navigate to ‘C:\\PoT-messaging\\MQ-PoT\\student\\Lab7\\QMC ssl’.
-
+2.  Navigate to ‘C:\\PoT-messaging\\MQ-PoT\\student\\Lab7\\QMC ssl’:
+	
 3.  Select all the key.\* files in the folder. Right-click and select copy.
 
     ![](./images/pots/mq/lab7/image28.png)
@@ -256,7 +272,7 @@ For QMC copy the SSL keystore files
 
 5.  Use the pull down tab to select the SSL Cipher Spec and choose:
 
-    SSL Cipher Spec: **TLS\_RSA\_WITH\_AES\_128\_CBC\_SHA**
+    SSL Cipher Spec: **ANY_TLS12_OR_HIGHER**
 
 6.  Click finish.
 
@@ -312,8 +328,10 @@ For QMC copy the SSL keystore files
 
 5.  Use the pull down tab to select the SSL Cipher Spec and choose:
 
-    SSL Cipher Spec: **TLS_RSA_WITH_AES_128_CBC_SHA**
+    SSL Cipher Spec: **ANY_TLS12_OR_HIGHER**
 
+    SSL Authentication: **Optional** 
+    
     Certificate label: **'QM8 CHL cert'**
 
 6.  Click finish.
@@ -331,7 +349,10 @@ For QMC copy the SSL keystore files
 
     Alternatively, you could issue the following commands from a runmqsc command prompt:
     
-    *ALTER CHL(QM8.TO.QMC) SSLCIPH(TLS_RSA_WITH_AES_128_CBC_SHA) CERTLABL('QM8 CHL cert')*
+    ```
+    runmqsc QMC
+    ALTER CHL(QM8.TO.QMC) SSLCIPH(ANY_TLS12_OR_HIGHER) CERTLABL('QM8 CHL cert')
+    ```
 
     Setting the receiver channel certificate label as 'QM8 CHL cert' overrides the queue manager property CERTLABL for QMC ('ALL QMGR cert').
 
@@ -355,7 +376,9 @@ For QMC copy the SSL keystore files
     Alternatively, you could refresh security using the runmqsc command prompt
     by issuing the following command:
     
-    *REFRESH SECURITY(\*) TYPE(SSL)*    
+    ```
+    REFRESH SECURITY(*) TYPE(SSL)
+    ```    
     
     {% include note.html content="When the Refresh SSL operation is performed, all running SSL channels are stopped and restarted.
 
@@ -376,7 +399,9 @@ messages." %}
 
     Alternately you could issue the following runmqsc command:
     
-    *START CHL(QM8.TO.QMC)*
+    ```
+    START CHL(QM8.TO.QMC)
+    ```
 
     The channel should go to 'running' status.
 
@@ -384,17 +409,18 @@ messages." %}
 
 2.  Check the channel status. From a command prompt enter:
     
-    *runmqsc QMC*
-    
-    *DIS CHS(QM8.TO.QMC) SSLPEER SSLCERTI*
+    ```
+    runmqsc QM8
+    DIS CHS(QM8.TO.QMC) SSLPEER SSLCERTI SSLCIPH
+    ```
 
     ![](./images/pots/mq/lab7/image62.png)
 
-1.  Look at the SSLPEER and SSLCERTI fields on the receiver side. SSLCERTI showsn what the 'remote' side is using - in this case 'QM8 CHL cert' is being used. This was specified in the QM8 queue manager CERTLABL property and is used because the sender channel CERTLABL field was blank.
+1.  Look at the SSLPEER and SSLCERTI fields on the sender (QM8) side. SSLCERTI shows what the 'remote' side is using - in this case 'QM8 CHL cert' is being used. This was specified in the QM8.TO.QMC channel *CERTLABL* property and is used because the sender channel CERTLABL field was blank.
 
-2.  End the runmqsc command prompt and start it for QM8. Issue the same channel status command for QM8.
+2.  End the runmqsc command prompt and start it for QMC. Issue the same channel status command for *QM8.TO.QMC*.
 
-    Now look at the SSLPEER and SSLCERTI information on the sender side of the channel. It shows 'QM8 CHL cert' is being used by the remote side. We specified this on the receiver channel definition in the CERTLABL property, and this overrides the certificate specified in the queue managers CERTLABL property.
+    Now look at the SSLPEER and SSLCERTI information on the receiver side of the channel. It shows what is being used by the remote side. We left the *CERTLABL* blank on the sender channel definition and this overrides the certificate specified in the queue managers CERTLABL property.
 
     ![](./images/pots/mq/lab7/image63.png)
 
@@ -407,8 +433,8 @@ property CERTLABL.
 If you need help defining a new channel, refer to section "On QM8 define the SDR channel QM8.TO.QMC" Steps 1 – 13  to refresh your memory.
 
 1.  On QM8 create new SDR channel QM8.TO.QMC.CHL2 using the MQ Explorer as in
-    previous steps specifying the SSL cipher TLS_RSA_WITH_AES_128_CBC_SHA.
-    Specify a different transmission queue name QMC.XMITQ.CHL2.
+    previous steps specifying the SSL cipher **ANY_TLS12_OR_HIGHER**.
+    Specify a different transmission queue name **QMC.XMITQ.CHL2**.
 
     Use the following screen-shots as a guide.
 
@@ -429,7 +455,7 @@ If you need help defining a new channel, refer to section "On QM8 define the SDR
 
     ![](./images/pots/mq/lab7/image70.png)
 
-3.  On QMC create new RCVR channel QM8.TO.QMC.CHL2 and leave the CERTLABL blank on the RCVR definition so this time the channel will be using the QMC queue manager SSL property CERTLABL.
+3.  On QMC create new RCVR channel QM8.TO.QMC.CHL2 and leave the CERTLABL blank on the RCVR definition so this time the channel will be using the QMC queue manager SSL property CERTLABL. Using the pull-down for *SSL Cipher Spec* select **ANY_TLS12_OR_HIGHER**. Using the pull-down for *SSL Authentication* select **Optional**.
 
     ![](./images/pots/mq/lab7/image71.png)
 
@@ -447,7 +473,9 @@ If you need help defining a new channel, refer to section "On QM8 define the SDR
 
 2.  Display the channel status on QM8 using **runmqsc QM8** then enter command:
 
-    *DIS CHS(QM8.TO.QMC\*) SSLCERTI SSLPEER*
+    ```
+    DIS CHS(QM8.TO.QMC*) SSLCERTI SSLPEER
+    ```
 
     You should see QM8.TO.QMC.CHL2 is using 'ALL QMGR cert2', whereas QM8.TO.QMC is using 'QM8 CHL cert'.
 
