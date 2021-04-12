@@ -19,7 +19,7 @@ The lab environment consists of multiple virtual appliances
 virtual appliances (**MQAppl2**, **MQAppl3**, and **MQAppl4**) will not be used in
 this lab. Please make sure they are suspended or shut down. You need to
 create a CSIDE environment to work in based on the template *MQ
-Appliance PoT 9.1.4 Unconfigured*. Log on to CSIDE and create a new
+Appliance PoT 9.2.2.0 Unconfigured*. Log on to CSIDE and create a new
 environment from the template.
 
 Please be sure you have read the introductory details in the [Overview the IBM MQ Appliance PoT](mq_appl_pot_overview.html)
