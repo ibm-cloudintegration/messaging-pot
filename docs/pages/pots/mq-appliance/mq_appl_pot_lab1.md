@@ -325,145 +325,105 @@ including connections from MQ Explorer.
     command line. However, given that the commands are quite long to
     enter, we will use the web console to do this.
 
-2. Swap back to the web console and log in again if you are not already
-    logged in.
-
-3. Click on the **plus sign (+)** to add a new tab -- we will use this one
+2. Swap back to the web console and log in again if you are not already logged in. Scroll down so you can see the whole window. Notice that the *Manage* tile shows that one queue manger is running (QM1). Click the *Manage* tile -- we will use this one
     for administering QM1.
     
-    ![](./images/pots/mq-appliance/lab1/image34.png)
+    ![](./images/pots/mq-appliance/lab1/image134.png)
 
-4. Name the tab **QM1** and click **Add**.
+4. The *Manage* tab shows a list of queue managers defined on this appliance. You defined and started **QM1** on the appliance's command line. You can see that it is running and the version is 9.2.2.0.
     
-    ![](./images/pots/mq-appliance/lab1/image35.png)
+    ![](./images/pots/mq-appliance/lab1/image135.png)
 
 	We can now add widgets for our MQ objects.
 
-5. Click on the **Add Widget** link in the upper right of the screen.
+5. Click the **QM1** hyperlink. The details of the queue manager are now displayed and here you can manage the queue manager.
     
-    ![](./images/pots/mq-appliance/lab1/image36.png)
+    ![](./images/pots/mq-appliance/lab1/image136.png)
 
-6. Select a **Channels** widget for **QM1**. (Note: You may need to use
-    the scroll bar on the pop-up window to find the *Channels* option).
+6. In this window you can select MQ objects to manage. This default opens to *Queues*. You can also navigate to *Topics*, *Subscriptions*, or *Communication*. Click *Communication*. 
 
-	![](./images/pots/mq-appliance/lab1/image37.png)
+	![](./images/pots/mq-appliance/lab1/image137.png)
 
-7. First, we need to configure the widget to allow visibility of system
-    objects. Click on the ![](./images/pots/mq-appliance/lab1/image38.png) **cog** symbol to configure the widget.
-    
-    ![](./images/pots/mq-appliance/lab1/image39.png)
+1. In the Communication tab, you can view or create *Listeners*, *Queue manager channesl* such as sender/receiver channels, or *App channels* better known as server connection channels. Click *App channels*. 
 
-8. Set **Channel Type** to **Server-connection**, and set  **System
-    Objects** to **Show**. Click **Save**.
+	![](./images/pots/mq-appliance/lab1/image138.png)
 
-	![](./images/pots/mq-appliance/lab1/image40.png)
+1. You have not created any channels yet, so none are shown. But there are *SYSTEM.\** channels. Click the funnel icon which will allow you to *Show system channels*. Click the button to show those channels.
 
-	We now need to create a SVRCONN channel for MQ Explorer.
-
-9. Click the **Create +** button in the widget to create a new channel.
-
-	![](./images/pots/mq-appliance/lab1/image41.png)
-
-10. Name the channel **SYSTEM.ADMIN.SVRCONN** and ensure it is set to type
-    **Server-connection**. Click **Create**.
-
-	![](./images/pots/mq-appliance/lab1/image42.png)
-
-	We now need to create the channel authentication record for this channel.
-
-11. Add another widget, this time for **Channel Authentication
-    Records**. Remember that you may need to use the scroll bar to see
-    that option in the list:
-
-	![](./images/pots/mq-appliance/lab1/image43.png)
-
-12. As before, change the configuration to make system objects visible.
-
-13. Click on the **Create +** button in this widget to add a new CHLAUTH record.
-
-    We will create a new channel authentication record that allows
-    access to the new channel for our *testuser* that we created.
-
-14. Select a **Rule Type** of **Allow** and an **Identity** of **Client
-    application user ID** (use the drop down list).
-
-15. Click **Next**.
-
-	![](./images/pots/mq-appliance/lab1/image44.png)
-
-16. Enter the **Channel profile** name as **SYSTEM.ADMIN.SVRCONN**, and the
-    user we want to allow to access the channel (the **Client user ID**) as **testuser**, then
-    click **Next**.
-
-	![](./images/pots/mq-appliance/lab1/image45.png)
+	![](./images/pots/mq-appliance/lab1/image139.png)
 	
-17. Click **Next** again, and then click **Create.**
+1. The *System.\** channels are now visible. You now need to create a SVRCONN channel for MQ Explorer. Click *Create*.
 
-	![](./images/pots/mq-appliance/lab1/image45a.png)
+	![](./images/pots/mq-appliance/lab1/image140.png)
+	
+1. A definition of *server connection channel* is provided. Click *Next*. Enter the name for your server connection channel - **SYSTEM.ADMIN.CHANNEL**. Click *Create*.
 
-	We also need to set the authentication object to accept the
-    credentials as presented via CSP as the context.
+	![](./images/pots/mq-appliance/lab1/image141.png)
+	
+	A green success message is displayed and the new channel appears in the list. 
+	
+	![](./images/pots/mq-appliance/lab1/image142.png) 
+	
+	You now need to create the channel authentication record for this channel. Click *View configuration* in the top right corner. This will take you to the queue manager properties.
+	
+1. The queue manager configuration is divided into four sections - *Properties*, *Security*, *High availability*, and *Disaster recovery*. Click *Security*.
 
-18. Add another widget of type **Authentication Information** and make
-    system objects visible.
+	![](./images/pots/mq-appliance/lab1/image143.png) 
+	 
+1. Objects in the Security section are *Authentication information*, *Authority records*, and *Channel authentication*. Click *Channel authentication* to create a new record.
 
-	![](./images/pots/mq-appliance/lab1/image46.png)
+	![](./images/pots/mq-appliance/lab1/image144.png)
+	
+1. The default records are displayed. Click *Create*. 
 
-19. Select the **IDPW OS** object (that is, operating system userid and
-    password checking) and click the **Properties** button.
+	![](./images/pots/mq-appliance/lab1/image145.png) 	 
+1. You will create a new channel authentication record that allows access to the new channel for your *testuser* that you created. Click the drop-down under *Rule type* and select **Allow**. 
 
-	![](./images/pots/mq-appliance/lab1/image47.png)
+	![](./images/pots/mq-appliance/lab1/image146.png) 
+	
+1. Click the *Client application user ID* box to specify the user that will be allowed to use this channel.
 
-20. Select the **User ID + password** tab.
+	![](./images/pots/mq-appliance/lab1/image147.png) 
+	
+1. Enter the channel name **SYSTEM.ADMIN.SVRCONN** in the *Channel name* field. Enter **testuser** in the *Client user ID* field. Notice that the rule type is auto-filled to *User Map*. Click *Create*. 
 
-21. Use the drop down list to change **Adoption context** to **Yes**.
+	![](./images/pots/mq-appliance/lab1/image148.png) 
+	
+1. A green Success message is displayed. Click the wrench icon if you want to view or edit the rule. 
 
-22. Click **Save**, and then **Close.**
+	![](./images/pots/mq-appliance/lab1/image149.png)
+	
+1. You also need to set the authentication object to accept the credentials as presented via CSP as the context. Click *Authentication information*. Click the wrench for the **IDPW OS** object (that is, operating system userid and password checking). 
 
-	![](./images/pots/mq-appliance/lab1/image48.png)
+	![](./images/pots/mq-appliance/lab1/image150.png)
 
-23. In the **Channel Authentication Records** widget, click the **Create +**
-    button to add another record.
+20. Select the **User ID + password** tab. The *Adoption context* is already set to **Yes**. There is nothing to change. But if a change was necessary, you could click edit and change the values.
 
-24. Select **Block**, then click the drop-down for **Identity** and
-    select **Final assigned user ID**.
+	![](./images/pots/mq-appliance/lab1/image151.png)   
+	
+1. Click the browser back button to return to *Security*. Click  *Channel authentication* tab, then click the *Create* button to add another record. Click the drop-down for *Rule type* and select **Block**. 
 
-25. Click **Next**.
+	![](./images/pots/mq-appliance/lab1/image152.png)
 
-    ![](./images/pots/mq-appliance/lab1/image49.png)
+1. Click the *Final assigned user ID* box.
 
-26. Enter **SYSTEM.ADMIN.SVRCONN** in the **Channel profile**.
+	![](./images/pots/mq-appliance/lab1/image153.png)
 
-27. Enter "**\*whatever**" in the **User list** field.
+1. Again enter **SYSTEM.ADMIN.SVRCONN** in the *Channel name* field. Enter "**\*whatever**" in the *User list* field then click the "+" sign to add the list. Once the list is added, you can click *Create*.
 
-28. Click **Next**.
+	![](./images/pots/mq-appliance/lab1/image154.png)
 
-	![](./images/pots/mq-appliance/lab1/image50.png)
+28. Once again you receive the green success message and all the rules are displayed.
 
-29. Finally, click **Create**.
+	![](./images/pots/mq-appliance/lab1/image155.png)
 
-	Last but not least, we need to refresh the queue manager security to pick up the changes in the CONNAUTH.
+1.	Last but not least, we need to refresh the queue manager security to pick up the changes in the CONNAUTH. Click the elipsis in the *Actions* box in the top right corner and select *Refresh connection authentication*. 
 
-30. Go back to **Tab 1**, to the Local Queue Managers widget.
+	![](./images/pots/mq-appliance/lab1/image156.png)
+	
+1. Click *Refresh* to confirm you want to update the connection authentication records.
 
-31. Click on **QM1** to select the queue manager. A toolbar will appear
-    at the top of the widget.
-
-32. Click on the three dots
-    ![](./images/pots/mq-appliance/lab1/image51.png) in the toolbar. A list will appear.
-
-33. Select **Refresh security** from the list.
-
-	![](./images/pots/mq-appliance/lab1/image52.png)
-
-34. You will see a pop up about the refresh. Click **Connection
-    authentication**.
-
-	![](./images/pots/mq-appliance/lab1/image53.png)
-
-35. You will get a success message.
-
-    ![](./images/pots/mq-appliance/lab1/image54.png)
+	![](./images/pots/mq-appliance/lab1/image157.png)
 
 36. Start **MQ Explorer** on the Windows image.
 
@@ -551,22 +511,23 @@ that was created in the previous exercise will be used.
 
 1. Return to the web console.
 
-2. Click on the **QM1** tab.
+2. Click the *QM1* breadcrumb to return the Manage page for QM1. As before, create a SVRCONN channel named USER.SVRCONN; click *Communication* > *App channels* > *Create* > *Next*. 
 
-3. As before, create a SVRCONN channel named USER.SVRCONN.
+	![](./images/pots/mq-appliance/lab1/image159.png)
 
-	![](./images/pots/mq-appliance/lab1/image65.png)
-
-4. As before, create a channel authentication record to allow the
-    testuser access to the channel.
+1. As before, create a channel authentication record to allow the testuser access to the channel; click *View Configuration* > *Security* > *Channel authentication* > *Create*. Then *Block* > *Final assigned user ID* > **USER.SVRCONN** > \**whatever*.
     
     The command would be:
 
     **`SET CHLAUTH('USER.SVRCONN') TYPE(BLOCKUSER)
     USERLIST('\*whatever')`**
 
-	![](./images/pots/mq-appliance/lab1/image66.png)
+	![](./images/pots/mq-appliance/lab1/image160.png)
+	
+	And refresh security: click *Actions* > 
 
+	
+	
 	You will now use RFHUtilc to test the configuration.
 
 5. Open a **Command Prompt window**.
