@@ -407,111 +407,172 @@ interface to the appliance queue managers.
 4. Select the first tab and log on to the console for *MQAppl1* (**user =
     admin / password = passw0rd**).
 
-5. Click the *Manage* icon.
+5. Click **MQ Console**.
     
-    ![](./images/pots/mq-appliance/lab2/image139.png)
+    ![](./images/pots/mq-appliance/lab2/image39.png)
 
-6. In *Manage* all queue managers defined on *MQAppl1* are displayed. HAQM1 should be *Running* and HAQM2 should be *Running elsewhere*. QM1 was defined in the previous in lab. Click the *High availability* tab.
+6. First, notice the **High Availability** status at the top of the
+    console window, showing a checkmark to signify that the high
+    availability status of the HA group is good -- that both appliances
+    are up and running part of the HA group. Clicking **High
+    Availability** gives you a menu where you can suspend or resume this
+    appliance, see the HA queue manager status, or delete the HA group.
+    If you have not created an HA group, this option instead allows you
+    to create the HA group.
 
-	![](./images/pots/mq-appliance/lab2/image140.png)
-	
-1. First, notice the *High Availability* status of the *HA group* showing a checkmark to signify that the high availability status of the HA group is good -- that both appliances are up and running as part of the HA group and shown as *Online*. 
+	The next interesting thing you see is the queue manager status.
 
-	![](./images/pots/mq-appliance/lab2/image141.png)
+    ![](./images/pots/mq-appliance/lab2/image40.png)
 
-	Also notice that each tile has an elipsis. If you click the elipsis for the local appliance **MQAppl1** or the partner appliance **MQAppl2**, you can suspend the that appliance. By clicking the elipsis for the **HA group**, you can delete the group or regenerate SSH keys.
+	You see both queue managers in a running and highly available state.
 
-	The next interesting thing you see is the queue manager status in the bottom half of the window. the regular display of the queue managers is shown. You see both queue managers in a running and highly available state.
+	You will now add a widget for the queues.
 
-7. Click the hyperlink for queue manager **HAQM1**. You are taken to the queue objects tab for the queue manager. You now need to create the queue you will use for testing. Click *Create*. 
+7. Click the '**+**' symbol and add a new tab called **HAQM1**. Click **Add widget** to add a widget to the layout.
 
-	![](./images/pots/mq-appliance/lab2/image142.png)
+	![](./images/pots/mq-appliance/lab2/image41.png)
 
-13. Click the *Local* tile. Name the queue **Q1** and leave the default object type set to local. Click **Create**.
+8. In the *Add a new widget* popup, click **Local Queue Managers**.
 
-    ![](./images/pots/mq-appliance/lab2/image143.png)
+	![](./images/pots/mq-appliance/lab2/image41a.png)
 
-14. You are returned to the list of queues and **Q1** is now in the list. This summary screen of queues shows the *Type* of queue, *Depth %* percentage, and *Maximum depth* which shows the number of messages on the queue over the max depth. 
+9. Now click on **HAQM1** in the Local Queue Manages widget to select it, and
+    again click **Add widget**. 
 
-    ![](./images/pots/mq-appliance/lab2/image144.png)
+	The **Queue Manager** field is pre-selected because you selected the
+    queue manager from the Local Queue Managers widget. If you want to
+    change to another queue manager, use the drop-down to select the
+    desired one.
+
+10. Click **Queues** from the list, to see the queue objects for HAQM1.
+
+    ![](./images/pots/mq-appliance/lab2/image42.png)
+
+11. The widget now appears in the dashboard in another pane entitled
+    "Queues on HAQM1".
+
+    ![](./images/pots/mq-appliance/lab2/image43.png)
+
+	You now need to create the queue you will use for testing.
+
+12. In the **Queues** widget, click **Create +**.
+
+    ![](./images/pots/mq-appliance/lab2/image44.png)
+
+13. Name the queue **Q1** and leave the default object type set to
+    local. Click **Create**.
+
+    ![](./images/pots/mq-appliance/lab2/image45.png)
+
+14. Click **Q1**, and then click the **Properties** icon.
+
+    ![](./images/pots/mq-appliance/lab2/image46.png)
+
+15. In the Properties pop-up box, set the properties for the new queue. Click the
+    drop down box for **Default persistence** and set it to
+    **Persistent**. Then click **Save**.
+
+    ![](./images/pots/mq-appliance/lab2/image47.png)
     
-1. On the far right side of the display is an elipsis for each queue. Here you can view the messages, create messages, clear the queue, or view the configuration (properties) of the queue. Click the elipsis for **Q1** and select *View configuration*. 
-
-	![](./images/pots/mq-appliance/lab2/image145.png)
-
-1. Click *Edit*. In edit mode there are two tabs - *Properties* and *Security* where you can maintain authority records for the queue. Stay on *Properties* tab. You may need to scroll down to the *Extended* properties to find *Default persistence*. Click the drop-down under *Default persistence* and set it to **Persistent**. Then click *Save*.
-
-    ![](./images/pots/mq-appliance/lab2/image146.png)
+    Notice that it informed you of unsaved changes before you saved, and then it informed you it saved the changes after you clicked save.
     
-    Click the breadcrumb for **HAQM1** to return to list of queues.
-    
-    ![](./images/pots/mq-appliance/lab2/image148.png)
-    
-1. You now need to put some messages into the Q1 queue. Use the MQ Explorer for this, because you can easily do it without having to perform any additional configuration. Open the MQ Explorer content pane for the HAQM1 queues.
+16. Click **Close** to close the Properties dialog.
 
-18. Right-click **Q1** and select *Put Test Message...*.
+	You now need to put some messages into the Q1 queue. Use the MQ
+    Explorer for this, because you can easily do it without having to
+    perform any additional configuration.
 
-    ![](./images/pots/mq-appliance/lab2/image147.png)
+17. Open the MQ Explorer content pane for the HAQM1 queues.
 
-19. Enter some test messages by entering some text and clicking **Put message.**
+18. Right-click **Q1** and select **Put Test Message...**
 
-	![](./images/pots/mq-appliance/lab2/image149.png)
+    ![](./images/pots/mq-appliance/lab2/image48.png)
 
-20. Repeat this for as many messages as you wish to put on the queue (the lab test scenario has 13 messages).
+19. Enter some test messages by entering some text and clicking **Put
+    message.**
+
+	![](./images/pots/mq-appliance/lab2/image49.png)
+
+20. Repeat this for as many messages as you wish to put on the queue
+    (the lab test scenario has 13 messages).
 
 21. When you are finished, click **Close**.
 
-22. Go back to the Web console dashboard and refresh the page. 
+22. Go back to the Web console dashboard and refresh the display by
+    clicking the ![](./images/pots/mq-appliance/lab2/image50.png) *Refresh widget* symbol.
 
-23. You should now see that there are 13 messages on the queue (or as many messages as you put there).
+    ![](./images/pots/mq-appliance/lab2/image51.png)
 
-    ![](./images/pots/mq-appliance/lab2/image150.png)
+23. You should now see that there are 13 messages on the queue (or as
+    many messages as you put there).
 
-	You now need to test HA to ensure that the messages fail over to the queue and queue manager on the other appliance.
+    ![](./images/pots/mq-appliance/lab2/image52.png)
+
+	You now need to test HA to ensure that the messages fail over to
+    the queue and queue manager on the other appliance.
 
 24. Go to the *MQAppl1* appliance.
 
 25. Suspend the appliance using the **sethagrp -s** command as before.
 
-26. Use the **dspmq** command to verify that the HAQM1 is running elsewhere (as before, if this takes a little time, continue to run the command until the results are as shown below).
+26. Use the **dspmq** command to verify that the HAQM1 is running
+    elsewhere (as before, if this takes a little time, continue to run
+    the command until the results are as shown below).
 
     ![](./images/pots/mq-appliance/lab2/image53.png)
 
-27. Go back to the browser, but this time log on to the Web console for the MQAppl2 appliance (this is the other tab in the browser).
+27. Go back to the browser, but this time log on to the Web console for
+    the MQAppl2 appliance (this is the other tab in the browser).
 
-28. Click the *Manage* icon to show the queue managers.
+28. As before, add an MQ Object Widget for queues to the dashboard.
+    Select **HAQM1**
 
-    ![](./images/pots/mq-appliance/lab2/image151.png)
+    ![](./images/pots/mq-appliance/lab2/image54.png)
 
-1. You see that both HA queue managers are now runnng on MQAppl2. Click the **HAQM1** hyperlink.
+29. This time, we want to give the widget a different name so click the
+    widget name edit icon.
 
-	![](./images/pots/mq-appliance/lab2/image152.png)
+    ![](./images/pots/mq-appliance/lab2/image55.png)
+
+30. Name it "**Failed over HAQM1**" to indicate that you are looking at
+    the failed over queue manager. Click **Rename**.
+
+    ![](./images/pots/mq-appliance/lab2/image56.png)
 
 31. As you can see, the 13 messages are all present on Q1 (on *HAQM1* on *MQAppl2*).
 
-    ![](./images/pots/mq-appliance/lab2/image153.png)
+    ![](./images/pots/mq-appliance/lab2/image57.png)
 
-1.	From here, you can browse the messages on the queue. Click the elipsis for **Q1** queue then select *View messages*.
+	From here, you can browse the messages on the queue.
 
-    ![](./images/pots/mq-appliance/lab2/image154.png)
-    
+32. Click on the **Q1** queue, and then click the
+    ![](./images/pots/mq-appliance/lab2/image58.png) **Browse** icon.
+
+    ![](./images/pots/mq-appliance/lab2/image59.png)
+
 33. Verify that the messages all appear as you expect.
 
-	![](./images/pots/mq-appliance/lab2/image155.png)
+34. Click **Close**.
 
-34. Click the breadcrumb for **HAQM1** to return to list of queues.
+    ![](./images/pots/mq-appliance/lab2/image60.png)
 
-1. You now want to put the queue managers back the way they were. Go to the *MQAppl1* appliance.
+	You now want to put the queue managers back the way they were.
+
+35. Go to the *MQAppl1* appliance.
 
 36. Issue the **sethagrp -r** command to resume the appliance.
 
-37. Go back to the Web console dashboard for MQAppl1. Refresh the page and click the manage icon if necessary to see that HAQM1 is now running on this appliance again and HAQM2 is still running on the other appliance.
+37. Go back to the Web console dashboard for MQAppl1. Refresh the **Queue Managers** widget, if necessary, to see that HAQM1 is now
+    running on this appliance again and HAQM2 is still running on the
+    other appliance.
 
-	![](./images/pots/mq-appliance/lab2/image156.png)	
-38. Click the hyperlink for **HAQM1** to see that the 13 messages for Q1 are back where they belong, on the queue belonging to this queue manager on this appliance.
+38. Also, refresh the **Queues** widget to see that the 13 messages for
+    Q1 are back where they belong, on the queue belonging to this queue
+    manager on this appliance.
 
-    ![](./images/pots/mq-appliance/lab2/image157.png)
+    ![](./images/pots/mq-appliance/lab2/image62.png)
     
+
 You have now successfully completed the setup and testing of the HA
 environment between two MQ Appliances. This officially ends this lab. If
 time allows, you may continue with any of two extra credit sections: 
