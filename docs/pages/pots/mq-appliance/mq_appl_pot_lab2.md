@@ -586,162 +586,140 @@ please speak to the instructor.
 This section is included to **show** how to create an HA group and HA queue
 managers using the MQ Console.
 
-1. Open Firefox. Click the *MQAppl2* bookmark.
+1. Open Firefox and open two tabs, one for the *MQAppl1* bookmark and one the *MQAppl2* bookmark.
 
-2. Sign in with **admin** / **passw0rd**.
+2. Sign in with **admin** / **passw0rd** in each tab so you are ready to respond to prompts within the timeout period.
 
-3. Click **High Availability** and select **Create new group...**.
+1. In the *MQAppl2* tab click the *Manage* icon on the left side bar.
 
-	![](./images/pots/mq-appliance/lab2/image63.png)
+	![](./images/pots/mq-appliance/lab2/image158.png)
+	
+3. Click the *High Availability* tab. 
 
-4. Click **First**.
+	![](./images/pots/mq-appliance/lab2/image160.png)
+	
+1. Click the *Set up high availability group* button.
 
-    Enter the IP address for the MQAppl1 HA interface **10.0.1.1**
+	![](./images/pots/mq-appliance/lab2/image161.png)
 
-    Enter "**SomeSecret**" in the Secret text field
+1. Enter **10.0.1.1** for the *IP address of the partner HA primary link*, then click the *Test connection* button.
 
-    Click **Prepare**
+	![](./images/pots/mq-appliance/lab2/image162.png)
+	
+1. If the ping is not successful, you will get an error message. When successful, the *HA Prepare step* becomes active. Increase the *Timeout* to at least 2 minutes. This should give you enough to complete the configuration. Click the *HA Prepare step* button.
 
-    ![](./images/pots/mq-appliance/lab2/image64.png)
+	![](./images/pots/mq-appliance/lab2/image163.png)
+	
+1. You receive a pop-up notifying that the HA group is being prepared. You are notified of the time remaining to complete the prompts on both machines. Be sure to make note of the *temporary key* as you need to enter it on the partner appliance *MQAppl1*. Close the pop-up which will make the prompt active on *MQAppl1*.
+	
+	![](./images/pots/mq-appliance/lab2/image164.png)
+	
+1. Move to the *MQAppl1* browser tab. Enter the IP address **10.0.1.2** of *MQAppl2* in the *IP address of partner HA primary link* and click *Test connection*. When successful, the *HA create step* becomes active. Enter the temporary key and click the *HA create step* buttton. 
 
-5. This message means the HA group is being prepared and you have
-    additional work to do.
+	![](./images/pots/mq-appliance/lab2/image165.png)
+	
+1. You receive another pop-up notifying that the HA group is being created. 
 
-    ![](./images/pots/mq-appliance/lab2/image65.png)
+	![](./images/pots/mq-appliance/lab2/image166.png)
+	
+1. Once the group creation is complete, the pop-up disappears and the *HA group* and both appliances appear online with green checkmarks. Change to *MQAppl2* and you will see the same display on that appliance.
 
-6. Open a new browser tab and click the *MQAppl1* bookmark.
+	![](./images/pots/mq-appliance/lab2/image167.png)
+	
+	![](./images/pots/mq-appliance/lab2/image168.png)
 
-    Click **High Availability** and select **Create new group...**.
+Notice that no queue managers have been created yet. You must have the HA group defined before creating queue managers in the HA group.
 
-    Click **Second** and enter the IP address of the HA interface for
-    MQAppl2 -- **10.0.1.2** and the secret text you entered on MQAppl2.
+10. Move to the *MQAppl1* browser tab. You see the local queue manager in the Manage display but it is not an HA queue manager. Click *Queue managers* to create a new HA queue manager. 
 
-    Click **Connect**
-
-    ![](./images/pots/mq-appliance/lab2/image67.png)
-
-7. The HA group will now get created.
-
-    When the creation of the HA group is complete, you will see a
-    checkmark for High Availability.
+    ![](./images/pots/mq-appliance/lab2/image169.png)
     
-    ![](./images/pots/mq-appliance/lab2/image67a.png)
-
-8. Click **High Availability** and you will see that both appliances
-    are online for the HA group.
-
-    ![](./images/pots/mq-appliance/lab2/image68.png)
-
-9. Return to the *MQAppl2* browser and make sure High Availability
-    is enabled.
-
-    ![](./images/pots/mq-appliance/lab2/image69.png)
-    
-	Notice that no queue managers have been created yet. You must have
-    the HA group defined before creating queue managers in the HA group.
-
-10. Click **High Availability** and select **HA queue manager status...**.
-    Click **Cancel** to dismiss the status window.
-
-    ![](./images/pots/mq-appliance/lab2/image70.png)
-    
-11. In the *MQAppl1* browser, click the **Create +** button in the **Local Queue Managers** widget to add a new HA
-    queue manager.
-
+11. In the *MQAppl1* browser, click the *Create +* button. 
     Fill in the panel with the following values:
 
-	-   Queue manager name: **HAQM1**
+	-   Name: **HAQM1**
 
 	-   Port: **1511**
 
-	-   File system size: **2 GB**
+	-   Define queue manager size: **2 GB**
 
-	-	Startup: **Automatic**
+	-	 Auto start queue manager: **Checked**
 
-	Click **Next**.
+	Click *Next*.
 
-    ![](./images/pots/mq-appliance/lab2/image71.png)     
+    ![](./images/pots/mq-appliance/lab2/image170.png)     
 
-12. On the second page, click **Replicated** (meaning it is a highly available queue manager, instead of a standard non-HA queue manager). Now click **Create**.
+12. On the second page *High availability* make sure to toggle the **High Availability** switch to **On**. Click *Create*.
 
-    ![](./images/pots/mq-appliance/lab2/image72.png)
+    ![](./images/pots/mq-appliance/lab2/image171.png)
 
 	Notice that you have the opportunity right then to define a floating IP address for the HA queue manager.
 
-13. The queue manager gets created and replicated to the second appliance. This will take a few minutes.
+13. The queue manager status temporarily shows *Deploying* while it is being created and replicated to the second appliance. This will take a few minutes. Then you will receive a green success message and the status changes to *Running*. 
 
-    ![](./images/pots/mq-appliance/lab2/image73.png)
+    ![](./images/pots/mq-appliance/lab2/image172.png)
 
-14. Once the creation and replication is completed, it will change to a running status.
+15. Switch to the *MQAppl2* browser. You will see HAQM1 in the *Local Queue Managers* but this time it shows running on the other appliance.
 
-    ![](./images/pots/mq-appliance/lab2/image74.png)
+    ![](./images/pots/mq-appliance/lab2/image173.png)
 
-15. Switch to the *MQAppl2* browser. You will see HAQM1 in the **Local Queue Managers** widget, but this time
-    it shows running on the other appliance.
+16. Click the *Queue managers* tab and create another queue manager on *MQAppl2* with the following values:
 
-    ![](./images/pots/mq-appliance/lab2/image76.png)
-
-16. Now create another queue manager on *MQAppl2* with the following values:
-
-	-   Queue manager name: **HAQM2**
+	-   Name: **HAQM2**
 
 	-   Port: **1512**
 
-	-   File system size: **2 GB**
+	-   Queue manage size: **2 GB**
 
-	-	Startup: **Automatic**
+	-	 Auto start queue manger: **Checked**
 
-	-	High Availability: **Replicated**
+	![](./images/pots/mq-appliance/lab2/image174.png)
+	
+1. Click *Next* and toggle the **High availability** switch to **On** then click *Create*. 
+
+	![](./images/pots/mq-appliance/lab2/image175.png)
 
 	Again, the queue manager will be created and replicated to the second appliance. 
 
 17. Creation complete -- running queue manager. HAQM1 running on
     MQAppl1 (elsewhere), and HAQM2 running here.
-
-    ![](./images/pots/mq-appliance/lab2/image80.png)
+    
+    ![](./images/pots/mq-appliance/lab2/image177.png)
 
 18. Switch to the *MQAppl1* browser. Ensure high availability is
     enabled. HAQM1 running locally (MQAppl1), HAQM2 running on MQAppl2
     (elsewhere).
 
-    ![](./images/pots/mq-appliance/lab2/image81.png)
+    ![](./images/pots/mq-appliance/lab2/image176.png)
 
-19. Staying on MQAppl1, click **High Availability** and select
-    **Suspend this appliance...**.
+19. Staying on MQAppl1, click *High Availability*. Click the elipsis on the *MQAppl1* tile and select **Suspend this appliance**.
 
-    ![](./images/pots/mq-appliance/lab2/image82.png)
+    ![](./images/pots/mq-appliance/lab2/image178.png)
 
-20. You get a warning. Click **Suspend** to confirm.
+20. You get a warning. Click **Suspend this appliance** to confirm.
 
-    ![](./images/pots/mq-appliance/lab2/image83.png)
+    ![](./images/pots/mq-appliance/lab2/image179.png)
 
-21. The work to suspend the appliance starts. When complete, an alert is posted and HAQM1 will show as *Running elsewhere*. You will also notice the symbol now next to the *High Availability" button.
+21. The work to suspend the appliance starts. When complete, an alert is posted and HAQM1 will show as *Running elsewhere*. 
 
-    ![](./images/pots/mq-appliance/lab2/image84.png)
+    ![](./images/pots/mq-appliance/lab2/image180.png)
     
-    {% include note.html content="Notice that 'suspending' the appliance in the HA group simply temporarily suspends its participation in the HA group. The appliance is still running, just not doing any HA replication, allowing you to now perform actions such as a firmware upgrade on the suspended appliance.
-	" %}
+    {% include note.html content="Notice that 'suspending' the appliance in the HA group simply temporarily suspends its participation in the HA group. The appliance is still running, just not doing any HA replication, allowing you to now perform actions such as a firmware upgrade on the suspended appliance." %}
 
-22. Click **High Availability** again and you will see what the alert
-    is all about. Notice that this appliance is in *Standby*.
+22. The display automatically updates and shows that this appliance is in *Standby*.
 
-    ![](./images/pots/mq-appliance/lab2/image85.png)    
+    ![](./images/pots/mq-appliance/lab2/image181.png)    
 
-23. Return to the *MQAppl2* browser and see that the queue manager
-    statuses have been updated automatically and an HA alert is posted.
+23. Return to the *MQAppl2* browser and see that the queue manager statuses have been updated automatically and an HA alert is posted.
 
-    ![](./images/pots/mq-appliance/lab2/image86.png)
+    ![](./images/pots/mq-appliance/lab2/image182.png)
 
-24. Back on *MQAppl1*, click **High Availability** once more and
-    select **Resume this appliance...** to bring MQAppl1 back online in the
-    HA group.
+24. Back on *MQAppl1*, under *High Availability* click the elipsis for *MQAppl1* and select **Resume this appliance** to bring MQAppl1 back online in the HA group.
 
-    ![](./images/pots/mq-appliance/lab2/image87.png)
+    ![](./images/pots/mq-appliance/lab2/image183.png)
 
-25. Repeat the process by suspending MQAppl2 and observe the queue
-    manager statuses on both appliances.
+25. Repeat the process by suspending MQAppl2 and observe the queue manager statuses on both appliances.
 
-125. Return to [Process Messages](#Process_messages)
- to process messages on HA queue managers.
+125. Return to [Process Messages](#Process_messages) to process messages on HA queue managers.
 
 Congratulations, this concludes the HA lab.
