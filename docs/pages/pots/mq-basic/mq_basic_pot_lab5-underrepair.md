@@ -3,7 +3,7 @@ title: IBM MQ Web
 toc: false
 sidebar: labs_sidebar
 folder: pots/mq-basic
-permalink: /mq_basic_pot_lab5.html
+permalink: /mq_basic_pot_lab5-underrepair.html
 summary: Using the IBM MQ Console and REST interfaces
 applies_to: [administrator]
 ---

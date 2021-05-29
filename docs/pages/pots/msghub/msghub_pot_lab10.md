@@ -1,16 +1,16 @@
 ---
-title: Introduction to IBM Event Streams ICP4i on Red Hat OpenShift
+title: Introduction to IBM Event Streams on Red Hat OpenShift
 toc: false
 sidebar: labs_sidebar
 folder: pots/msghub
 permalink: /msghub_pot_lab10.html
-summary: Introduction to IBM Event Streams ICP4i on Red Hat OpenShift
+summary: Introduction to IBM Event Streams on Red Hat OpenShift
 applies_to: [developer,administrator]
 ---
 
 # Getting Started with IBM Event Streams 
 
-IBM Event Streams is based on years of operational expertise IBM has gained from running Apache Kafka® Event Streams for enterprises. IBM Event Streams 2020.1 offers enterprise-grade security, scalability, and reliability running on Red Hat® OpenShift® 4.3
+IBM Event Streams is based on years of operational expertise IBM has gained from running Apache Kafka®  for enterprises. IBM Event Streams offers enterprise-grade security, scalability, and reliability running on Red Hat® OpenShift® 4.6
 
 ## Overview 
 

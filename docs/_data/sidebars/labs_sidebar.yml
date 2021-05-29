@@ -58,6 +58,10 @@ entries:
       url: /mq_basic_pot_lab7.html
       output: web, pdf
 
+    - title: Lab 8 - Extending Channel Authenitcation Records
+      url: /mq_basic_pot_lab8.html
+      output: web, pdf
+
     - title: Lab 9 - Uniform Clusters and Application Rebalancing
       url: /mq_basic_pot_lab9.html
       output: web, pdf
@@ -74,15 +78,15 @@ entries:
       url: /mq_ha_pot_lab1.html
       output: web, pdf
 
-    - title: Lab 2 - Replicated Data Queue Managers for High Availability
+    - title: Lab 2 - Replicated Data Queue Managers for High Availability (9.1.5)
       url: /mq_ha_pot_lab2.html
       output: web, pdf
 
-    - title: Lab 3 - Replicated Data Queue Managers for Disaster Recovery
+    - title: Lab 3 - Replicated Data Queue Managers for Disaster Recovery (9.1.5)
       url: /mq_ha_pot_lab3.html
       output: web, pdf
 
-    - title: Lab 4  - Replicated Data Queue Managers for HA / DR
+    - title: Lab 4  - Replicated Data Queue Managers for HA / DR (9.1.5)
       url: /mq_ha_pot_lab4.html
       output: web, pdf
 
@@ -198,20 +202,36 @@ entries:
       url: /mq_cld_pot_notavl.html
       output: web, pdf
 
-  - title: MQ on IBM Cloud Private
+  - title: MQ on IBM Cloud Pak for Integration
     output: web,pdf
     folderitems:
 
-    - title: Overview
-      url: /mq_icp_pot_notavl.html
+    - title: Overview - Create VDI
+      url: /mq_cp4i_pot_overview.html
       output: web, pdf
 
-    - title: Environment Setup
-      url: /mq_icp_pot_notavl.html
+    - title: Environment Setup - Configure the Project
+      url: /mq_cp4i_pot_envsetup.html
       output: web, pdf
 
-    - title: Lab 1 - Configuring MQ on ICp
-      url: /mq_icp_pot_notavl.html
+    - title: Lab 1 - Creating MQ Instance Using Platform Navigator
+      url: /mq_cp4i_pot_lab1.html
+      output: web, pdf
+
+    - title: Lab 2 - MultiInstance Queue Manager on CP4I
+      url: /mq_cp4i_pot_lab2.html
+      output: web, pdf
+
+    - title: Lab 3 - MQ Uniform Cluster on CP4I
+      url: /mq_cp4i_pot_lab3.html
+      output: web, pdf
+
+    - title: Lab 4 - Automate MQ Configuration Using Tekton Pipelines
+      url: /mq_cp4i_pot_lab4.html
+      output: web, pdf
+
+    - title: Lab 5 - Native HA for MQ
+      url: /mq_cp4i_pot_lab5.html
       output: web, pdf
 
   - title: Event Streams

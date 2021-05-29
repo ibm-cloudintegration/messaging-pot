@@ -95,3 +95,8 @@ The command queue manager is used to connect to the IBM MQ network and is the qu
 ### An overview of the REST API enhancements for Managed File Transfer.
 
 From IBM® MQ Version 9.0.5, the REST API adds support for certain Managed File Transfer commands, including listing transfers, and details about file transfer agents.
+
+ 
+[Continue to Lab 1](mq_mft_pot_lab1.html)
+
+[Return MQ MFT Menu](mq_mft_pot_overview.html)
