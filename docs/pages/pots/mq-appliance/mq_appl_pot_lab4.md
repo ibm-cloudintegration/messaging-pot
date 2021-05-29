@@ -20,7 +20,7 @@ For this lab, you should use the same CSIDE environment that you created
 for Lab 1. The virtual appliance you will use for this lab will be
 **MQAppl1** and also the **Windows 10 x64*** VM.
 
-{% include important.html content="It is assumed that Lab 1 has been completed. You must either complete Lab 1 before attempting this lab, or see the *MQ Appliance PoT 9.1.4 Configured - ready for HA* CSIDE template. Screen shots are from after Lab 2 completion. If Lab 2 has not been completed on the virtual appliance you are using, the results you see will differ from the examples in this lab guide." %}
+{% include important.html content="It is assumed that Lab 1 has been completed. You must either complete Lab 1 before attempting this lab, or see the *MQ Appliance PoT 9.2.2.0 Configured - ready for HA* CSIDE template. Screen shots are from after Lab 2 completion. If Lab 2 has not been completed on the virtual appliance you are using, the results you see will differ from the examples in this lab guide." %}
 
 You will be exploring some of the options available for monitoring the
 MQ Appliance using a combination of command line and reporting widgets
@@ -54,10 +54,9 @@ list can be found in the IBM Knowledge Center for the MQ Appliance.
 3. First, enter the **show** command. This will give a list of all of
     the available *status_provider* values.
 
-4. Now enter **show version**. This will show the firmware and library
-    version, similar to what is shown below.
+4. Now enter **show version**. This will show the firmware and library version, similar to what is shown below.
 
-	![](./images/pots/mq-appliance/lab4/image9.png)
+	![](./images/pots/mq-appliance/lab4/image101.png)
 
 	One of the other things that you can find out from the show command is
 which users have been defined for the appliance.
