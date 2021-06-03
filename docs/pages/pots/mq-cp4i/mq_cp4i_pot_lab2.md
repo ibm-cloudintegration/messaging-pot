@@ -18,6 +18,20 @@ These instructions will document the process to deploy a highly available (HA) p
 
 You will know how to set up MQ in a highly available topology where there is an active and passive container running.
 
+### Pre-reqs
+
+You should have already downloaded the artifacts for this lab in the lab Environment Setup from [GitHub MQonCP4I](https://github.com/ibm-cloudintegration/mqoncp4i). 
+
+If you are doing this lab out of order return to [Environment Setup](mq_cp4i_pot_envsetup.html) to perform the download. Then continue from here.
+
+#### Important points to note
+
+The lab guide assumes you are using the RHEL desktop VM from the IBM Asset Repo. If you are using another platform, you can download the necessary artifacts from the github repo. The instructor will provide directions.
+
+{% include important.html content="The screen shots were taken on a test cluster and many will not match what you see when running the lab. Particularly URL values will be different depending on the cluster where CP4I is running. Projects (Namespaces) may also vary. It is important to follow the directions, not the pictures." %}
+
+#### Further information
+* IBM MQ Knowledge Center 
 
 ## Deploy the MQ Queue Manager with associated resources
 
@@ -35,22 +49,22 @@ This lab shows you how to write yaml to create the multi-instance queue manager.
 	
 	![](./images/pots/mq-cp4i/lab2/image0a.png)
 	
-	{% include note.html content="You should still be in project *mqxx* so you shouldn't need to run this command." %}
+	{% include note.html content="You should still be in your personal project so you shouldn't need to run this command unless your login has timed out." %}
 	
-	Run the following command to navigate to the *mq00* project substituting your student number for 00:
+	 Run the following command to navigate to the *cp4i-mq* project substituting your personal namespace for cp4i-mq:
 	
 	```
-	oc project mq00
+	oc project cp4i-mq
 	``` 
 
 1. Open a new terminal window by double-clicking the icon on the desktop.
 
 	![](./images/pots/mq-cp4i/lab2/image1a.png)
 
-1. Navigate to the *mqoncp4i-main/MQonCP4I/multiinstance/deploy* directory using the following commnand:
+1. Navigate to the *MQonCP4I/multiinstance/deploy* directory using the following commnand:
 
 	```
-	cd mqoncp4i-main/MQonCP4I/multiinstance/deploy
+	cd MQonCP4I/multiinstance/deploy
 	```
 	
 1. Enter the following command to display the permissions for the files:
@@ -80,18 +94,22 @@ This lab shows you how to write yaml to create the multi-instance queue manager.
 	```
 	
 	![](./images/pots/mq-cp4i/lab2/image203.png)	
-1.	Click the hamburger menu in top right corner and select *Find and Replace*.
+1.	Change the value for *TARGET_NAMESPACE* to your project name. Click the hamburger menu in top right corner and select *Find and Replace*.
 	
 	![](./images/pots/mq-cp4i/lab2/image204.png)		
 1. Enter *mq00* in the "Find" field and *mqxx* in the "Replace with" field. Use your student number in place of 00. Click *Replace All*, then click *Save*.
 
 	![](./images/pots/mq-cp4i/lab2/image205.png)
 	
-1. In the editor click the drop-down in the *Open* box, type "c", then select **cleanup.sh**.
+	{% include note.html content="The storage class on the COC clusters is **managed-nfs-storage**. If you are an IBMer running on on ROKS then you also need to change *SC* to **ibmc-file-gold-gid**." %}
+	
+1. In the editor click the drop-down in the *Open* box, click *Other Documents, then select **cleanup.sh**.
 
+	![](./images/pots/mq-cp4i/lab2/image205a.png)
+	
 	![](./images/pots/mq-cp4i/lab2/image206.png)
 
-1. As above change "00" in the export commands to your student ID. Click *Save*.
+1. As above you did above, change *TARGET_NAMESPACE* to your project name, then change "00" in the export commands to your student ID. Click *Save*.
 
 	![](./images/pots/mq-cp4i/lab2/image207.png)
 	
@@ -112,7 +130,7 @@ This lab shows you how to write yaml to create the multi-instance queue manager.
 1. Open a new terminal window and navigate to the deploy directory again with the command: 
 
 	```
-	cd mqoncp4i-main/MQonCP4I/multiinstance/deploy
+	cd MQonCP4I/multiinstance/deploy
 	```
 
 1. Run the *install.sh* script:
@@ -137,7 +155,7 @@ This lab shows you how to write yaml to create the multi-instance queue manager.
 	
 ### Access and display your MQ instance in the Platform Navigator
 
-1. Click the hyperlink for your instance which will take you to the MQ Console for your queue manager, but first you must respond to the security warning. Click *Advanced* then *Accept thee Risk and Continue*.
+1. Click the hyperlink for your instance which will take you to the MQ Console for your queue manager, but first you must respond to the security warnings if prompted. Click *Advanced* then *Accept thee Risk and Continue*.
 
 1. You are then taken to the MQ Console for your queue manager. Recall that you named the queue manager with your student ID prefix and *mi* - **mq00mi**. The instance name, **mq00mi**, is the same as the queue manager name. Click *Manage*.
 
@@ -147,7 +165,7 @@ This lab shows you how to write yaml to create the multi-instance queue manager.
 
 	![](./images/pots/mq-cp4i/lab2/image214.png)
 	
-1. Click *Communication* > *App Channels** where you will find the channel **MQ00CHL**. The channel was also defined in the mqsc commands in the yaml defined *ConfigMap*. Click the elipsis on the right side then select *Configuration* to display or edit the channel properties. 
+1. Click *Communication* > *App Channels* where you will find the channel **MQ00CHL**. The channel was also defined in the mqsc commands in the yaml defined *ConfigMap*. Click the elipsis on the right side then select *View Configuration* to display or edit the channel properties. 
 
 	![](./images/pots/mq-cp4i/lab2/image215.png)
 	
@@ -157,7 +175,7 @@ This lab shows you how to write yaml to create the multi-instance queue manager.
 	
 	Notice the *Configuration* hyperlink in the top right corner. This takes you to the queue manager properties. Click the link now.
 	
-	![](./images/pots/mq-cp4i/lab2/image114a.png)
+	![](./images/pots/mq-cp4i/lab2/image216a.png)
 	
 1. You arrive at the overall queue manager properties to be displayed or edited. Click *Security* > *Channel authentication*. Here you see the channel auth created by the mqsc commands in the yaml defined *ConfigMap* as well as the system channel auth records. Your yaml file defined the MQ00CHL record with a type of *Block*. You can click the wrench icon to display or edit the record. If you do change the properties you will then need to refresh security. To do that you simply click the *Actions* elipsis and select the necessary refresh option.
 
@@ -171,11 +189,11 @@ There is an extensive amount of detail in the OpenShift Console. The following  
 
 If running as part of a PoT there will be multiple mqxx namespaces and queue managers running so you need to be looking for your *mqxxmi* instance queue manager.
  	
-1. Return to the browser tab in Firefox for the OCP Console. You will be in the *Administrator* view. Click *Projects* then scroll down to find **mqxx** and click the hyperlink. 
+1. Return to the browser tab in Firefox for the OCP Console. You will be in the *Administrator* view. Click *Projects* then scroll down to find **cp4i-mq** (substiting you namespace) and click the hyperlink. 
 
 	![](./images/pots/mq-cp4i/lab2/image218.png)
 	
-1. The project *Overview* opens where you can see the status and utilization of the **mq00** namespace (project).
+1. The project *Overview* opens where you can see the status and utilization of the **cp4i-mq** namespace (project).
 
 	![](./images/pots/mq-cp4i/lab2/image219.png)
 	
@@ -215,7 +233,7 @@ If running as part of a PoT there will be multiple mqxx namespaces and queue man
 	
 ## Test the deployment
 
-1. In a terminal window navigate to */home/ibmuser/mqoncp4i-main/MQonCP4I/multiinstance/test* directory. You will find three files (and additional files for TLS): 
+1. In a terminal window navigate to */home/ibmuser/MQonCP4I/multiinstance/test* directory. You will find three files (and additional files for TLS): 
 
 	* CCDT.JSON
 	* getMessage.sh
@@ -251,9 +269,9 @@ If running as part of a PoT there will be multiple mqxx namespaces and queue man
 	
 	Click *Save* to save ccdt.json.
 	
-1. Now edit *getMessage.sh* and *sendMessge.sh*. You need to change the same values in each file. In the export statements, change *00* to your student ID. Click the *Save* button for each file. 
+1. Now edit *getMessage.sh* and *sendMessge.sh*. You need to change the same values in each file. In the export statements, change *00* to your student ID. Change the paths for *MQCCDTURL* and *MQSSLKEYR* to **/home/student/...**. Click the *Save* button for each file. 
 
-	![](./images/pots/mq-cp4i/lab2/image232.png)
+	![](./images/pots/mq-cp4i/lab2/image232a.png)
 	
 1. In the terminal window in the *./test* directory make *sendMessage.sh* and *getMessage.sh* files executable with the following commnads:
 

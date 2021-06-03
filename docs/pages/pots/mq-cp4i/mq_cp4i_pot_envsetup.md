@@ -1,6 +1,6 @@
 ---
 title: Setup Messaging PoT MQ CP4I Lab Environment
-toc: false
+toc: true
 sidebar: labs_sidebar
 folder: pots/mq-cp4i
 permalink: /mq_cp4i_pot_envsetup.html
@@ -35,6 +35,12 @@ applies_to: [developer administrator]
 ## Connect to the Red Hat OpenShift cluster
 
 Your attendee email also included a URL to connect to the Red Hat OpenShift cluster where you will execute the labs. The name of the cluster will vary depending on which one has been reserved. The example below shows the Obi-Wan cluster. 
+
+ You will also receive a userid to use throughout the PoT. Your email will include the name of the cluster and userid. The userids are defined in an LDAP for the cluster. For example if Obi-Wan is the cluster your email will specify Obi-Wan/obiwanxx where xx is your student number. If the cluster is *chopper*, you will receive  **Chopper/chopperxx**. 
+ 
+  The userid will also be the assigned name of a project (namespace) for you to work in. The project will be yours alone throughout the PoT. No one else will have access to your project and you will not have access to any other student's project. 
+  
+{% include important.html content="Project cp4i-mq was the project name used to document the labs. This is the default namespace for MQ in the COC clusters and was used for documenting since each PoT may be on various clusters. " %} 
 
 1. From your email, copy the URL for the OCP Console.
 
@@ -108,15 +114,15 @@ Great! You are now ready to start working with MQ in the labs. If running a PoT,
 [Return MQ CP4I Menu](mq_cp4i_pot_overview.html)
 
 <a name="namespace"></a>
-## Create Project (namespace) for your lab assets
+## IBM Only - Create Project (namespace) for your lab assets
 
 1. Click *Projects* then click *Create project*.
 
 	![](./images/pots/mq-cp4i/env-setup/image106.png)
 	
-1. Your attendee email also included a student number 01 - 99. This will be your student ID referenced in the lab guides. Append this number to "mq" to create your project name. Project is the term for namespace in OpenShift. This is used to keep your assets separate from the other students.
+1. Select a student number between 01 - 99. Append this number to "mq" to create your unique project name within the cluster (**mq00** is reserved for the instructor and has been used to document the lab). Project is the term for namespace in OpenShift. This is used to keep your assets separate from the other students.
 
-	Enter the name of your project **mqxx** in the name field and click *Create*. **mq00** is reserved for the instructor and has been used to document the lab.
+	Enter the name of your project **mqxx** in the name field and click *Create*. 
 	
 	![](./images/pots/mq-cp4i/env-setup/image107.png)
 	

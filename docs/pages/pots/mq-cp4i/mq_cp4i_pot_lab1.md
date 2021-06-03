@@ -10,17 +10,17 @@ applies_to: [administrator,developer]
 
 # Lab 1 - Creating an MQ Instance Using the Platform Navigator
 
-Starting with this lab, each attendee will be assigned an ID number (01 - 30) by the instructor if running a PoT. If running this lab independently, use ID number 00. During a PoT the instructor will always be ID 00.
+Starting with this lab, each attendee will be assigned an ID number (01 - 30) by the instructor if running a PoT. This number will have been included in your attendee email.  If (IBMers) running this lab independently, choose any number between 01 - 30. ID 00 is always reserved for the instructor during PoTs.
 
 These instructions assume you are using the DTE Virtual Desktop Image (VDI) for the *MQ on CP4I PoT*.
 
 ## Getting Started with MQ on Cloud Pak for Integration 
 
-These instructions document how to setup MQ within Cloud Pak for Integration which is accessible from within the OpenShift Cluster. The instructions have been created using a a Red Hat OpenShift environment deployed on bare metal servers on IBM Cloud however the processa should be similar on other environments.
+These instructions document how to setup MQ within Cloud Pak for Integration which is accessible from within the OpenShift Cluster. The instructions have been created using a a Red Hat OpenShift environment deployed on bare metal servers on IBM Cloud however the process should be similar on other environments.
 
 ## Deploying IBM MQ for internal consumers
 
-1. You should have already connected to the OpenShift cluster via the URL provided in your student email. Click *Projects* and scroll down to find the *cp4i* project. Click the hyperlink to select the project.
+1. You should have already connected to the OpenShift cluster via the URL provided in your student email. Click *Projects* and scroll down to find the *cp4i-mq* project. Click the hyperlink to select the project.
 
 	![](./images/pots/mq-cp4i/lab1/image202.png)	
 1. Scroll down again to find *Networking* on the left side bar menu. Click the drop-down for Networking and select *Routes*. Type *integration* in the Filter field. Click the URL hyperlink for the **integration-navigator-pn** route. 
@@ -41,7 +41,7 @@ These instructions document how to setup MQ within Cloud Pak for Integration whi
 
 1. Enter the user name and password that was provided in your email to log on.
 
-1. The *IBM Automation* page appears. This is also referred to as the *Integration Platform Navigator*. Click the up arrow on right side of page to close the upper half saving screen space.
+1. The *IBM Automation* page appears. This is also referred to as the *Integration Platform Navigator*. Click *View runtimes*. 
 
 	![](./images/pots/mq-cp4i/lab1/image207.png)
 	
@@ -83,15 +83,13 @@ These instructions document how to setup MQ within Cloud Pak for Integration whi
 
 ### Register mq queue manager with Operations Dashboard
 
-This only needs to be done once by the first queue manager that is starting. If the *Pending* status changes to *Ready* then registration is complete and you can skip ahead to the *Start MQ Console* section.
+This only needs to be done once by the first queue manager that is starting. If the *Pending* status changes to *Ready* then registration is complete and you can skip ahead to the *Start MQ Console* section. [Go to Start MQ Console](#mqconsole)
 
-[Go to Start MQ Console](#mqconsole)
-
-1.	If the status has changed to *Error* click the *Error* hyperlink. 
+1.	Refresh the browser page. If the status has changed to *Error* click the *Error* hyperlink. 
 	
 	![](./images/pots/mq-cp4i/lab1/image9.png)
 	
-1.	This error occurs because *MQ* has not been registered in the Operations Dashboard in the *tracing* namespace. Close the *Conditions* pop-up then click *IBM Automation* \>  *Administration* \> *Integration runtimes*. 	
+1.	This error occurs because *MQ* has not been registered in the Operations Dashboard in the *tracing* namespace. Close the *Conditions* pop-up then click the hamburger menu next to *IBM Automation* \>  *Administration* \> *Integration runtimes*. 	
 	![](./images/pots/mq-cp4i/lab1/image213.png)
 	
 	If you receive the security warning, click *Advanced* and then *Accept the Risk and continue*.
@@ -130,6 +128,10 @@ This only needs to be done once by the first queue manager that is starting. If 
 	
 	![](./images/pots/mq-cp4i/lab1/image221.png) 
 
+1. Click the up arrow on the right side of the window to hide the top portion of the window and conserve screen space.
+
+	![](./images/pots/mq-cp4i/lab1/image221a.png)
+
 1. Your queue manager now appears in the *Messaging* tile. 
 
 	![](./images/pots/mq-cp4i/lab1/image222.png) 
@@ -137,7 +139,11 @@ This only needs to be done once by the first queue manager that is starting. If 
 <a name="mqconsole"></a>	
 ### Start MQ Console
 
-1. In the navigator under *Integration Runtimes* and your queue manager shows a *Ready* status, you can now click the hyperlink to open the MQ console for your queue manager. The runtime instance shows *mq00-quickstart-cp4i*, but that is not your queue manager name. You named it **mq00qs**.
+1. You can click the hyperlink under *Messaging* to open the console. You can also return to the *Platform Navigator* by clicking the hamburger menu next to *IBM Automation* and select *Integration runtimes*. Then refresh the page. 
+
+	![](./images/pots/mq-cp4i/lab1/image222a.png) 
+	
+	Under *Integration Runtimes* your queue manager now shows a *Ready* status, you can now click the hyperlink to open the MQ console for your queue manager. The runtime instance shows *mq00-quickstart-cp4i*, but that is not your queue manager name. You named it **mq00qs**.
 
 	![](./images/pots/mq-cp4i/lab1/image223.png)
 	
@@ -192,7 +198,8 @@ This only needs to be done once by the first queue manager that is starting. If 
 
 1. Click *Create* to add the record.
 
-	![](./images/pots/mq-cp4i/lab1/image235.png)	
+	![](./images/pots/mq-cp4i/lab1/image235.png) 
+	
 	You will receive a green succes notification and the record appears in the list.
 	
 	![](./images/pots/mq-cp4i/lab1/image236.png)
@@ -243,7 +250,7 @@ MQ has been deployed within the Cloud Pak for Integration to other containers de
 
 	![](./images/pots/mq-cp4i/lab1/image241.png)
 
-1. Notice the **app1** queue has a queue depth of 1 with a maximum queue depth of 50,000. Select the *app1* queue. 
+1. Notice the **app1** queue has a queue depth of 1 with a maximum queue depth of 5,000. Select the *app1* queue. 
 
 	![](./images/pots/mq-cp4i/lab1/image242.png)
 	

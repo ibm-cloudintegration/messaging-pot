@@ -22,14 +22,21 @@ This lab introduces MQ Uniform Cluster and Application Rebalancing as of MQ 9.2 
 
 * Stop then restart a queue manager with connected apps to show automatic application rebalancing to remaining running queue managers in the Uniform Cluster* Report resource usage metrics for the applications, introduced in MQ 9.1.5.* Connect an application to a Queue Manager Group instead of a queue manager
 
-### Important points to note
+### Pre-reqs
+
+You should have already downloaded the artifacts for this lab in the lab Environment Setup from [GitHub MQonCP4I](https://github.com/ibm-cloudintegration/mqoncp4i). 
+
+If you are doing this lab out of order return to [Environment Setup](mq_cp4i_pot_envsetup.html) to perform the download. Then continue from here.
+
+#### Important points to note
 
 The lab guide assumes you are using the RHEL desktop VM from the IBM Asset Repo. If you are using another platform, you can download the necessary artifacts from the github repo. The instructor will provide directions.
 
 {% include important.html content="The screen shots were taken on a test cluster and many will not match what you see when running the lab. Particularly URL values will be different depending on the cluster where CP4I is running. Projects (Namespaces) may also vary. It is important to follow the directions, not the pictures." %}
 
-### Further information
-* IBM MQ Knowledge Center* “Building scalable fault tolerant systems with IBM MQ 9.1.2 CD” article by David Ware, STSM, Chief Architect, IBM MQ: 
+#### Further information
+
+* [IBM MQ Knowledge Center](https://www.ibm.com/docs/en/ibm-mq/9.2?topic=mq) * “Building scalable fault tolerant systems with IBM MQ 9.1.2 CD” article by David Ware, STSM, Chief Architect, IBM MQ: 
 [David Ware article](https://developer.ibm.com/messaging/2019/03/21/building-scalable-fault-tolerant-ibm-mq-systems/)* “Active/active IBM MQ with Uniform Clusters” video by David Ware:[YouTube Demo Video](https://www.youtube.com/watch?v=LWELgaEDGs0&feature=youtu.be)
 
 ## Configure the cluster using yaml
@@ -38,7 +45,7 @@ The lab guide assumes you are using the RHEL desktop VM from the IBM Asset Repo.
 
 	![](./images/pots/mq-cp4i/lab3/image302a.png)
 	
-1. Navigate to the URL for the OCP console provided in your PoT email. 
+1. Navigate to the URL for the OCP console provided in your PoT email. If required to log in use the userid / password provided in the email.
 
 	![](./images/pots/mq-cp4i/lab3/image304.png)
 
@@ -46,9 +53,9 @@ The lab guide assumes you are using the RHEL desktop VM from the IBM Asset Repo.
 
 	![](./images/pots/mq-cp4i/lab3/image306.png)
 
-1. If your platform navigator session timed out, you may be required to log-in again.
+1. You may still be logged in from the previous labs. If your platform navigator session timed out, you may be required to log-in again.
 
-1. Click the hamburger menu in the top right corner of the window and select *IBM Automation (cp4i)*.
+1. If you get directed to the *IBM Cloud Pak | Aministration Hub*, click the hamburger menu in the top right corner of the window and select *IBM Automation*.
 
 	![](./images/pots/mq-cp4i/lab3/image306a.png)
 	
@@ -121,12 +128,12 @@ The lab guide assumes you are using the RHEL desktop VM from the IBM Asset Repo.
 	
 	![](./images/pots/mq-cp4i/lab3/image302b.png)
 	
-1. Review the *uni-install.sh* shell script. The export commands define environment variables using your student ID to uniquely define your queue managers and related objects. This will help you identify and filter based on your student ID. 
+1. Review the *uni-install.sh* shell script. The export commands define environment variables using your student number to uniquely define your queue managers and related objects. This will help you identify and filter based on your student ID. 
 
-	Notice that you will be using the **mqxx** project (*TARGET_NAMESPACE*). There will be three queue managers, *mqxxa*, *mqxxb*, and *mqxxc* in your cluster *UNICLUSxx*. 
+	Notice that you will be using your assigned project (*TARGET_NAMESPACE*). Replace *cp4i-mq* with your assigned project name.There will be three queue managers, *mqxxa*, *mqxxb*, and *mqxxc* in your cluster *UNICLUSxx*. 
 
 	![](./images/pots/mq-cp4i/lab3/image207.png)
-	
+	 
 1. One of the environment variables is *SC* for Storage Class. If you are running on a ROKS cluster use the **ibmc-file-gold-gid** storage class and comment out the *managed-nfs-storage* line. If you are running on a CoC cluster use the **managed-nfs-storage** storage class and comment out the line for *ibmc-file-gold-gid*. 
 
 	If you are attending a PoT, ask the instructor which Red Hat cluster you are using.
@@ -135,7 +142,7 @@ The lab guide assumes you are using the RHEL desktop VM from the IBM Asset Repo.
 
 	![](./images/pots/mq-cp4i/lab3/image208.png)
 
-1. Enter **00** in the *Find* field and your student ID in the *Replace with* field. Click *Replace All*, close Find-and-Replace window, then click *Save*.
+1. Enter **00** in the *Find* field and your student number in the *Replace with* field. Click *Replace All*, close Find-and-Replace window, then click *Save*.
 
 	![](./images/pots/mq-cp4i/lab3/image209.png)
 	
@@ -171,12 +178,12 @@ The lab guide assumes you are using the RHEL desktop VM from the IBM Asset Repo.
 	
 	![](./images/pots/mq-cp4i/lab2/image0a.png)
 	
-	{% include note.html content="You should still be in project *mqxx* so you shouldn't need to run this command." %}
+	{% include note.html content="You should still be in your project so you shouldn't need to run this command." %}
 	
-	Run the following command to navigate to the *mq00* project substituting your student number for 00:
+	Run the following command to navigate to your project substituting your personal project name:
 	
 	```
-	oc project mq00
+	oc project cp4i-mq
 	``` 
 
 1. Enter the following command to create your uniform cluster. 
@@ -187,6 +194,10 @@ The lab guide assumes you are using the RHEL desktop VM from the IBM Asset Repo.
 	
 	![](./images/pots/mq-cp4i/lab3/image310.png)		
 1. Return to the *Platform Navigator* web browser page. In *Runtimes* click the *Refresh* button. 
+
+	If you receive the following "Internal server error", click the hamburger menu next to *IBM Automation* and select *Integeration runtimes*. You may need to refresh the page several times. 
+ 
+ 	![](./images/pots/mq-cp4i/lab3/image310a.png)
 	
 1. The queue managers will be in a *Pending* state for a couple of minutes while they are provisioned.
 
@@ -289,40 +300,56 @@ The lab guide assumes you are using the RHEL desktop VM from the IBM Asset Repo.
 In this section we shall launch 6 instances of an application connected to the same queue manager.
 The Client Channel Definition Table (CCDT) determines the channel definitions and authentication information used by client applications to connect to a queue manager.We shall be using a CCDT in JSON format. 
 
-1. Open a terminal window and navigate to */home/ibmuser/MQonCP4I/unicluster/test*. Copy the command snippet so you don't have to type the whole thing (you will need it in other terminals).
+1. Open a terminal window and navigate to */home/student/MQonCP4I/unicluster/test*. Copy the command snippet so you don't have to type the whole thing (you will need it in other terminals).
 
 	```
-	cd /home/ibmuser/MQonCP4I/unicluster/test
+	cd /home/student/MQonCP4I/unicluster/test
 	```
 
+1. Make shell scripts executable with the following commmand:
+
+	```
+	chmod +x getMessage.sh
+	```
+	
+	Repeat the command for the other scripts:
+	
+	* sendMessage.sh
+	* killall.sh
+	* rClient.sh
+	* sClient.sh
+	* setEnv.sh
+	* *showConns.sh
+	
+	![](./images/pots/mq-cp4i/lab3/image218f.png)
+	
 1. Edit **ccdt.json** with the following command:
 
 	```
 	gedit ccdt.json
 	```
 	
-	![](./images/pots/mq-cp4i/lab3/image218.png)	
+	![](./images/pots/mq-cp4i/lab3/image218a.png)	
 1. Before you make any changes review the file observing:
 	
 	* the channel name matches the server connection channel on the queue manager
-	* the host is in the format that you used in MQ Explorer but a different route
-	* the port is the listener port for the queue manager
+	* the host is in the format that you used in MQ Explorer	* the port is the listener port for the queue manager
 	* queue manager name
 	* cipherspec
 
-	![](./images/pots/mq-cp4i/lab3/image34.png)
+	![](./images/pots/mq-cp4i/lab3/image218b.png)
 	
-1. You only need to change the channel name, host, and queue manager name.  First you need to find the host name. To get the host name, return to the OpenShift console. Make sure you are in the *cp4i-mq* project. Open *Networking* and select *Routes*. Filter by your queue manager name (mqxxa) then click the hyperlink for *mqxxa-ibm-mq-qm*.
+1. You only need to change the channel name, host, and queue manager name.  First you need to find the host name. To get the host name, return to the OpenShift console. Make sure you are in the *cp4i-mq* project substituting your personal project for cp4i-mq. Open *Networking* and select *Routes*. Filter by your queue manager name (mqxxa) then click the hyperlink for *mqxxa-ibm-mq-qm*.
 
-	![](./images/pots/mq-cp4i/lab3/image36.png)
+	![](./images/pots/mq-cp4i/lab3/image218c.png)
 	
 	Scroll down to the *Router:default* section. Copy the string under *Host* and paste it into the host field of the *ccdt.json* file.
 	
-	![](./images/pots/mq-cp4i/lab3/image37.png)
+	![](./images/pots/mq-cp4i/lab3/image218d.png)
 
 	Change the "00" to your student ID in the channel *name* and *queueManager* values. 
 	
-	![](./images/pots/mq-cp4i/lab3/image38.png)
+	![](./images/pots/mq-cp4i/lab3/image218e.png)
 	
 	Click *Save*.
 	
@@ -341,7 +368,7 @@ In this section we shall launch 6 instances of an application connected to the s
 	
 	Change the "00" in QMpre and QMname to your student ID, then click *Save*.
 	
-	![](./images/pots/mq-cp4i/lab3/image219.png)
+	![](./images/pots/mq-cp4i/lab3/image219a.png)
 
 1. Open a new terminal window and enter the command:
 
@@ -355,13 +382,13 @@ In this section we shall launch 6 instances of an application connected to the s
 	
 	![](./images/pots/mq-cp4i/lab3/image42.png)
 
-1. Return to the OpenShift Console browser tab. Make sure you are in the *mq* project. Open *Wokrload > Pods*, use the filter to search for you queue managers, then click the hyperlink *mqxxa-ibm-mq-0* pod. 
+1. Return to the OpenShift Console browser tab. Make sure you are in the your project. Open *Workload > Pods*, use the filter to search for you queue managers, then click the hyperlink *mqxxa-ibm-mq-0* pod. 
 
-	![](./images/pots/mq-cp4i/lab3/image44.png)
+	![](./images/pots/mq-cp4i/lab3/image316.png)
 	
 1. Click *Terminal*. This opens a terminal window in the container running inside that pod.
 
-	![](./images/pots/mq-cp4i/lab3/image45.png)		
+	![](./images/pots/mq-cp4i/lab3/image317.png)		
 1. There is a new MQSC command, *DISPLAY APSTATUS*, which we shall now use to display the status of an application across all queue managers in a cluster.
 
 	Start *runmqsc* with following command:		
@@ -376,7 +403,7 @@ In this section we shall launch 6 instances of an application connected to the s
 	
 	*COUNT* is the number of instances of the specified application name currently running on this queue manager, while *MOVCOUNT* is the number of instances of the specified application name running on the queue manager which could be moved to another queue manager if required. You started the getMessage.sh six times.
 	
-	![](./images/pots/mq-cp4i/lab3/image46.png)
+	![](./images/pots/mq-cp4i/lab3/image318.png)
 	
 	Click *Expand* to make the window larger. Repeat the command changing the *TYPE* to **QMGR**.	
 	
@@ -388,7 +415,7 @@ In this section we shall launch 6 instances of an application connected to the s
 	
 	This display shows how the applications have been rebalanced. Notice that each queue manager in the cluster is now running two of the client applications making a total of six rebalanced.
 	
-	![](./images/pots/mq-cp4i/lab3/image47.png) 
+	![](./images/pots/mq-cp4i/lab3/image319.png) 
 	
 	Click *Collapse* to return the window to normal size. Enter *end* to stop runmqsc.
 	
@@ -398,13 +425,13 @@ In this section we shall launch 6 instances of an application connected to the s
 
 1. Some of the application instances will show reconnection events as the workload is rebalanced to queue managers *mqxxb* and *mqxxc*.
 
-	![](./images/pots/mq-cp4i/lab3/image48.png)
+	![](./images/pots/mq-cp4i/lab3/image320.png)
 	
 ## Launch putting application
 
 We shall launch another sample which will put messages to each queue manager in the cluster. The running samples should then pick up these messages and display them. In this lab, we are using one putting application to send messages to all getting applications using cluster workload balancing. You could set up the same scenario with one or more putting applications per queue manager and application rebalancing would work in the same way that you’ve seen for getting applications.
 
-1. Open a new terminal window and navigate to */home/ibmuser/MQonCP4I/unicluster/test*. Open an edit session for *sendMessage.sh*. Review the export commands observing:
+1. Open a new terminal window and navigate to */home/student/MQonCP4I/unicluster/test*. Open an edit session for *sendMessage.sh*. Review the export commands observing:
 		* MQCHLLIB (sets the folder of the JSON CCDT file	* MQCHLTAB sets the name of the JSON CCDT file
 	* MQSSLKEYR sets the location of the key
 	* MQAPPLNAME gives a name to the application for displays 
@@ -416,7 +443,7 @@ We shall launch another sample which will put messages to each queue manager in 
 1. We shall be using the sample amqsphac in this scenario. In the terminal window, enter the following command: 
 		
 	```
-	./putMessage.sh
+	./sendMessage.sh
 	```		
 	
 	![](./images/pots/mq-cp4i/lab3/image224.png)
@@ -446,6 +473,9 @@ When a queue manager is ended, the applications on that queue manager are usuall
 1. Click *Pods* in the side-bar and notice that the pod for *mqxxc* has been terminated.
 
 	![](./images/pots/mq-cp4i/lab3/image56.png)
+	
+	{% include tip.html content="Now that you have seen the yaml code to change replicas, there is a much faster way to scale down the replicas in order to stop a queue manager. Instead of clicking the *YAML* tab in the *StatefulSet* click *Details* instead. Then just decrease the count by 1. To start the queue manager again, just increase the number back to 1. Use this pod counter when asked to stop or start the queue manager." %}	
+	![](./images/pots/mq-cp4i/lab3/image325.png)
 	
 1. In the application windows, you'll notice that the application connected to *mq00c* are now trying to reconnect.
 
@@ -513,7 +543,7 @@ Statistics available are:
 	
 1. Stop the **amqsrua** session when you are ready, using *ctrl-C*.
 
-1. Stop the putting application with *ctrl-C*. And also stop all six of the getting application with *ctrl-C*. You can leave the terminal windows open as you will need them in the next secion.
+1. Stop the putting application with *ctrl-C*. Leave the terminal window open as you will need it in the next secion.
 
 ## Using CCDT Queue Manager Groups
 
@@ -540,7 +570,7 @@ Now that you know how to stop and start queue managers in CP4i, you will not rec
 1. Now run the following MQSC command on any active queue manager in the cluster:	```
 	DISPLAY APSTATUS(MY.GETTER.APP) TYPE(APPL)
 	```	
-	After a while, there should be fewer than the 6 application instances that were originally present. 
+	After a while, there should be fewer than the 6 application instances that were originally present. You may need to run the command more than once until the rebalancing  occurs.
 	
 	![](./images/pots/mq-cp4i/lab3/image71.png)
 	
@@ -558,7 +588,7 @@ Now that you know how to stop and start queue managers in CP4i, you will not rec
 
 ### Stop queue manager – application refers to CCDT Queue Manager Group
 
-1. In the classroom environment, an updated CCDT file has been created for you to use: */home/ibmuser/MQonCP4I/unicluster/test/ccdt5.json*.	Open this file in the editor. Change the *host* values for each queue manager as you did in the *ccdt.json* file. There are 8 hosts parameters to change. As well as containing the original set of direct references to the queue managers, it gives a queue manager group definition with a route to all queue managers using the name **ANY_QM**.
+1. In the classroom environment, an updated CCDT file has been created for you to use: */home/student/MQonCP4I/unicluster/test/ccdt5.json*.	Open this file in the editor. Change the *host* values for each queue manager as you did in the *ccdt.json* file. There are 8 hosts parameters to change. As well as containing the original set of direct references to the queue managers, it gives a queue manager group definition with a route to all queue managers using the name **ANY_QM**.
 	
 1. Scroll down the file and note two new attributes:
 
@@ -574,16 +604,17 @@ Now that you know how to stop and start queue managers in CP4i, you will not rec
 		
 1. Please note: the supplied updated CCDT5 file was originally created for a scenario with an additional queue manager called *mqxxd*. For completeness, we shall create that missing queue manager now.
 
-1. In your editor session (gedit), click *Open* > *Other documents* and navigate to */home/ibmuser/MQonCP4I/unicluster/deploy*, then select *uniaddqmgr.yaml_template* and click *Open*. 
+1. In your editor session (gedit), click *Open* > *Other documents* and navigate to */home/student/MQonCP4I/unicluster/deploy*, then select *uniaddqmgr.yaml_template* and click *Open*. 
 
-	![](./images/pots/mq-cp4i/lab3/image75.png)	
+	![](./images/pots/mq-cp4i/lab3/image75.png) 
+	
 	Do not change anything in this file. Review it observing that it will create *qmxxd*, configmaps for *mqxxd*, and a route for *mqxxd*. It will use the same secret as the other three queue managers.
 	
 	![](./images/pots/mq-cp4i/lab3/image76.png)
 
 1. 	Open another file in the editor: 
 
-	*/home/ibmuser/MQonCP4I/unicluster/deploy/uni-addqmgr.sh*.
+	*/home/student/MQonCP4I/unicluster/deploy/uni-addqmgr.sh*.
 	
 	Review the export commands observing:
 		* MQCHLLIB sets the folder of the JSON CCDT file	* MQCHLTAB sets the name of the JSON CCDT file
@@ -596,8 +627,8 @@ Now that you know how to stop and start queue managers in CP4i, you will not rec
 	
 	Save the file.
 	
-	![](./images/pots/mq-cp4i/lab3/image235.png)		
-1. In one of the terminal windows navigate to */home/ibmuser/MQonCP4I/unicluster/deploy/*.
+	![](./images/pots/mq-cp4i/lab3/image235.png)			
+1. In one of the terminal windows navigate to */home/student/MQonCP4I/unicluster/deploy/*.
 
 	Enter the following command to create the new queue manager:
 	
@@ -605,24 +636,25 @@ Now that you know how to stop and start queue managers in CP4i, you will not rec
 	./uni-addqmgr.sh
 	```
 	
-	![](./images/pots/mq-cp4i/lab3/image78.png)	
+	![](./images/pots/mq-cp4i/lab3/image78.png) 
+	
 	Like *mqxxc*, it will have a partial repository.
 	
 	Note: You need to add *mqxxd* to MQExplorer to see it in the cluster display.
 	
-1. In the editor, open  */home/ibmuser/MQonCP4I/unicluster/test/sClient.sh*. Change *00* to your student ID. Change the path for *MQCHLTAB* and *MQCCDTURL* to **/home/ibmuser/MQonCP4I/unicluster/test/ccdt5.json**. Click *Save*.
+1. In the editor, open */home/student/MQonCP4I/unicluster/test/sClient.sh*. Change *00* to your student ID. Change the path for *MQCHLTAB* and *MQCCDTURL* to **/home/student/MQonCP4I/unicluster/test/ccdt5.json**. Click *Save*.
 
-	![](./images/pots/mq-cp4i/lab3/image236.png)
+	![](./images/pots/mq-cp4i/lab3/image236a.png)
 	
 	*ccdt5.json* includes *mqxxd* and entries for the queue manager group *ANY_QM*. The script will connect to an available queue manager and run the getting application *amqsghac*.
 	
 1. Open and make the same edits in *rClient.sh*. 
 
-	![](./images/pots/mq-cp4i/lab3/image238.png)			
+	![](./images/pots/mq-cp4i/lab3/image237.png)			
 1. In the editor, open file 			
-*/home/ibmuser/MQonCP4I/unicluster/test/showConns.sh*. Make the necessary changes: 00 to your student ID and the paths for MQCHLTAB and MQCCDTURL to **/home/ibmuser/MQonCP4I/unicluster/test/ccdt5.json**.
+*/home/student/MQonCP4I/unicluster/test/showConns.sh*. Make the necessary changes: 00 to your student ID and the paths for MQCHLTAB and MQCCDTURL to **/home/student/MQonCP4I/unicluster/test/ccdt5.json**.
 	
-	![](./images/pots/mq-cp4i/lab3/image237.png)  
+	![](./images/pots/mq-cp4i/lab3/image238.png)  
 	
 	Script *sClient.sh* will start the getting application *amqsghac* using *ccdt5.json* and will continue to run in that terminal. Script *rClient.sh* however, will start six more client applications running getting application *amqsghac* in the background. The main difference being that displays for those six clients will all be displayed in that single terminal.
 	
@@ -633,9 +665,9 @@ Now that you know how to stop and start queue managers in CP4i, you will not rec
 	```
 	
 	![](./images/pots/mq-cp4i/lab3/image239.png)	
-1. Sign and position those four windows so you can see the diplays:
+1. Position those four windows so you can see the diplays:
 
-	![](./images/pots/mq-cp4i/lab3/image83.png)
+	![](./images/pots/mq-cp4i/lab3/image83a.png)
 	
 1. Now you are ready to start the getting applications. In each one of your open terminal windows, run the following command:
 
@@ -650,7 +682,8 @@ Now that you know how to stop and start queue managers in CP4i, you will not rec
 	Again, you will need to run this command 6 times.	
 1. Observe the behavior as the queue managers rebalance the connections. Watch the windows runnning the *showConns.sh* scripts as well as the windows where the getting applications are running. The application instances will now attempt to connect to any of the queue managers defined in the queue manager group, and with the client weight and affinity options defined above, we should see each application instance connect to one of the queue managers in the Queue Manager Group and Uniform Cluster.	Eventually, the applications are evenly distributed across the queue managers.
 	
-	![](./images/pots/mq-cp4i/lab3/image85.png)	
+	![](./images/pots/mq-cp4i/lab3/image240a.png) 
+	
 	You can confirm this by watching the windows runnning the *showConns.sh* script or running the MQSC command DISPLAY APSTATUS on any active queue manager in the cluster.
 	
 1. In a command window, start the putting application by entering the following command:
@@ -659,20 +692,20 @@ Now that you know how to stop and start queue managers in CP4i, you will not rec
 	./sendMessage.sh
 	```
 	
-	![](./images/pots/mq-cp4i/lab3/image86.png)
+	![](./images/pots/mq-cp4i/lab3/image86a.png)
 	
 1. While *showConns.sh* displays show even distribution, you can also observe the application windows to see that the applications are getting an even distribution of messages.
 
-	![](./images/pots/mq-cp4i/lab3/image87.png)
+	![](./images/pots/mq-cp4i/lab3/image87a.png)
 			
 1. Now end *mqxxa* to force the applications to be rebalanced:	![](./images/pots/mq-cp4i/lab3/image90.png)
 		Rather than the applications getting stuck in a reconnect loop trying to connect to *mqxxa* as we saw using the previous version of the CCDT file, the applications now tied to the queue manager group ANY_QM will go through each of the definitions of ANY_QM and when able to successfully connect to one of the underlying queue managers, will do so. You should see this reported in a subset of the application instances:
 	
-	![](./images/pots/mq-cp4i/lab3/image91.png)
+	![](./images/pots/mq-cp4i/lab3/image91a.png)
 	
 1. Run the MQSC command DISPLAY APSTATUS on any active queue manager in the cluster (try it on mqxxd stateful set this time since it was added later). After a while, there should once more be 6 connections in total, as there were before *mqxxa* was shut down. Notice there are 6 total, but none on *mqxxa*
 
-	![](./images/pots/mq-cp4i/lab3/image92.png)
+	![](./images/pots/mq-cp4i/lab3/image92a.png)
 	
 1. Restart *mqxxa*.
 
@@ -686,10 +719,10 @@ Now that you know how to stop and start queue managers in CP4i, you will not rec
 	```
 	Six more clients are started and you can see the messages that window is receiving.	
 	
-	![](./images/pots/mq-cp4i/lab3/image242.png)	
+	![](./images/pots/mq-cp4i/lab3/image242a.png)	
 1. Check the *showConns.sh* windows and you will see the applications evenly distributed again now totaling twelve.	
 	
-	![](./images/pots/mq-cp4i/lab3/image89.png)	
+	![](./images/pots/mq-cp4i/lab3/image89a.png)	
 	
 ## Congratulations
 
@@ -698,26 +731,24 @@ You have completed this lab Uniform Clusters and Application Rebalancing.
 
 ## Cleanup
 
+1. In one of the terminal windows, run the following command to end the getting applications:
+
+	```
+	./killall.sh
+	```
+	
+	![](./images/pots/mq-cp4i/lab3/image323.png)
+
 1. Close all the applications and terminal windows.
 
-1. Return to the Platform Navigator. Under *Runtimes* find your instances, click the elipsis on the right and select **Delete**. 
-
-	![](./images/pots/mq-cp4i/lab3/image95.png)
-	
-	Type in the queue manager name and click *Delete* to confirm deletion.
-	
-	![](./images/pots/mq-cp4i/lab3/image244.png)	
-1. Deleting the queue manager in the Platform Navigator does not delete PVCs. You should have edited *uni-cleanup.sh* for your student ID at the beginning of the lab. If you didn't, please open */home/ibmuser/MQonCP4I/unicluster/deploy* in gedit now and make sure your student ID is in all the export commands. 
-
-	![](./images/pots/mq-cp4i/lab3/image243.png)
 
 1. In a terminal window run the following command:
 
 	```
-	/home/ibmuser/MQonCP4I/unicluster/deploy/uni-cleanup.sh
+	/home/student/MQonCP4I/unicluster/deploy/uni-cleanup.sh
 	```
 
-	![](./images/pots/mq-cp4i/lab3/image245.png)
+	![](./images/pots/mq-cp4i/lab3/image324.png)
 	
 
    
