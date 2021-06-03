@@ -227,7 +227,7 @@ entries:
       output: web, pdf
 
     - title: Lab 4 - Automate MQ Configuration Using Tekton Pipelines
-      url: /mq_cp4i_pot_lab4.html
+      url: /mq_cp4i_pot_repair.html
       output: web, pdf
 
     - title: Lab 5 - Native HA for MQ
