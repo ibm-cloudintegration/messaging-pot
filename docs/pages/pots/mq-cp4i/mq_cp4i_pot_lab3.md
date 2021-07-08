@@ -55,7 +55,7 @@ The lab guide assumes you are using the RHEL desktop VM from the IBM Asset Repo.
 
 1. You may still be logged in from the previous labs. If your platform navigator session timed out, you may be required to log-in again.
 
-1. If you get directed to the *IBM Cloud Pak | Aministration Hub*, click the hamburger menu in the top right corner of the window and select *IBM Automation*.
+1. If you get directed to the *IBM Cloud Pak / Aministration Hub*, click the hamburger menu in the top right corner of the window and select *IBM Automation*.
 
 	![](./images/pots/mq-cp4i/lab3/image306a.png)
 	

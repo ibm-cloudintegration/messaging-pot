@@ -71,32 +71,34 @@ The lab guide assumes you are using the RHEL desktop VM from the IBM Asset Repo.
 	
 1. Change	*TARGET_NAMESPACE* to your assigned project/namespace. NativeHA was introduced as a tech preview in CP4I verion 9.2.2.0, so the value *VERSION* must be 9.2.2.0-r1. Change **00** in *QMname* export to your student number. The *SC* export for *managed-nfs-storage* should be uncommented and *ibmc-file-gold-gid* should be commented out.
 
-	{% include note.html content="cp4i-mq is the namespace used to document this lab. When working in a PoT, you will have been assigned a userid and namespace such as chopper01." %}
+	![](./images/pots/mq-cp4i/lab5/image2a.png)
+
+	{% include note.html content="chopper5 is the namespace used to document this lab. When working in a PoT, you will have been assigned a userid and namespace such as chopper5." %}
 	
-	![](./images/pots/mq-cp4i/lab5/image3.png)	
+	![](./images/pots/mq-cp4i/lab5/image3a.png)	
 	{% include important.html content="If you are an IBMer running this lab on a ROKS cluster, use storage class *ibmc-file-gold-gid*." %}
 	
 	Click *Save*.
 	
 1. Click the drop-down next to *Open*, then click *Other documents*. 
 
-	![](./images/pots/mq-cp4i/lab5/image4.png)
+	![](./images/pots/mq-cp4i/lab5/image4a.png)
 
-1. The current directory opens showing all the files in the directory. 
+1. The current directory opens showing all the files in the directory. You also need to update *cleanup.sh*, so select it and click *Open*.
 
 	![](./images/pots/mq-cp4i/lab5/image5.png)
 	
-	You also need to update *cleanup.sh*, so select it and click *Open*.
+	![](./images/pots/mq-cp4i/lab5/image5a.png)	
 	
-	![](./images/pots/mq-cp4i/lab5/image6.png)
-	
-	Change *TARGET_NAMESPACE* to your assigned project. Change *QMname* to your student number. Click *Save* to save cleanup.sh.
-	
-1. Repeat the above steps to open *nativeha.yaml_template*. 
+1. Change *TARGET_NAMESPACE* to your assigned project. Change **00** in *QMname* to your student number. Click *Save* to save cleanup.sh.
 
-	 ![](./images/pots/mq-cp4i/lab5/image7.png)
-	 
-1. There is nothing to change here, but it is necessary to review the how the queue manager is created by the yaml code. The first Kubernetes API is a *ConfigMap* named **nativehamqsc**. This creates a file of mqsc commands to define MQ objects in the queue manager. The second Kubernetes API is a *Secret* called **nativehacert**. This includes two files to build the secret. *tls.crt* is the signer certificate for the queue manager and *tls.key* is the queue manager's private key. nativehamqsc and nativehacert will be used to define the third Kubernetes kind, the queue manager itself.   
+	![](./images/pots/mq-cp4i/lab5/image6.png)
+
+	![](./images/pots/mq-cp4i/lab5/image6a.png)
+	
+1. Repeat the above steps to open *nativeha.yaml_template*.  
+
+	There is nothing to change here, but it is necessary to review the how the queue manager is created by the yaml code. The first Kubernetes API is a *ConfigMap* named **nativehamqsc**. This creates a file of mqsc commands to define MQ objects in the queue manager. The second Kubernetes API is a *Secret* called **nativehacert**. This includes two files to build the secret. *tls.crt* is the signer certificate for the queue manager and *tls.key* is the queue manager's private key. nativehamqsc and nativehacert will be used to define the third Kubernetes kind, the queue manager itself.   
 
 	![](./images/pots/mq-cp4i/lab5/image8.png)
 	
@@ -108,7 +110,7 @@ The lab guide assumes you are using the RHEL desktop VM from the IBM Asset Repo.
 	
 1. Looking again at *install.sh*, the last statement copies the yaml template to nativeha.yaml and applies that it to create the queue manager.
 
-	![](./images/pots/mq-cp4i/lab5/image10.png)
+	![](./images/pots/mq-cp4i/lab5/image10a.png)
 	
 	You can now close the gedit utility.
 	
@@ -127,8 +129,17 @@ The lab guide assumes you are using the RHEL desktop VM from the IBM Asset Repo.
 	./install.sh
 	```
 	
-	![](./images/pots/mq-cp4i/lab5/image12.png)	
-	The response is that the configmap, secret, and queue manager were successfully created. 
+	![](./images/pots/mq-cp4i/lab5/image12a.png) 
+	
+	The response is that the configmap, secret, and queue manager were successfully created.  
+	
+1. If you receive an unauthorized message, your session may have timed out. You will need to sign-on again as you did in the *Environment Setup*.  
+	
+	Make sure you are in your assigned project:
+	
+	```sh
+	oc project chopper5
+	```
 	
 ## Explore the queue manager 
 
@@ -136,73 +147,72 @@ The lab guide assumes you are using the RHEL desktop VM from the IBM Asset Repo.
 
 The hyperlink to the OpenShift Console for the cluster should be included in your email. Navigate to the OCP console now. 
  
-1. The OCP Console opens at the *Overview* page. You can explore the various information about the cluster details here. When ready, click *Projects* and select **cp4i**.
+1. The OCP Console opens at the *Overview* page. You can explore the various information about the cluster details here. When ready, click *Projects* and select your project **chopper5** (Use you assigned namespace).
 
-	![](./images/pots/mq-cp4i/lab5/image34.png)
-	
-1. To access the queue manager and the MQ Console, you need to open the CP4I Platform Navigator. Click the drop-down for *Networking* and select *Routes* then click the location hyplerlink for route **integration-cp4i-pn**. 
+	![](./images/pots/mq-cp4i/lab5/image34a.png)		
+1. To access the queue manager and the MQ Console, you need to open the CP4I Platform Navigator. Click the drop-down for *Networking* and select *Routes*. Type *Integration* in the filter, then click the location hyplerlink for route **integration-quickstart-pn**. 
 
-	 ![](./images/pots/mq-cp4i/lab5/image35.png)
+	 ![](./images/pots/mq-cp4i/lab5/image35a.png)
 	 
 	 Accept any security warnings and continue.
 	 
-1. When presented with the "Log in to IBM Automation", click *Enterprise LDAP*. Enter the userid and password that you received in your email and click *Login*.
+1. When presented with the "Log in to IBM Automation", click *Enterprise LDAP*. Enter the userid and password that you received in your email and click *Login*. Remember to use your credentials, not the ones in the screen shot.
 
-	![](./images/pots/mq-cp4i/lab5/image38.png)	
-1. Under *Messaging* you will see the namespace **cp4i-mq** and the **mq00ha** queue manager. Click **mq00ha**.
+	![](./images/pots/mq-cp4i/lab5/image38a.png)	
+1. Under *Messaging* you will see the namespace **chopper5** and the **mq05ha** queue manager. Click **mq05ha**.
 
-	![](./images/pots/mq-cp4i/lab5/image39.png)
+	![](./images/pots/mq-cp4i/lab5/image39a.png)
 	
-1. The MQ Console is now opened for queue manager **mq00ha**. Click the *Manage* icon.
+1. The MQ Console is now opened for queue manager **mq05ha**. Click the *Manage* icon.
 
-	![](./images/pots/mq-cp4i/lab5/image40.png)
+	![](./images/pots/mq-cp4i/lab5/image40a.png)
 
 1. The Manage page has tabs for *Queues*, *Topics*, *Subscriptions*, and *Communication (Channels)*. You see queue **APPQ** which was defined in the *ConfigMap (mqsc)* stanza of the install.sh yaml file.
 
-	![](./images/pots/mq-cp4i/lab5/image41.png)		
-1. Click *Communication \> App channels*. App channels are better known as SVRCONN channels. Here you see **MQEXTERNALCHL** which was defined in the *Queue Manager* stanza of the yaml.
+	![](./images/pots/mq-cp4i/lab5/image41a.png)		
+1. Click *Communication \> App channels*. App channels are better known as SVRCONN channels. Here you see **MQ05HACHL** which was defined in the *Queue Manager* stanza of the yaml.
 
-	![](./images/pots/mq-cp4i/lab5/image42.png)
+	![](./images/pots/mq-cp4i/lab5/image42a.png)
 
-1. In the OCP Console, change the project to *cp4i-mq*. Click the drop-down for *Operators* then select *Installed Operators*. Scroll to the bottom and click the hyperlink for **IBM MQ**.
+1. In the OCP Console, change the project to your namespace, for example *chopper5*. Click the drop-down for *Operators* then select *Installed Operators*. Scroll to the bottom and click the hyperlink for **IBM MQ**.
 
-	![](./images/pots/mq-cp4i/lab5/image43.png)
+	![](./images/pots/mq-cp4i/lab5/image43a.png)
 
-1. You can browse the details about the MQ Operator, then click *Queue Manager*. You see your queue manager **mq00ha** and it is *Running*. Any other queue managers running in the namespace will also be displayed.  
+1. You can browse the details about the MQ Operator, then click *Queue Manager*. You see your queue manager **mq05ha** and it is *Running*. Any other queue managers running in the namespace will also be displayed.  
 
-	![](./images/pots/mq-cp4i/lab5/image44.png)
+	![](./images/pots/mq-cp4i/lab5/image44a.png)
 
-	Click the hyperlink for **mq00ha**.
+	Click the hyperlink for **mq05ha**.
 	
-	![](./images/pots/mq-cp4i/lab5/image45.png)		
+	![](./images/pots/mq-cp4i/lab5/image45a.png)		
 1. The details and properties for the queue manager are displayed. Review by scrolling through the details. You can also see the yaml that for the queue manager object. 
 
-	After reviewing, click the drop-down for *Workloads* and select *Pods*.
+	After reviewing, click the drop-down for *Workloads* and select *Pods*. Type **mq05** (your student number in place of 05) in the filter so you will only see the pods for queue manger mq05ha. 
 	
-	![](./images/pots/mq-cp4i/lab5/image46.png)		
+	![](./images/pots/mq-cp4i/lab5/image46a.png)		
 1. As expected you will see three pods for the nativeha queue manager. One of the pods has 1 of 1 containers running. Two of the pods have 0 of 1 containers running. This is the nature of nativeHA, one pod running the queue manager and data being replicated to the other two pods which are in standby mode.
 
-	![](./images/pots/mq-cp4i/lab5/image47.png)
+	![](./images/pots/mq-cp4i/lab5/image47a.png)
 	
-1. If you click the hyperlink for the running pod, you will see its details and the logs. 	Click *Logs* to review the messages. Below is a sample from pod *mq00ha-ibm-mq-2* where you can see the messages involved with HA.
+1. If you click the hyperlink for the running pod, you will see its details and the logs. 	Click *Logs* to review the messages. Below is a sample from pod *mq05ha-ibm-mq-0* where you can see the messages involved with HA.
 
-	![](./images/pots/mq-cp4i/lab5/image48.png)
+	![](./images/pots/mq-cp4i/lab5/image48a.png)
 
 1. Under *Workloads* click *ConfigMaps* then select **nativehamqsc**.
 
-	![](./images/pots/mq-cp4i/lab5/image49.png)
+	![](./images/pots/mq-cp4i/lab5/image49a.png)
 	
 1. Scroll down to *Data* and you will see the mqsc statements to define the queue manager objects.
 
-	![](./images/pots/mq-cp4i/lab5/image50.png)
+	![](./images/pots/mq-cp4i/lab5/image50a.png)
 	
 1. Under *Workloads* click *Secrets* then scroll down to select **nativehacert**.
 
-	![](./images/pots/mq-cp4i/lab5/image51.png)
+	![](./images/pots/mq-cp4i/lab5/image51a.png)
 	
 1. Scroll down to *Data* and you will find the files for the certificate and key. 
 
-	![](./images/pots/mq-cp4i/lab5/image53.png)
+	![](./images/pots/mq-cp4i/lab5/image52a.png)
 	
 	Click *Reveal values* to see the cert and key. 
 	
@@ -243,27 +253,28 @@ The following status fields are used to report Native HA configuration status:
 1. Find the pods which are part of your queue manager with the following command:
 
 	```sh
-	oc get pods --selector app.kubernetes.io/instance=mq00ha
+	oc get pods --selector app.kubernetes.io/instance=mq05ha
 	```
 	
-	![](./images/pots/mq-cp4i/lab5/image58.png)
+	![](./images/pots/mq-cp4i/lab5/image58a.png)
 	
 1. Use the following command to run the *dspmq* command in the active pod: 
 
 	```sh
-	oc exec -t mq00ha-ibm-mq-0 dspmq
+	oc exec -t mq05ha-ibm-mq-0 dspmq
 	```
 	
-	![](./images/pots/mq-cp4i/lab5/image59.png)	 
+	![](./images/pots/mq-cp4i/lab5/image59.png) 
+	
 	In the active pod the queue manager shows *Running*.
 	
 1. Run the command again but this time in a replica pod.
 
 	```sh
-	oc exec -t nativeha-ibm-mq-1 dspmq
+	oc exec -t mq05ha-ibm-mq-1 dspmq
 	```
 	
-	![](./images/pots/mq-cp4i/lab5/image60.png)
+	![](./images/pots/mq-cp4i/lab5/image60a.png)
 	
 	In a replica pod the queue manager shows *Replica*.
 	
@@ -271,72 +282,72 @@ The following status fields are used to report Native HA configuration status:
 
 	* An active instance of the queue manager named **mq00ha** would report the following status:
 
-			QMNAME(mq00ha)                 STATUS(Running)
+			QMNAME(mq05ha)                 STATUS(Running)
 
 	* A replica instance of the queue manager would report the following status:
 
-			QMNAME(mq00ha)                 STATUS(Replica)
+			QMNAME(mq05ha)                 STATUS(Replica)
 
 	* An inactive instance would report the following status:
 
-			QMNAME(mq00ha)                 STATUS(Ended Immediately)
+			QMNAME(mq05ha)                 STATUS(Ended Immediately)
 
 1. To determine Native HA operational status of the instance in the specified pod:
 
 	```sh
-	oc rsh mq00ha-ibm-mq-0 dspmq -o nativeha -m mq00ha
+	oc rsh mq05ha-ibm-mq-0 dspmq -o nativeha -m mq05ha
 	```
 	
-	![](./images/pots/mq-cp4i/lab5/image61.png)
+	![](./images/pots/mq-cp4i/lab5/image61a.png)
 	
 	We will not test every possibility, but the following are possible displays to expect. Review the possibilities.
 	
-	* The active instance of the queue manager named **mq00ha** might report the following status:
+	* The active instance of the queue manager named **mq05ha** might report the following status:
 
-			QMNAME(mq00ha)               ROLE(Active) INSTANCE(inst1) INSYNC(Yes) QUORUM(3/3)
+			QMNAME(mq05ha)               ROLE(Active) INSTANCE(inst1) INSYNC(Yes) QUORUM(3/3)
 
 	* A replica instance of the queue manager might report the following status:
 
-			QMNAME(mq00ha)               ROLE(Replica) INSTANCE(inst2) INSYNC(Yes) QUORUM(2/3)
+			QMNAME(mq05ha)               ROLE(Replica) INSTANCE(inst2) INSYNC(Yes) QUORUM(2/3)
 
 	* An inactive instance of the queue manager might report the following status:
 
-			QMNAME(mq00ha)               ROLE(Unknown) INSTANCE(inst3) INSYNC(no) QUORUM(0/3)
+			QMNAME(mq05ha)               ROLE(Unknown) INSTANCE(inst3) INSYNC(no) QUORUM(0/3)
 
 1. To determine the Native HA operational status of all the instances in the Native HA configuration:
 
 	```sh
-	oc rsh nativeha-ibm-mq-0 dspmq -o nativeha -x -m nativeha
+	oc rsh mq05ha-ibm-mq-0 dspmq -o nativeha -x -m mq05ha
 	```
 	
-	![](./images/pots/mq-cp4i/lab5/image62.png)
+	![](./images/pots/mq-cp4i/lab5/image62a.png)
 	
 	We will not test every possibility, but the following are possible displays to expect. Review the possibilities.
 	
-	* If you issue this command on the node running the active instance of queue manager **mq00ha**, you might receive the following status:
+	* If you issue this command on the node running the active instance of queue manager **mq05ha**, you might receive the following status:
 
-			QMNAME(mq00ha)			ROLE(Active) INSTANCE(inst1) INSYNC(Yes) QUORUM(3/3) 
-				INSTANCE(mq00ha-ibm-mq-0) ROLE(Active)  REPLADDR(nativeha-ibm-mq-0) 					CONNACTV(Yes) INSYNC(Yes) 					BACKLOG(0) CONNINST(Yes) ALTDATE(2021-01-12) ALTTIME(12.03.44) 
-				INSTANCE(mq00ha-ibm-mq-1) ROLE(Replica) REPLADDR(nativeha-ibm-mq-1) 					CONNACTV(Yes) INSYNC(Yes) 					BACKLOG(0) CONNINST(Yes) ALTDATE(2021-01-12) ALTTIME(12.03.44) 
-				INSTANCE(mq00ha-ibm-mq-2) ROLE(Replica) REPLADDR(nativeha-ibm-mq-2) 					CONNACTV(Yes) INSYNC(Yes) 					BACKLOG(0) CONNINST(Yes) ALTDATE(2021-01-12) ALTTIME(12.03.44)
+			QMNAME(mq05ha)			ROLE(Active) INSTANCE(inst1) INSYNC(Yes) QUORUM(3/3) 
+				INSTANCE(mq05ha-ibm-mq-0) ROLE(Active)  REPLADDR(mq05ha-ibm-mq-0) 					CONNACTV(Yes) INSYNC(Yes) 					BACKLOG(0) CONNINST(Yes) ALTDATE(2021-01-12) ALTTIME(12.03.44) 
+				INSTANCE(mq05ha-ibm-mq-1) ROLE(Replica) REPLADDR(mq05ha-ibm-mq-1) 					CONNACTV(Yes) INSYNC(Yes) 					BACKLOG(0) CONNINST(Yes) ALTDATE(2021-01-12) ALTTIME(12.03.44) 
+				INSTANCE(mq05ha-ibm-mq-2) ROLE(Replica) REPLADDR(mq05ha-ibm-mq-2) 					CONNACTV(Yes) INSYNC(Yes) 					BACKLOG(0) CONNINST(Yes) ALTDATE(2021-01-12) ALTTIME(12.03.44)
 
-	* If you issue this command on a node running a replica instance of queue manager **mq00ha**, you might receive the following status, which indicates that one of the replicas is lagging behind:
+	* If you issue this command on a node running a replica instance of queue manager **mq05ha**, you might receive the following status, which indicates that one of the replicas is lagging behind:
 
-			QMNAME(mq00ha)			ROLE(Replica) INSTANCE(inst2) INSYNC(Yes) QUORUM(2/3)
-				INSTANCE(nativeha-ibm-mq-2) ROLE(Replica) REPLADDR(nativeha-ibm-mq-2) 					CONNACTV(Yes) INSYNC(Yes) 					BACKLOG(0) CONNINST(Yes) ALTDATE(2021-01-12) ALTTIME(12.03.44) 
-				INSTANCE(mq00ha-ibm-mq-0) ROLE(Active)  REPLADDR(nativeha-ibm-mq-0) 					CONNACTV(Yes) INSYNC(Yes) 					BACKLOG(0) CONNINST(Yes) ALTDATE(2021-01-12) ALTTIME(12.03.44) 
-				INSTANCE(mq00ha-ibm-mq-1) ROLE(Replica) REPLADDR(nativeha-ibm-mq-1) 					CONNACTV(Yes) INSYNC(No)  					BACKLOG(435) CONNINST(Yes) ALTDATE(2021-01-12) ALTTIME(12.03.44)
+			QMNAME(mq05ha)			ROLE(Replica) INSTANCE(inst2) INSYNC(Yes) QUORUM(2/3)
+				INSTANCE(mq05ha-ibm-mq-2) ROLE(Replica) REPLADDR(mq05ha-ibm-mq-2) 					CONNACTV(Yes) INSYNC(Yes) 					BACKLOG(0) CONNINST(Yes) ALTDATE(2021-01-12) ALTTIME(12.03.44) 
+				INSTANCE(mq05ha-ibm-mq-0) ROLE(Active)  REPLADDR(mq05ha-ibm-mq-0) 					CONNACTV(Yes) INSYNC(Yes) 					BACKLOG(0) CONNINST(Yes) ALTDATE(2021-01-12) ALTTIME(12.03.44) 
+				INSTANCE(mq05ha-ibm-mq-1) ROLE(Replica) REPLADDR(mq05ha-ibm-mq-1) 					CONNACTV(Yes) INSYNC(No)  					BACKLOG(435) CONNINST(Yes) ALTDATE(2021-01-12) ALTTIME(12.03.44)
 
-	* If you issue this command on a node running an inactive instance of queue manager **mq00ha**, you might receive the following status:
+	* If you issue this command on a node running an inactive instance of queue manager **mq05ha**, you might receive the following status:
 
-			QMNAME(mq00ha)			ROLE(Unknown) INSTANCE(inst3) INSYNC(no) QUORUM(0/3)
-			 	INSTANCE(mq00ha-ibm-mq-0) ROLE(Unknown) REPLADDR(nativeha-ibm-mq-0) 					CONNACTV(Unknown) 							INSYNC(Unknown) BACKLOG(Unknown) CONNINST(No) ALTDATE() ALTTIME() 
-				INSTANCE(mq00ha-ibm-mq-1) ROLE(Unknown) REPLADDR(nativeha-ibm-mq-1) 					CONNACTV(Unknown) 							INSYNC(Unknown) BACKLOG(Unknown) CONNINST(No) ALTDATE() ALTTIME() 
-			 	INSTANCE(mq00ha-ibm-mq-2) ROLE(Unknown) REPLADDR(nativeha-ibm-mq-2) 					CONNACTV(No) 								INSYNC(Unknown) BACKLOG(Unknown) CONNINST(No) ALTDATE() ALTTIME()
+			QMNAME(mq05ha)			ROLE(Unknown) INSTANCE(inst3) INSYNC(no) QUORUM(0/3)
+			 	INSTANCE(mq05ha-ibm-mq-0) ROLE(Unknown) REPLADDR(mq05ha-ibm-mq-0) 					CONNACTV(Unknown) 							INSYNC(Unknown) BACKLOG(Unknown) CONNINST(No) ALTDATE() ALTTIME() 
+				INSTANCE(mq05ha-ibm-mq-1) ROLE(Unknown) REPLADDR(mq05ha-ibm-mq-1) 					CONNACTV(Unknown) 							INSYNC(Unknown) BACKLOG(Unknown) CONNINST(No) ALTDATE() ALTTIME() 
+			 	INSTANCE(mq05ha-ibm-mq-2) ROLE(Unknown) REPLADDR(mq05ha-ibm-mq-2) 					CONNACTV(No) 								INSYNC(Unknown) BACKLOG(Unknown) CONNINST(No) ALTDATE() ALTTIME()
 
 	* If you issue the command when the instances are still negotiating which is active and which are replicas, you would receive the following status:
 
-			QMNAME(mq00ha)              STATUS(Negotiating)
+			QMNAME(mq05ha)              STATUS(Negotiating)
 
 1. If necessary, use these commands while testing the deployment.
 
@@ -356,16 +367,18 @@ The following status fields are used to report Native HA configuration status:
 	
 	![](./images/pots/mq-cp4i/lab5/image22.png)
 	
+	![](./images/pots/mq-cp4i/lab5/image22a.png)
+	
 1. Change *TARGET_SPACE* to your assigned namespace. Change *QMname* to your queue manager. Then click *Save*.
 
-	![](./images/pots/mq-cp4i/lab5/image23.png)	
+	![](./images/pots/mq-cp4i/lab5/image23a.png)	
 1. Still in gedit, open *sendMessage.sh*, make the same changes for *TARGET_NAMESPACE*, *QMname*, and click *Save*.
 
-	![](./images/pots/mq-cp4i/lab5/image24.png)
+	![](./images/pots/mq-cp4i/lab5/image24a.png)
 	
 	Repeat the edit again for *sendPersistentMessage.sh*.
 	
-	![](./images/pots/mq-cp4i/lab5/image24a.png)
+	![](./images/pots/mq-cp4i/lab5/image24b.png)
 	
 	Close gedit.
 	
@@ -401,22 +414,22 @@ The following status fields are used to report Native HA configuration status:
 	![](./images/pots/mq-cp4i/lab5/image26.png)	
 1. The sample program amqsphac will connect to MQ and start sending messages incessantly.	
 
-1. Return to the window where *getMessage.sh* is running. You should get a list of the all messages that have been previously sent before running the command and the ones that are being sent after.
+1. Return to the window where *getMessage.sh* is running. You should get a list of all the messages that have been previously sent before running the command and the ones that are being sent after.
    
    ![](./images/pots/mq-cp4i/lab5/image27.png)
 
 1. Open a new terminal window. To see how the pods work together in action, run the following command to view the current pods:
 
 	```sh
-	oc get pod | grep mq00ha
+	oc get pod | grep mq05ha
 	``` 
 
-	![](./images/pots/mq-cp4i/lab5/image28.png) 
+	![](./images/pots/mq-cp4i/lab5/image28a.png) 
 	
 1. Delete the running pod by issuing the command: 
 
 	```sh
-	oc delete pod mq00ha-ibm-mq-0
+	oc delete pod mq05ha-ibm-mq-0
 	```
 	
 	Once the active pod is deleted, the running programs will then reconnect to the other pod for it to take over.
@@ -426,28 +439,26 @@ The following status fields are used to report Native HA configuration status:
 1. To verify that the other pod is now running, return to the terminal where you ran the "oc" command and issue the "get pods" again.
 
 	```sh
-	oc get pods | grep mq00ha
+	oc get pods | grep mq05ha
 	```
 	
-	You will see that pod **mq00ha-ibm-mq-1** is now the active pod and the other two are in standby. This is indicated by the *Ready* column which shows 1 of 1 containers is running. The other pods have 0 of 1 containers running.
+	You will see that pod **mq05ha-ibm-mq-1** is now the active pod and the other two are in standby. This is indicated by the *Ready* column which shows 1 of 1 containers is running. The other pods have 0 of 1 containers running.
 	
-	![](./images/pots/mq-cp4i/lab5/image30.png)
+	![](./images/pots/mq-cp4i/lab5/image30a.png)
 
-1. Return to the browser tab where OCP is open. In your project, click the drop-down for *Workloads* and select *Pods*. You will see the same information - **nativeha-ibm-mq-1** is currently running. 
+1. Return to the browser tab where OCP is open. In your project, click the drop-down for *Workloads* and select *Pods*. Enter your queue manager name in the *Name* field to filter out the rest. You will see the same information - **mq05ha-ibm-mq-1** is currently running. 
 
-	![](./images/pots/mq-cp4i/lab5/image31.png)
+	![](./images/pots/mq-cp4i/lab5/image31a.png)
 
 1. Still in OCP, kill the running pod and watch one of the standbys take over. Click the elipsis on the far right and select *Delete Pod*.
 
-	![](./images/pots/mq-cp4i/lab5/image31.png)
+	![](./images/pots/mq-cp4i/lab5/image31b.png)
 	
 1. In the pop-up, click *Delete* to confirm the deletion.
 
-	![](./images/pots/mq-cp4i/lab5/image32.png)
+1. You will see pod *mq05ha-ibm-mq-1* status change to *Terminating* immediately and within seconds, **mq05ha-ibm-mq-0** becomes *Running*.
 
-1. You will see pod *nativeha-ibm-mq-1* status change to *Terminating* immediately and within seconds, **nativeha-ibm-mq-0** becomes *Running*.
-
-	![](./images/pots/mq-cp4i/lab5/image32a.png)
+	![](./images/pots/mq-cp4i/lab5/image32b.png)
 
 1. Return to the browser tab where MQ Console is running. Refresh the page and click *Manage*. Verify that queue **APPQ1** still has the number of messages you put to the queue earlier. 
 
