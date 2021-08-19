@@ -135,7 +135,7 @@ In the Content pane on the right-hand side the newly created queue is displayed 
                                              
     ![](./images/pots/mq/lab1/image25.png)
  
-1. Accept the default selection of using the CLEAR command. This option cannot be used if any application has the queue open. In that case the second option would be required. Click the Clear button.  
+1. Accept the default selection of using the *CLEAR* command. This option cannot be used if any application has the queue open. In that case the second option would be required. Click the Clear button.  
     ![](./images/pots/mq/lab1/image26.png)
  
 1. Click the OK button to dismiss the confirmation panel.  
