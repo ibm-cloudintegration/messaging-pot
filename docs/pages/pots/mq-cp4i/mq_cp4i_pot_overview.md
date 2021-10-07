@@ -1,6 +1,6 @@
 ---
 title: MQ on Cloud Pak for Integration Proof of Technology
-toc: false
+toc: true
 sidebar: labs_sidebar
 folder: pots/mq-cp4i
 permalink: /mq_cp4i_pot_overview.html
@@ -18,14 +18,14 @@ For the MQ on CP4I PoT, multiple users will create each of the above sharing one
 
 ## Names used in lab
 
-| student number | QM prefix | Lab 1 QM Name| Lab 2 QM Name| Lab 3 QM Names| Lab 4 QM Name| Lab 5 QM Name |
-|:--------------:|:---------:|:------------:|:------------:|:-------------:|:------------:|:-------------:|
-| 01             | mq01      | mq01qs       | mq01mi       | mq01a, b, c   | mq01pl       | mq01ha        |
-| 02             | mq02      | mq02qs       | mq02mi       | mq02a, b, c   | mq02pl       | mq02ha        |
-| 03             | mq03      | mq03qs       | mq03mi       | mq03a, b, c   | mq03pl       | mq03ha        |
-| 04             | mq04      | mq04qs       | mq04mi       | mq04a, b, c   | mq04pl       | mq04ha        |
-| 05             | mq05      | mq05qs       | mq05mi       | mq05a, b, c   | mq05pl       | mq05ha        |
-| xx...          | mqxx...   | mqxxqs...    | mqxxmi...    | mqxxa, b, c...| mqxxpl...    | mqxxha...     | 
+| student number | QM prefix | Lab 1 QM Name| Lab 2 QM Name| Lab 3 QM Names| Lab 4 QM Name| Lab 5 QM Name | Lab 6 QM Name |
+|:--------------:|:---------:|:------------:|:------------:|:-------------:|:------------:|:-------------:|:-------------:|
+| 01             | mq01      | mq01qs       | mq01mi       | mq01a, b, c   | mq01pl       | mq01ha        | mq01strm      |
+| 02             | mq02      | mq02qs       | mq02mi       | mq02a, b, c   | mq02pl       | mq02ha        | mq02strm      |
+| 03             | mq03      | mq03qs       | mq03mi       | mq03a, b, c   | mq03pl       | mq03ha        | mq02strm      |
+| 04             | mq04      | mq04qs       | mq04mi       | mq04a, b, c   | mq04pl       | mq04ha        | mq02strm      |
+| 05             | mq05      | mq05qs       | mq05mi       | mq05a, b, c   | mq05pl       | mq05ha        | mq02strm      |
+| xx...          | mqxx...   | mqxxqs...    | mqxxmi...    | mqxxa, b, c...| mqxxpl...    | mqxxha...     | mqxxstrm...   |
 
 ## Setup instructions
 
@@ -51,13 +51,9 @@ Or contact the CoC through Slack channel # coc-support-for-cp4i.
 
 You can use your own desktop to connect to the OCP. But it would be better to provision a Virtual Desktop Instance (VDI) which has the artifacts for running the MQ on CP4I labs. If you are running a PoT, it will be up to you to provision the VDIs for the students and send them the VDI details in an email.
 
-1. Navigate to [IBM Asset Repo](https://assetrepo.ibm.com/). If not signed-in, sign-in with your IBM ID. Click *Environments*.
+1. Navigate to [IBM TechZone Asset Repo](https://techzone.ibm.com/collection/cloud-pak-for-integration-activation-kit#tab-4). If not signed-in, sign-in with your IBM ID. Click *Environments*. Select *CP4I PoT VDI (Desktop)*.
 
-	![](./images/pots/mq-cp4i/overview/image11a.png)
-
-1. Enter **VDI** in the *Search* field and select *CP4I PoT VDI (Desktop)*.
-
-	![](./images/pots/mq-cp4i/overview/image12a.png)
+	![](./images/pots/mq-cp4i/overview/image11b.png)
 
 1. Click the desktop icon to move to the *Reserve* page.
 
@@ -67,7 +63,7 @@ You can use your own desktop to connect to the OCP. But it would be better to pr
 
 	 ![](./images/pots/mq-cp4i/overview/image12c.png)
 	 
-1. The *Create a reservation* page where you will fill out the reservation details. Enter a CRM Opportunity number if you have one. Click the drop-down for *Purpose* and select the appropriate one. Under *Start date and time* and *End date and time*, change the date and time to provide enough time to complete the labs (maximum is two weeks) and click the drop-down to select your time zone. Click the drop-down for Preferred Geography and select one close to your location. Scroll down and click *Submit*.
+1. The *Create a reservation* page where you will fill out the reservation details. Click the drop-down for *Purpose* and select the appropriate one. If prompted, enter a ISC Opportunity number if you have one. Under *Start date and time* and *End date and time*, change the date and time to provide enough time to complete the labs (maximum is two weeks) and click the drop-down to select your time zone. Click the drop-down for Preferred Geography and select one close to your location. Scroll down and click *Submit*.
    
    ![](./images/pots/mq-cp4i/overview/image12d.png)
    
@@ -75,23 +71,33 @@ You can use your own desktop to connect to the OCP. But it would be better to pr
 
 	![](./images/pots/mq-cp4i/overview/image13.png)
 	
-1. Click *My Reservations* to see the VDIs you have provisioned. is grey until it is complete.
+1. Click *My Reservations* to see the VDIs you have provisioned. It will be displayed in green with a status of *Scheduled*.
 
-	![](./images/pots/mq-cp4i/overview/image21.png)
+	![](./images/pots/mq-cp4i/overview/image21a.png)
 	
-1. You also will receive an email that your cluster is being provisioned.
+1. Once the provisioning of the desktop begins, the status will show *Provisioning* and the display will be greyed out. At this time you will receive an email that the environment is being provisioned.
+	
+	![](./images/pots/mq-cp4i/overview/image21b.png)
 	
 1. It will take 10 - 15 minutes to provision the VDI. This is why the provisioning must be done prior to the start of the PoT. 
-
-	When the provisioning is complete, you will receive an email that it is ready with the details to connect. The button in the tile will turn green with a *Ready* status. At this time you can click the *Details* button to get the Overview of the cluster. This will include a hyperlink to the VDI with the password for the *student* userid. You can click the URL or the *Open* button on the tile to launch VNC Connect.
 	
-	![](./images/pots/mq-cp4i/overview/image16.png)
+	When the provisioning is complete, the status in the tile will turn turn to *Ready*. 
+	
+	![](./images/pots/mq-cp4i/overview/image21c.png)
+	
+	You will receive another email informing you that it is ready and will include the details to connect. Copy the password and click the  *Public IP address* hyperlink in the email. 
+	
+	![](./images/pots/mq-cp4i/overview/image21d.png)	
+	{% include note.html content="You can click the tile in the *My Reservations* display to get the details of your environment. This will also show the Public IP address but may not be a hyperlink. The password is included for the *student* userid." %}	 
+	The the public IP is a diretory listing for the environment. Click the *vnc.html* hyperlink.
+	
+	![](./images/pots/mq-cp4i/overview/image21f.png)
 
-1. The VNC window appears. Click connect. 
+1. The VNC window appears. Click *Connect*. 
 	
 	![](./images/pots/mq-cp4i/overview/image17.png)
 	
-1. Enter the password included in the details then click *Send Password*.
+1. Enter (or paste) the password included in the details then click *Send Password*.
 
 	![](./images/pots/mq-cp4i/overview/image18.png)
 			

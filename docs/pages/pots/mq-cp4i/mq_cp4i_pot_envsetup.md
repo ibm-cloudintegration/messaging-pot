@@ -14,17 +14,15 @@ applies_to: [developer administrator]
 
 1. As a CP4I PoT attendee you should have received an email with instructions to connect to a Virtual Desktop Instance which you will use to execute the labs in this PoT. The email provided the details for connecting to you VDI.
 
-	![](./images/pots/mq-cp4i/env-setup/image101.png) 
+1. Copy the password then click *Desktop* URL.
 
-1. Copy the password by clicking the copy icon. Then click "Open your IBM Cloud Environment". 
-
-	![](./images/pots/mq-cp4i/env-setup/image102.png)
+	![](./images/pots/mq-cp4i/env-setup/image101a.png) 
 	
 1. The VNC window appears. Click connect. 
 	
 	![](./images/pots/mq-cp4i/overview/image17.png)
 	
-1. Enter the password included in the details then click *Send Password*.
+1. Paste or enter the password included in the details then click *Send Password*.
 
 	![](./images/pots/mq-cp4i/overview/image18.png)
 			
@@ -34,26 +32,52 @@ applies_to: [developer administrator]
 
 ## Connect to the Red Hat OpenShift cluster
 
-Your attendee email also included a URL to connect to the Red Hat OpenShift cluster where you will execute the labs. The name of the cluster will vary depending on which one has been reserved. The example below shows the Obi-Wan cluster. 
+{% include note.html content="If you did not receive an email for the PoT or your email did not include the following information, your instructor will provide the required information." %} 
 
- You will also receive a userid to use throughout the PoT. Your email will include the name of the cluster and userid. The userids are defined in an LDAP for the cluster. For example if Obi-Wan is the cluster your email will specify Obi-Wan/obiwanxx where xx is your student number. If the cluster is *chopper*, you will receive  **Chopper/chopperxx**. 
+Your attendee email also included a URL to connect to the Red Hat OpenShift cluster where you will execute the labs. The name of the cluster will vary depending on which one has been reserved. The example below shows the **Chopper** cluster. 
+
+You will also receive a userid to use throughout the PoT. Your email will include the name of the cluster and userid. The userids are defined in an LDAP for the cluster. For example if **Chopper** is the cluster, your email will specify chopper/chopperxx where xx is your student number. If the cluster is *chopper*, you will receive  **chopper/chopperxx**. 
  
-  The userid will also be the assigned name of a project (namespace) for you to work in. The project will be yours alone throughout the PoT. No one else will have access to your project and you will not have access to any other student's project. 
+The userid will also be the assigned name of a project (namespace) for you to work in. The project will be yours alone throughout the PoT. No one else will have access to your project and you will not have access to any other student's project.  
+
+ For example: *User id:*  **chopper14** *pw:* **chopper2021pot**
   
-{% include important.html content="Project cp4i-mq was the project name used to document the labs. This is the default namespace for MQ in the COC clusters and was used for documenting since each PoT may be on various clusters. " %} 
+{% include important.html content="Cluster *chopper* and Project *chopper14* were the cluster and the project name used to document this setup. Your assigned cluster and userid/project will be different. Where ever you see *chopper* or *chopperxx* in the instructions or screen shots make sure to substitute the ones assigned to you!" %} 
 
 1. From your email, copy the URL for the OCP Console.
+	
+1. Paste the URL onto the clipboard of the VDI. 
 
-	![](./images/pots/mq-cp4i/env-setup/image103.png)
+	![](./images/pots/mq-cp4i/env-setup/image104.png)
+	
+	Then copy/paste the URL into a browser tab and hit enter. 
+	
+	![](./images/pots/mq-cp4i/env-setup/image104f.png)
+		
+	If you receive a security warning, click *Advanced* then scroll down and click *Accept the Risk and Continue*.
+	
+	![](./images/pots/mq-cp4i/env-setup/image104a.png)
+	
+	Repeat if challenged a second time.
+	
+1. Sign in to the cluster with the ID and password in your email. The sample used was *chopper14/chopper2021pot*. Click *Log in*.
 
-1. Paste the URL onto the clipboard of the VDI. Then copy/paste the URL into a browser tab and hit enter. 
+	![](./images/pots/mq-cp4i/env-setup/image104b.png)
 
-	![](./images/pots/mq-cp4i/env-setup/image104.png)	
-1. You are taken to the *Overview* page on the OCP console.
+1. You are presented with an introductory tour. If you are interested you can page through the short tips. Otherwise you can just click *Skip tour*. 
 
-	![](./images/pots/mq-cp4i/env-setup/image105.png)
+	![](./images/pots/mq-cp4i/env-setup/image104d.png)
+	
+1. You have been logged into the *Developer* perspective. Click the drop-down next to Developer and select *Administrator*. 
 
-	You will be in your assigned namespace.
+	![](./images/pots/mq-cp4i/env-setup/image104c.png)
+	 	
+1. You are now in the *Adminstrator* perspective and logged it with your assigned userid. Your project (namespace) is visible as well as *cp4i*, *cp4i-apic*, *cp4i-tracing*. You will not use cp4i-apic for this PoT. 
+
+	![](./images/pots/mq-cp4i/env-setup/image104e.png)
+	
+	You will be in your assigned namespace. There are many other namespaces in OCP, but you will only be permitted to use yours so as not to affect the other users.
+
 
 	{% include note.html content="IBM Only - If you are running the lab in your own ROKS cluster, you may create a new project (namespace). [Click here to create your namespace](#namespace)" %} 
 
@@ -102,8 +126,14 @@ You should be logged on your VDI as *student*.
 	mv MQonCP4I/ ~/
 	```
 	
-	![](./images/pots/mq-cp4i/env-setup/image113a.png)	
-	This will create the directory **/home/student/MQonCP4I**.
+	![](./images/pots/mq-cp4i/env-setup/image113a.png) 
+	
+	This will create the directory **/home/student/MQonCP4I**. Change to your home directory and list the contents of the directory to verify that it contains *MQonCP4I*. 
+	
+	```sh
+	cd ~
+	ls
+	```
 	
 	![](./images/pots/mq-cp4i/env-setup/image114a.png)
 	
