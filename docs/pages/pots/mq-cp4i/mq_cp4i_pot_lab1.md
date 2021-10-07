@@ -1,6 +1,6 @@
 ---
 title: Creating an MQ Instance Using the Platform Navigator
-toc: false
+toc: true
 sidebar: labs_sidebar
 folder: pots/mq-cp4i
 permalink: /mq_cp4i_pot_lab1.html
@@ -12,20 +12,30 @@ applies_to: [administrator,developer]
 
 Starting with this lab, each attendee will be assigned an ID number (01 - 30) by the instructor if running a PoT. This number will have been included in your attendee email.  If (IBMers) running this lab independently, choose any number between 01 - 30. ID 00 is always reserved for the instructor during PoTs.
 
-These instructions assume you are using the DTE Virtual Desktop Image (VDI) for the *MQ on CP4I PoT*.
+These instructions assume you are using the Virtual Desktop Image (VDI) from the IBM Technology Zone for the *MQ on CP4I PoT*.
 
 ## Getting Started with MQ on Cloud Pak for Integration 
 
-These instructions document how to setup MQ within Cloud Pak for Integration which is accessible from within the OpenShift Cluster. The instructions have been created using a a Red Hat OpenShift environment deployed on bare metal servers on IBM Cloud however the process should be similar on other environments.
+These instructions document how to setup MQ within Cloud Pak for Integration which is accessible from within the OpenShift Cluster. The instructions have been created using a Red Hat OpenShift environment deployed on bare metal servers on IBM Cloud however the process should be similar on other environments.
+
+### Important points
+
+The lab guide assumes you are using the RHEL Virtual Desktop Image (VDI) VM from the IBM Technology Zone. If you are using another platform, you can download the necessary artifacts from the github repo. The instructor will provide directions.
+
+If running as part of a PoT, you will only see your project (namespace). The name will be of the form *clustername* + *your student number*. For instance if the cluster name is **chopper** and your student number is **10**, your namespace will be **chopper10**. So each attendee has a unique namespace and will only be authorized to see that namespace. Within your namespace you will only find your queue manager **mq10mi** in this example. You will also find a previously configured queue manager *qmgrxx*, where xx = your student number. That queue manager will not be used in this PoT and can be ignored.
+
+{% include important.html content="You will see other projects such as cp4i-ace, cp4i-api, cp4i-mq. Since this cluster will be shared with other PoTs those have been predefined. They are not to be used for this PoT and can be ignored. You will only use your assigned namespace and at times *cp4i*. *cp4i-mq* was used to document part of this lab. Where you see *cp4i-mq*, you will substitute your assigned namespace." %}
+
+{% include tip.html content="The screen shots were taken on a test cluster and many will not match what you see when running the lab. Particularly URL values will be different depending on the cluster where CP4I is running. Projects (Namespaces) may also vary. It is important to follow the directions, not the pictures." %}
 
 ## Deploying IBM MQ for internal consumers
 
-1. You should have already connected to the OpenShift cluster via the URL provided in your student email. Click *Projects* and scroll down to find the *cp4i-mq* project. Click the hyperlink to select the project.
+1. You should have already connected to the OpenShift cluster via the URL provided in your student email. Click *Projects*, locate the *cp4i* project. Click the hyperlink to select the project.
 
-	![](./images/pots/mq-cp4i/lab1/image202.png)	
-1. Scroll down again to find *Networking* on the left side bar menu. Click the drop-down for Networking and select *Routes*. Type *integration* in the Filter field. Click the URL hyperlink for the **integration-navigator-pn** route. 
+	![](./images/pots/mq-cp4i/lab1/image202a.png)	
+1. Scroll down again to find *Networking* on the left side bar menu. Click the drop-down for Networking and select *Routes*. Type *navigator* in the Filter field. Click the URL hyperlink for the **cp4i-navigator-pn** route. 
 
-	![](./images/pots/mq-cp4i/lab1/image203a.png)
+	![](./images/pots/mq-cp4i/lab1/image203b.png)
 
 1. When prompted with the potential security risk, click *Advanced*. 
 
@@ -35,49 +45,58 @@ These instructions document how to setup MQ within Cloud Pak for Integration whi
 
 	![](./images/pots/mq-cp4i/lab1/image205.png)
 
-1. If prompted again, respond as you did above. Finally you are routed to the *IBM Cloud Pak Admistration Hub*. Click the *Enterprise LDAP* hyperlink. 
+1. If prompted again, respond as you did above. Finally you are routed to the *IBM Automation* log in page. Click the *Enterprise LDAP* hyperlink. 
 
-	![](./images/pots/mq-cp4i/lab1/image206.png)
+	![](./images/pots/mq-cp4i/lab1/image206a.png)
 
 1. Enter the user name and password that was provided in your email to log on.
 
-1. The *IBM Automation* page appears. This is also referred to as the *Integration Platform Navigator*. Click *View runtimes*. 
+	![](./images/pots/mq-cp4i/lab1/image206b.png)
+
+1. The *IBM Automation* page appears. This is also referred to as the *Integration Platform Navigator*. You may click the up arrow on the right side of window to reduce screen space. 
 
 	![](./images/pots/mq-cp4i/lab1/image207.png)
-	
-1. Click *Create runtime* to display the various runtimes available in CP4I.
 
-	![](./images/pots/mq-cp4i/lab1/image208.png)
+1. Under your user name, click *Integration runtimes*. 
+
+	![](./images/pots/mq-cp4i/lab1/image207b.png)
+	
+1. You'll notice that there are a few runtimes which were created previously. Click *Create runtime* to display the various runtimes available in CP4I.
+
+	![](./images/pots/mq-cp4i/lab1/image208a.png)
 	
 1. A number of tiles are displayed. Click the *Messaging* tile, then click *Next*.
 
 	![](./images/pots/mq-cp4i/lab1/image209.png)
 	
-1. You will use the option called **Quick start** which will deploy an MQ container with 1 cpu, 1 GB of memory, and measured at 0.25 vpc (Virtual Processor Core). Click the *Quick start* tile then click *Next*.
+1. You will use the option called **Quick start** which will deploy an MQ container with 0.5 cpu, 1 GB of memory, and measured at 0.25 vpc (Virtual Processor Core). Click the *Quick start* tile then click *Next*.
 
 	![](./images/pots/mq-cp4i/lab1/image210.png)
 	
-1. On the *Create queue manager* configuration page, enter "mq" plus your student number as a prefix to the Name *quickstart-cp4i* and use the drop-down under *Namespace* to select **mq00**. Click the License acceptance button to turn it on.
+1. On the *Create queue manager* configuration page, enter "mq" plus your student number as a prefix to the Name *quickstart-cp4i* and use the drop-down under *Namespace* to select your assigned namespace. Click the License acceptance button to turn it on.
 
-	![](./images/pots/mq-cp4i/lab1/image211.png)
+	![](./images/pots/mq-cp4i/lab1/image211a.png)
 	
 1. Scroll down to *Queue Manager* section. Using the drop-down under *Type of availability* select **SingleInstance**. Under *Type of volume* leave the default **ephemeral**. You have a choice between ephemeral or persistent-claim. Ephemeral means that the queue manager does not maintain state so does not need persistent-storage. 
 
-	![](./images/pots/mq-cp4i/lab1/image104.png)
+	![](./images/pots/mq-cp4i/lab1/image211b.png)
 	
-	1. Under *Tracing* click the button to enable tracing and use the drop-down under *Tracing namespace* to select **cp4i-tracing**.
-
+	Under *Tracing* click the button to enable tracing and use the drop-down under *Tracing namespace* to select **cp4i-tracing**. 
 	Do NOT click Create yet. You need to name your queue manager.
 
-	![](./images/pots/mq-cp4i/lab1/image105.png)
+	![](./images/pots/mq-cp4i/lab1/image211c.png)
 	
-1.	On the left side bar, click the button under *Advanced settings* to expose more settings. You may need to scroll to find the *Queue Manager* section again. Under *Advanced: Name* field you see the default **QUICKSTART**. Replace this with your queue manager name using your student ID and qs, ie **mq00qs**. 
+1.	On the left side bar, click the button under *Advanced settings* to expose more settings. You may need to scroll to find the *Queue Manager* section again. Under *Advanced: Name* field you see the default **QUICKSTART**. Replace this with your queue manager name using your student ID and qs, ie **mqxxqs**. 
 
 	Now click *Create*.
 	
 	![](./images/pots/mq-cp4i/lab1/image212.png)
 
-1. If all entries are valid, you will receive a notification of success in green. Any errors result in a notification in red. Status remains *Pending* while the queue manager is being provisioned. If you click *Pending* you may receive a *Conditions* pop-up. Since you specified *Tracing* in the configuration, you need to register the queue manager to the operations dashboard. Close the pop-up.
+1. If all entries are valid, you will receive a notification of success in green. Any errors result in a notification in red. Status remains *Pending* while the queue manager is being provisioned. 
+
+	![](./images/pots/mq-cp4i/lab1/image212a.png)
+
+1. If you click *Pending* you may receive a *Conditions* pop-up. Since you specified *Tracing* in the configuration, you need to register the queue manager to the operations dashboard. Close the pop-up.
 
 	![](./images/pots/mq-cp4i/lab1/image8a.png)
 
@@ -120,9 +139,9 @@ This only needs to be done once by the first queue manager that is starting. If 
 	
 1. Return to the Platform Navigator and close the registration request pop-up window. Notice that the status has now changed to *Processed* and the hyperlink changed from Approve to Reprocess.
 
-	![](./images/pots/mq-cp4i/lab1/image220.png)
+	![](./images/pots/mq-cp4i/lab1/image220.png) 
 	
-1. This only needs to be done once. When the request has been approved and the secret created in the *mq00* namespace, all other queue managers will be deployed without this error. 
+	This only needs to be done once. When the request has been approved and the secret created in the *cp4i* namespace, all other queue managers will be deployed without this error. 
 	
 	Click the *IBM Cloud Pak for Integration* hamburger menu on the left side bar then select **Integration Home** to return to the *Platform Navigator*. 
 	
@@ -143,7 +162,7 @@ This only needs to be done once by the first queue manager that is starting. If 
 
 	![](./images/pots/mq-cp4i/lab1/image222a.png) 
 	
-	Under *Integration Runtimes* your queue manager now shows a *Ready* status, you can now click the hyperlink to open the MQ console for your queue manager. The runtime instance shows *mq00-quickstart-cp4i*, but that is not your queue manager name. You named it **mq00qs**.
+	Under *Integration Runtimes* your queue manager now shows a *Ready* status, you can now click the hyperlink to open the MQ console for your queue manager. The runtime instance shows *mqxx-quickstart-cp4i*, but that is not your queue manager name. You named it **mqxxqs**.
 
 	![](./images/pots/mq-cp4i/lab1/image223.png)
 	
@@ -153,17 +172,17 @@ This only needs to be done once by the first queue manager that is starting. If 
 
 1. 	Click the *Create a queue* tile. 
 
-	![](./images/pots/mq-cp4i/lab1/image224.png) 
+	![](./images/pots/mq-cp4i/lab1/image224a.png) 
 
 1. A number of tiles are displayed for the different queue types. Behind each tile are the properties for that particular queue type. Click the tile for a *Local* queue. 
 
-	![](./images/pots/mq-cp4i/lab1/image225.png) 
+	![](./images/pots/mq-cp4i/lab1/image225a.png) 
 	
 1. Only the required basic options are displayed with the required field *Queue name*. If you need to alter or just want to see all available options, you can click the *Custom create* tab. For now, just enter the name for the test queue **app1** and click *Create*.
 
-	![](./images/pots/mq-cp4i/lab1/image226.png) 
+	![](./images/pots/mq-cp4i/lab1/image226a.png) 
 	
-1. An MQ channel needs to be defined for communication into MQ. Click the *Manage* option.
+1. An MQ channel needs to be defined for communication into MQ. Click the *Manage* option. Then select *local queue managers*.
 
 	![](./images/pots/mq-cp4i/lab1/image227.png)
 	
@@ -204,15 +223,23 @@ This only needs to be done once by the first queue manager that is starting. If 
 	
 	![](./images/pots/mq-cp4i/lab1/image236.png)
 	
+1. Click the elipsis next to *Actions* in top right corner and select *Refresh connection authentication*.
+
+	![](./images/pots/mq-cp4i/lab1/image236a.png)
+	
+1. On the pop-up, click *Refresh*.
+	
+	![](./images/pots/mq-cp4i/lab1/image236a.png)
+	
 ## Test MQ
 
-MQ has been deployed within the Cloud Pak for Integration to other containers deployed within the same Cluster. This deployment is NOT accessible externally. Depending on your scenario you can connect ACE / API Connect / Event Streams, etc to MQ using the deployed service. This acts as an entry point into MQ within the Kubernetes Cluster. Assuming you followed the above instructions within the deployment the hostname will be of the form mq00qs-cp4i-ibm-mq. To verify the installation we will use an MQ client sample within the deployment. 
+MQ has been deployed within the Cloud Pak for Integration as containers within pods along with other containers deployed within the same Cluster. This deployment is NOT accessible externally. Depending on your scenario you can connect ACE / API Connect / Event Streams, etc to MQ using the deployed service. This acts as an entry point into MQ within the Kubernetes Cluster. Assuming you followed the above instructions within the deployment the hostname will be of the form mq00qs-cp4i-ibm-mq. To verify the installation we will use an MQ client sample program within the deployment. 
 
-1. Return to the OCP Console. Make sure you are in the *mqxx* namespace, by clicking *Projects*, typing **mq** in the filter field to find *mqxx* and clicking its hyperlink. 
+1. Return to the OCP Console. Make sure you are in your assigned namespace, by clicking *Projects* and clicking its hyperlink. 
 
 	![](./images/pots/mq-cp4i/lab1/image237.png)
 	
-1. 	Once in the *mqxx* namespace, click the drop-down for *Workloads* then select *Pods*. You will see the one pod for your MQ instance. You will see that the *Status* is **Running** and there are three containers running in this pod. You will also see a pod for registering your instance with the Operations Dashboard (tracing) that has been completed.
+1. 	Once in your namespace, click the drop-down for *Workloads* then select *Pods*. You will see the one pod for your MQ instance. You will see that the *Status* is **Running** and there are three containers running in this pod. You will also see a pod for registering your instance with the Operations Dashboard (tracing) that has been completed.
  
 	![](./images/pots/mq-cp4i/lab1/image238.png)
 	
@@ -220,10 +247,10 @@ MQ has been deployed within the Cloud Pak for Integration to other containers de
 
 	![](./images/pots/mq-cp4i/lab1/image239.png)
 	
-1. Run the following commands to send a message to the **app1** queue. Don't forget to replace 00 with your student ID.
+1. Run the following commands to send a message to the **app1** queue. Don't forget to replace xx with your student ID.
 
 	```
-	export MQSERVER='mq00qs/TCP/mq00-quickstart-cp4i-ibm-mq(1414)' 
+	export MQSERVER='mqxxqs/TCP/mqxxqs-quickstart-cp4i-ibm-mq(1414)' 
 	```
 	
 	The format of this environment variable is :
@@ -232,14 +259,14 @@ MQ has been deployed within the Cloud Pak for Integration to other containers de
 	The host name is actually the network service for your queue manager instance.
 	
 	```
-	/opt/mqm/samp/bin/amqsputc app1 mq00qs
+	/opt/mqm/samp/bin/amqsputc app1 mqxxqs
 	```
 	
-	This command is putting a message on queue **app1** on queue manager **mq00qs**.
-	Type a message such as:'
+	This command is putting a message on queue **app1** on queue manager **mqxxqs**.
+	Type a message such as the following:
 	
 	```
-	sending my first test message to qm mq00qs queue app1
+	sending my first test message to qm mqxxqs queue app1
 	```
 	
 	Hit enter again to end the program.
@@ -257,11 +284,14 @@ MQ has been deployed within the Cloud Pak for Integration to other containers de
 1. Click the hyperlink for queue **app1**. Here you see the messages on the queue. You will recognize your message under *Application data* along with application name and time stamp.
 
 	![](./images/pots/mq-cp4i/lab1/image243.png)
-
 	
-Congratulations! on completing Lab 2.
+Congratulations! on completing Lab 1.
 
 ## Cleanup
+
+If you are doing this lab during the MQ on CP4I POT you should complete the cleanup to conserve resources on the cluster.
+
+If you are an IBMer running the lab on your ROKS cluster it is up to you whether you want to leave this queue manager for demo purposes. If not then you should complete the cleanup. 
 
 1. Return to the Platform Navigator. Under *Runtimes* find your instance, click the elipsis on the right and select **Delete**. This will delete the queue manager pods and all related artifacts. This will help reduce load on the cluster as you continue the rest of the labs. This queue manager will not be needed again.
 
