@@ -227,11 +227,15 @@ entries:
       output: web, pdf
 
     - title: Lab 4 - Automate MQ Configuration Using Tekton Pipelines
-      url: /mq_cp4i_pot_repair.html
+      url: /mq_cp4i_pot_lab4.html
       output: web, pdf
 
     - title: Lab 5 - Native HA for MQ
       url: /mq_cp4i_pot_lab5.html
+      output: web, pdf
+
+    - title: Lab 6 - Streaming Queues
+      url: /mq_cp4i_pot_lab6.html
       output: web, pdf
 
   - title: Event Streams
