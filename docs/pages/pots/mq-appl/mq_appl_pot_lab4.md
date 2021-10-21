@@ -305,9 +305,11 @@ lab. The applications are part of SupportPac IH03.
     a very small queue manager file system size on our appliance). If
     the script did not end, hit **CTRL-C** to end the job.
 
-20. Go back to the MQ Console. Here you see the thousand
+20. Go back to the MQ Explorer. Here you see the thousand
     (probably 994) messages you have just put on the queue. There may be
     more if you did not clear out messages from previous tests.
+    
+    ![](./images/pots/mq-appliance/lab4/image112.png)
 
 21. Clear the messages from the **MONITOR** queue on **QM1**.
 
