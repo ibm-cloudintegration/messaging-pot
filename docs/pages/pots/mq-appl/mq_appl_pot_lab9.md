@@ -1,6 +1,6 @@
 ---
 title: Using the REST Interface
-toc: false
+toc: true
 sidebar: labs_sidebar
 folder: pots/mq-appliance
 permalink: /mq_appl_pot_lab9.html
@@ -12,7 +12,6 @@ applies_to: [developer,administrator]
 
 # Lab 9 - Using the REST Interface
  
-
 In this lab you will explore the REST interface available for management
 of the appliance.
 
@@ -101,13 +100,11 @@ Let's start by enabling the REST interface.
 
 	![](./images/pots/mq-appliance/lab9/image3.png)
 
-10. Click
-    the![](./images/pots/mq-appliance/lab9/image4.png) **recycle** button.
+10. Click the *Save changes* button.
 
-11. You will see that the *Apply* buttons are now greyed out indicating
-    that the changes have been saved.
-
-    The REST interface is now running.
+	![](./images/pots/mq-appliance/lab9/image4.png)
+	
+11. You will see the succesful message pop-up. The status has changed to *up*. The REST interface is now running.
 
 	![](./images/pots/mq-appliance/lab9/image5.png)
 
@@ -129,6 +126,8 @@ First we need to make sure we have no CORS problems.
 2. Enter the following URI into the browser:
 
 	[**https://10.0.0.1:5554/mgmt/**](https://10.0.0.1:5554/mgmt/)
+	
+	Make sure to include the (/) slash at the end of the URL, otherwise you will receive an *invalid URI* response.
 
 	This is the REST management interface root URI; you can obtain the list
 of all available resource categories by sending a GET request to this
@@ -242,7 +241,7 @@ open a new Postman window.
 	![](./images/pots/mq-appliance/lab9/image18.png)
 
 7. In the response you will see something similar to the diagram above,
-    indicating that the appliance is at version 9.1.2.0.
+    indicating that the appliance is at version 9.2.2.0.
 
 8. Let's try another one. Enter the following URI:
     
@@ -319,12 +318,11 @@ administrative user, so let's take a look at another user.
 
 10. Click **Send**.
 
-11. We now see that the user has an access level of privileged.
+11. We now see that the user has an access level of privileged. 
 
-   	![](./images/pots/mq-appliance/lab9/image23.png)
-   	
-
-What about the testuser we created, I hear you ask? One important thing to remember is that the REST interface relates to the appliance itself and not to the management of MQ objects. The testuser, you will recall, was created using the mqcli and as such is an MQ object rather than an appliance object. REST operations for MQ that were introduced in software MQ v9.0.1 do not yet apply to the appliance. For maintenance of MQ users, we continue to use the methods as shown in other labs.
+	![](./images/pots/mq-appliance/lab9/image23.png) 
+	
+	What about the testuser we created, I hear you ask? One important thing to remember is that the REST interface relates to the appliance itself and not to the management of MQ objects. The testuser, you will recall, was created using the mqcli and as such is an MQ object rather than an appliance object. REST operations for MQ that were introduced in software MQ v9.0.1 do not yet apply to the appliance. For maintenance of MQ users, we continue to use the methods as shown in other labs.
 
 ### Network Management using the REST Interface
 
@@ -388,21 +386,20 @@ the filestore.
 1. Enter the following URI, making sure to add the trailing "/" this
     time.
 
-	**<https://10.0.0.1:5554/mgmt/filestore>/**
+	**<https://10.0.0.1:5554/mgmt/filestore/>**
 
 2. Click **Send**.
 
 3. We now see the required structure for the files and directories on
-    the appliance
+    the appliance.
+    
+    ![](./images/pots/mq-appliance/lab9/image28.png)
 
-   	![](./images/pots/mq-appliance/lab9/image28.png)
-
-4. Let's start by listing the contents of a directory that is the top
-    level directory for all of our MQ data.
+4. Let's start by listing the contents of a directory that is the top level directory for all of our MQ data.
 
 5. Enter the following URI and click **Send**.
 
-	**<https://10.0.0.1:5554/mgmt/filestore>/default/mqqmdata**
+	**<https://10.0.0.1:5554/mgmt/filestore/default/mqqmdata>**
 
 6. You should see a response similar to the following.
     
@@ -415,7 +412,7 @@ the filestore.
 
 8. Enter the following URI and click **Send**:
 
-	**<https://10.0.0.1:5554/mgmt/filestore>/default/mqqmdata/QM1/qmgr/QM1**
+	**<https://10.0.0.1:5554/mgmt/filestore/default/mqqmdata/QM1/qmgr/QM1>**
 
 9. You should see a response similar to the following (scroll down
     through the response, if you know MQ this looks familiar, doesn't
@@ -456,7 +453,7 @@ the filestore.
 
 15. Enter the following URI, and set the **operation** to **POST**.
 
-	**<https://10.0.0.1:5554/mgmt/filestore>/default/local**
+	**<https://10.0.0.1:5554/mgmt/filestore/default/local>**
 
 	Both the POST and PUT requests require that the details of the directory
 to be created are specified in the request payload.
@@ -505,19 +502,23 @@ payload.
 
 22. Enter the following URI, with **POST** as the operation.
 
-	<https://10.0.0.1:5554/mgmt/filestore>/default/local/restlab
+	<https://10.0.0.1:5554/mgmt/filestore/default/local/restlab>
 
 23. As you did previously, add the body. This time copy and paste the
-    text from the file:
-
-	**c:\\Setup-Install\\resttest.txt **
+    text from here:
+    
+    ```
+    {
+  "file": {
+    "name":"resttest",
+    "content":"VGhpcyBpcyBhIHR1c3QgbWVzc2FnZSBmcm9tIH1vdXIgUkVTVCBsYWI="
+  }
+}
+```
 
 	It looks as follows:
 	
 	![](./images/pots/mq-appliance/lab9/image36.png)
-	
-	![](./images/pots/mq-appliance/lab9/image37.png)
-
 
 24. Click **Send**.
 
