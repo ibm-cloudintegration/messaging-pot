@@ -347,16 +347,17 @@ The secondary RDQMs need to be created first on two of the nodes with the **-sxs
 
 	You will now create the primary RDQM on rdqm1. Return to **rdqm1**. Create the primary RDQM, which will listen on port 1500 with the following command: 
 	
-	
 	```
 	sudo crtmqm -p 1500 -sx -fs 3 QMHA
 	``` 
- 	
- 	![](./images/pots/mq-ha/lab2/image219.png) 
- 	
- 	The primary queue manager is now created and running. 
- 	
- 	{% include note.html content="In order to create RDQMs and issue commands, *ibmuser* must be in the mqm and haclient groups. *haclient* group is created as part of the RDQM installation. This was done as setup for this lab." %}	1. Check the status of the queue manager:
+	
+	![](./images/pots/mq-ha/lab2/image219.png) 
+	
+	The primary queue manager is now created and running. 
+	
+	{% include note.html content="In order to create RDQMs and issue commands, *ibmuser* must be in the mqm and haclient groups. *haclient* group is created as part of the RDQM installation. This was done as setup for this lab.." %} 
+	
+1. Check the status of the queue manager:
 
 	```
 	sudo rdqmstatus -m QMHA
