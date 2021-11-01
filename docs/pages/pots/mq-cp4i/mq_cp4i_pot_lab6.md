@@ -405,7 +405,7 @@ If running as part of a PoT there will be multiple queue managers running so you
 
 	![](./images/pots/mq-cp4i/lab6/image41.png)
 	
-1. In the terminal window in the ./test directory make *sendMessage.sh* and *getMessage.sh* files executable with the following commnads:
+1. In the terminal window in the ./test directory make *sendMessage.sh* and *getMessage.sh* files executable with the following commands:
 
 	```sh
 	chmod +x sendMessage.sh
@@ -496,7 +496,7 @@ If running as part of a PoT there will be multiple queue managers running so you
 
 #### Check quality of service on streaming queue
 	
-1. 	Click the elipsis for *APPQ* and select *View configuration* again. 
+1. 	Click the elipsis for **APPQ** and select *View configuration* again. 
 
 	![](./images/pots/mq-cp4i/lab6/image55.png)
 	
