@@ -1,6 +1,6 @@
 ---
 title: Monitoring and Troubleshooting
-toc: false
+toc: true
 sidebar: labs_sidebar
 folder: pots/mq-appliance
 permalink: /mq_appl_pot_lab4.html
@@ -20,11 +20,10 @@ For this lab, you should use the same CSIDE environment that you created
 for Lab 1. The virtual appliance you will use for this lab will be
 **MQAppl1** and also the **Windows 10 x64*** VM.
 
-{% include important.html content="It is assumed that Lab 1 has been completed. You must either complete Lab 1 before attempting this lab, or see the *MQ Appliance PoT 9.2.2.0 Configured - ready for HA* CSIDE template. Screen shots are from after Lab 2 completion. If Lab 2 has not been completed on the virtual appliance you are using, the results you see will differ from the examples in this lab guide." %}
+{% include important.html content="It is assumed that Lab 1 has been completed. You must either complete Lab 1 before attempting this lab, or see the *MQ Appliance PoT Configured - ready for HA* CSIDE template. Screen shots are from after Lab 2 completion. If Lab 2 has not been completed on the virtual appliance you are using, the results you see will differ from the examples in this lab guide." %}
 
 You will be exploring some of the options available for monitoring the
-MQ Appliance using a combination of command line and reporting widgets
-in the MQ Console. You will also look at how you can implement the use
+MQ Appliance using a combination of command line and reporting in the MQ Console. You will also look at how you can implement the use
 of the application activity trace for the MQ Appliance. Finally, you
 will see some of the commands available for diagnosing and resolving
 problems.
@@ -222,301 +221,48 @@ system resource usage of a queue manager.
     If you are not already logged on to the MQ Console on the Windows
     VM, do so now.
 
-19. If you do not already have a widget for **Queues** on the **QM1**
-    queue manager on the dashboard, add one now and clear the messages
-    from **TEST.IN** from the previous tests.
-
-    Highlight the queue name and click the **More** drop-down box.
-
-    Select **Clear queue**.
+19. Return to the *MQ Console > Manage > QM1*. Click the elipsis on far right for the *TEST.IN* queue and select **Clear queue**. 
 
 	![](./images/pots/mq-appliance/lab4/image15.png)
 
-20. Click **Clear queue**.
+20. Click **Clear queue** to confirm deletion of the messages.
 
 	![](./images/pots/mq-appliance/lab4/image16.png)
 
-### Investigate chart widgets
-
-You will now investigate some of the chart widgets.
-
-1. First, add a new **tab** for the charts.
-
-    As shown in the previous lab, create a new tab.
-
-2. Enter a name for the new tab ("**My API Monitoring**" is used below).
-    
-    ![](./images/pots/mq-appliance/lab4/image17.png)
-
-3. Click **Add Widget**.
-
-4. Select the **QM1** queue manger and a type of **Chart**.
-
-	![](./images/pots/mq-appliance/lab4/image18.png)
-
-5. When the widget has been added, click on the configuration icon.
-
-	![](./images/pots/mq-appliance/lab4/image19.png)
-	
-6. Using the drop-down lists, select the following options for the
-    widget.
-
-	-   Resource class = **API usage statistics**
-
-	-   Resource type = **MQPUT**
-
-	-   Resource element = **Persistent message MQPUT count**
-
-	-   Queue manager to monitor = **QM1**
-
-	-   View Finder = **Show**
-
-7. Click **Save**.
-    
-    ![](./images/pots/mq-appliance/lab4/image20.png)
-    
-    Notice as with MQ object widgets, you can set a custom name for the
-    widget and select the widget width.
-	
-8. You will now see the widget.
-    
-    In the chart widget, the data is collected at ten-second intervals.
-    The X-axis of the chart displays a timeline. The Y-axis displays
-    units appropriate to the resource that you are viewing. The Y-axis
-    is dynamically resized to accommodate the data that is returned.
-
-9. Hover over one of the data points to see information that is more
-    detailed.
-
-	![](./images/pots/mq-appliance/lab4/image21.png)
-	
-	You now need to start putting some messages to make the chart change and
-see the results.
-
-	You can use the MQ Console to put some messages on to a queue to
-    test the widgets.
-
-10. Go to the **Tab 1** page of the MQ Console.
-
-11. As you are monitoring persistent messages, you need to ensure that
-    the default persistence on the queue is set to persistent, because
-    the MQ Console will put the message using persistent as per the
-    queue definition.
-
-12. Open the **Properties** of the **TEST.IN** queue and change the
-    default persistence to **Persistent** if it is not already set to
-    that.
-
-	![](./images/pots/mq-appliance/lab4/image22.png)
-	
-13. Select **TEST.IN** and click the **Put** message icon.
-
-	![](./images/pots/mq-appliance/lab4/image22a.png)
-
-	{% include note.html content="If you prefer, you may use RFHUtilc to put messages to the queue. After starting RFHUtilc, configure it as in the previous lab:
-    
-    
-    Queue Manager = **SYSTEM.ADMIN.SVRCONN/TCP/10.0.0.1** 
-    
-     
-    Set Conn Id = **testuser/passw0rd** 
-    
-    
-    Check 'Use CSP' box
-    
-    
-    Now click **Load Names** and use the **Queue Name** 
-    drop down to select **TEST.IN**
-    
-    
-    Click **Open File** and select a text file from the Windows System, then 
-    click the **Write Queue** Button (every click writes a single message)
-   
-
-    ![](./images/pots/mq-appliance/lab4/image23.png)
-    
-    ![](./images/pots/mq-appliance/lab4/image24.png)
-    
-     " %}
-
-14. Put some messages on the queue. You can put as many or as few as you
-    like -- in our example we put 6 messages separated by approximately 10
-    seconds. 
-    
-    ![](./images/pots/mq-appliance/lab4/image22b.png)
-
-15. Go back to the **My API Monitoring** tab and chart widget you have just
-    created.
-
-16. You will see the spikes when you have been putting messages.
-
-	![](./images/pots/mq-appliance/lab4/image25.png)
-
-17. If you put additional messages on the queue, you will be able to see
-    the "traffic" as it starts and stops over a few minutes duration as
-    shown below.
-
-	![](./images/pots/mq-appliance/lab4/image25a.png)
-	
-	It is possible to monitor more than one queue manager on a single
-widget. This may be very useful if you are in a high traffic environment
-and want to see which queue managers are taking the bulk of the traffic
-or where the peaks and troughs of message processing are taking place.
-
-	For this lab, we will use the HAQM1 queue manager as an additional queue
-manager to monitor.
-
-18. Go to the **Tab 1** tab, and then add a new **Queues** widget for
-    the **HAQM1** queue manager.
-
-19. In the **Queues on HAQM1** queues widget, create a new local queue
-    called **MONITOR**.
-
-	![](./images/pots/mq-appliance/lab4/image26.png)
-	
-20. Change the default persistence property of the **MONITOR** queue to
-    **Persistent**.
-
-	You are now ready to put some messages on to the queue, but first we
-    need to update the API monitoring widget to add the new queue
-    manager.
-
-21. Go back to the **My API Monitoring** tab.
-
-22. Select the **Configure widget** icon, as shown below.
-
-	![](./images/pots/mq-appliance/lab4/image27.png)
-
-23. Click **Add queue manager** and select the **HAQM1** queue manager.
-    Choose a color, different from the color for QM1.
-
-24. Click **Save**.
-
-	![](./images/pots/mq-appliance/lab4/image28.png)
-
-25. Using the method you used previously, put some test messages on to
-    the **MONITOR** queue.
-
-	Put a few messages. Put as many or as few as you like; the content
-    of the messages is not important.
-
-26. Go back to the **My API Monitoring** tab.
-
-27. As you can see below, there has been no activity for QM1 in the past
-    collection interval, but you now see the activity for the HAQM1
-    queue manager.
-
-	![](./images/pots/mq-appliance/lab4/image29.png)
-
-	Explore additional options available with the monitoring widgets. This
-time you will monitor the amount of data being put on to the queues.
-
-28. Add another **Chart** monitoring widget to the page.
-
-29. This time select the Resource element: **Put persistent messages --
-    byte count**. Select the following:
-    
-    -   Resource class = **API usage statistics**
-
-	-   Resource type = **MQPUT**
-
-	-   Resource element = **Put persistent messages -
-    byte count**.
-
-	-   Queue manager to monitor = **QM1** and **HAQM1**
-
-	-   View Finder = **Show**
-
-30. Select both queue managers as shown below.
-
-	![](./images/pots/mq-appliance/lab4/image30.png)
-
-31. Go back to **Tab 1** and put more messages to the **MONITOR** queue
-    on **HAQM1**.
-
-	To do this, enter a few messages, wait, and
-    then enter a few more and so on -- this will show the byte count
-    over more than one collection interval.
-
-32. Using your preferred method put some test messages to **TEST.IN** on
-    **QM1**.
-
-33. Go back to the **My API Monitoring** tab and look at the byte count
-    widget.
-
-34. As you can see in the figure below, the putting of messages for
-    HAQM1 starts, spans a couple of collection intervals, and then
-    stops.
-
-	The byte count for QM1 climbs. If you check the byte count widget
-    quickly enough, you may catch it before the next collection interval
-    indicates that activity has stopped.
-
-	![](./images/pots/mq-appliance/lab4/image31.png)
-	
-	You can easily rearrange the widgets to optimize the screen real
-    estate.
-
-41. Click either of the widgets and drag them, a shaded box will show
-    you whereabouts on the screen you can drop the widget.
-
 ### Resource Monitoring
 
-The next thing you will do for this exercise is to add another tab to
-the dashboard, for resource monitoring. You will be monitoring the disk
-and CPU usage in this tab.
+As you are monitoring persistent messages, you need to ensure that the default persistence on the queue is set to persistent, because the MQ Console will put the message using persistent as per the queue definition.
 
-1. As you did previously, add another **tab** to the dashboard. Call
-    this tab **My Resource Monitoring**.
+1. As we already have all of the connectivity for this test set up for
+QM1, go to the MQ console and create a new local queue on **QM1** named **MONITOR**.
 
-2. Add a **Chart** widget with the following settings:
+	![](./images/pots/mq-appliance/lab4/image104.png)
+	
+	![](./images/pots/mq-appliance/lab4/image105.png)
+	
+	![](./images/pots/mq-appliance/lab4/image106.png)
+	
+	![](./images/pots/mq-appliance/lab4/image107.png)	
+12. Open the **Properties** of the **MONITOR** queue and change the
+    default persistence to **Persistent** if it is not already set to
+    that. Click *Save*.
 
-	-   Resource class = **Platform persistent data stores**
+	![](./images/pots/mq-appliance/lab4/image108.png)
+	
+	![](./images/pots/mq-appliance/lab4/image109.png)
 
-	-   Resource type = **Disk usage –- running queue managers**
-
-	-   Resource element = **Queue Manager file system -– free space**
-
-	-   Add **QM1** and **HAQM1.**
-
-	-   View Finder = **Show**
-
-	![](./images/pots/mq-appliance/lab4/image32.png)
-
-3. Add another **Chart** widget as shown below, with the following settings:
-
-	-   Resource class = **Platform central processing units**
-
-	-   Resource type = **CPU performance -- platform wide**
-
-	-   Resource element = **User CPU time percentage**
-
-	-   Add **QM1** and **HAQM1.**
-
-	-   View Finder = **Show**	
-
-	![](./images/pots/mq-appliance/lab4/image33.png)
-
-	At the moment, you do not see activity for either queue manager, for either change in disk utilization or CPU.
-
-	![](./images/pots/mq-appliance/lab4/image34.png)
-
-	As you saw in lab 1, some files and programs should have been provided
+1. As you saw in lab 1, some files and programs should have been provided
 in the **perf** folder. These will again be used for this part of the
-lab. The applications are part of SupportPac IH03.
+lab. The applications are part of SupportPac IH03. 
 
-4. As we already have all of the connectivity for this test set up for
-    QM1, go to the **Tab 1** console and create a new local queue on **QM1**
-    named **MONITOR**, and set default **persistence** to **yes**.
-
-5. Go back to the command window you used earlier. If you closed it,
+1. Go back to the command window you used earlier. If you closed it,
     open a **Command Prompt** window and change to the
-    **C:\\utilities\\RFHutil\\** directory.
-
-	![](./images/pots/mq-appliance/lab4/image35.png)
-
-6. Open the **parmtst1.txt** parameters file in your favorite text
+    **C:\\utilities\\RFHutil\\** directory. 
+    
+    Open the **parmtst1.txt** parameters file in your favorite text
     editor, such as notepad.
+    
+    ![](./images/pots/mq-appliance/lab4/image110.png)
 
 7. Make sure the **qmgr** parameter is:
 
@@ -541,38 +287,29 @@ lab. The applications are part of SupportPac IH03.
 
 13. Go back to the command window.
 
-14. Execute the **driver.cmd** file.
+14. Execute the **driver.cmd** file. 
 
-	![](./images/pots/mq-appliance/lab4/image39.png)
-
-15. You will notice once the program starts that the queue depth
+	You will notice once the program starts that the queue depth
     settings are as follows:
 
-	![](./images/pots/mq-appliance/lab4/image40.png)
+	![](./images/pots/mq-appliance/lab4/image113.png)
 
 16. Below is the output from the example we have just run (you may not
     get the same result -- but if not, you may wish to increase the
     number of messages).
 
-	![](./images/pots/mq-appliance/lab4/image41.png)
+	![](./images/pots/mq-appliance/lab4/image110.png)
 
 17. Oops, we have run out of space for the queue manager!!! This is not
     likely to happen on a real appliance but you may recall that we have
     a very small queue manager file system size on our appliance). If
     the script did not end, hit **CTRL-C** to end the job.
 
-18. Go to the MQ Console and go to the **My Resource Monitoring** tab.
-
-	![](./images/pots/mq-appliance/lab4/image42.png)
-	
-	We do indeed seem to have zero space left for that queue manager.
-
-19. Go to the **My API Monitoring** tab and you will see a change there
-    too.
-
-20. Go back to the **Tab 1** console. Here you see the thousand
+20. Go back to the MQ Explorer. Here you see the thousand
     (probably 994) messages you have just put on the queue. There may be
     more if you did not clear out messages from previous tests.
+    
+    ![](./images/pots/mq-appliance/lab4/image112.png)
 
 21. Clear the messages from the **MONITOR** queue on **QM1**.
 
