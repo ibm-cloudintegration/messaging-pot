@@ -1,6 +1,6 @@
 ---
 title: IBM MQ Appliance Disaster Recovery (DR)
-toc: false
+toc: true
 sidebar: labs_sidebar
 folder: pots/mq-appliance
 permalink: /mq_appl_pot_lab8.html
@@ -148,25 +148,24 @@ manager part of a disaster recovery configuration.
     the available file system on the virtual appliance is very limited.
 
 4.  To prepare the disaster recovery configuration, the queue manager
-    must be stopped. If QM1 is running, highlight it in the **Local
-    Queue Managers** widget and stop it by clicking the **Stop** icon.
+    must be stopped. If QM1 is running, highlight it in the **Manage** > 
+    **Queue Managers** page and stop it by clicking the elipsis and select **Stop**.
     
     ![](./images/pots/mq-appliance/lab8/image10.png)
     
-5. Click **Stop** to confirm QM1 to end.
+5. You receive a green confirmation that the command was successful.
 
     ![](./images/pots/mq-appliance/lab8/image11.png)
 
 6. Refresh the queue manager status to make sure it is stopped.
 
-    ![](./images/pots/mq-appliance/lab8/image12.png)
+    ![](./images/pots/mq-appliance/lab8/image12.png) 
+    
+1. Click the ![](./images/pots/mq-appliance/lab8/image13.png) icon for *QM1* and select *Configure DR*. 
 
-7. With **QM1** highlighted, click
-    ![](./images/pots/mq-appliance/lab8/image13.png) (*More actions* menu) and then **Disaster Recovery...**.
+	![](./images/pots/mq-appliance/lab8/image14.png)
 
-    ![](./images/pots/mq-appliance/lab8/image14.png)
-
-8. Click the **Create DR primary** option.
+8. Click the **Setup DR primary** option.
     
     ![](./images/pots/mq-appliance/lab8/image15.png)
     
@@ -178,15 +177,19 @@ manager part of a disaster recovery configuration.
     **Standby appliance IP address: 10.0.4.3** (or appropriate *eth4*
     address of *MQAppl3*)
 
-    **DR port: 2014**
-
-    ![](./images/pots/mq-appliance/lab8/image16.png)
-
-	Note that 10.0.4.3 is the IP address of eth4 (physical eth20)
-    network adapter on MQAppl3 (refer to table at the top of this
-    guide).
+    **Disaster recovery port: 2014**
     
-10. Click **Create**.
+    **Replication type: Asynchronous** 
+    
+    **Floating IP address**: not configured
+    
+    Click the checkbox to agree. 
+
+    ![](./images/pots/mq-appliance/lab8/image16.png) 
+    
+    {% include note.html content="10.0.4.3 is the IP address of eth4 (physical eth20) network adapter on MQAppl3 (refer to table at the top of this guide)." %}
+    
+10. Click **Save**.
 
 	 {% include note.html content="The information used to generate the command: 
     
@@ -205,16 +208,13 @@ manager part of a disaster recovery configuration.
 
 	On successful completion of the command, the command generates and outputs the associated **crtdrsecondary**
     command to be run **AS IS** on the secondary (**MQAppl3**) appliance.
-    Take note of that command as you will re-use it in the next step.
     
-    ![](./images/pots/mq-appliance/lab8/image17.png)
-    
-11. **Copy** the command in the grey "**Create DR secondary command**"
+    Use the copy icon to copy the command in the pop-up "**Create DR secondary command**"
     box, as you will need to run it on the recovery appliance *MQAppl3*.
     
-    ![](./images/pots/mq-appliance/lab8/image17a.png)
+    ![](./images/pots/mq-appliance/lab8/image17.png)
 
-12. Click **Finish**. 
+12. Close the pop-up. 
 
 	If you receive the error below, contact your instructor for help in
     making space available.
@@ -232,13 +232,17 @@ manager part of a disaster recovery configuration.
 
 14. Log in with **admin** / **passw0rd**.
 
-15. Click the **Disaster Recovery** button on the top right of the page, and then click **Create DR secondary**.
+15. Click the *Manage* icon then **Disaster Recovery** button at the top of the page. 
     
     ![](./images/pots/mq-appliance/lab8/image20.png)
+    
+1. Click **Create DR secondary queue manager**.
 
-16. Paste the *copied* **crtdrsecondary** command in the "**Paste command here**"
+	![](./images/pots/mq-appliance/lab8/image20a.png)
+	
+16. Paste the *copied* **crtdrsecondary** command in the "**Enter command to setup secondary**"
     box on appliance **MQAppl3**.
-
+    
     Once you paste the command, the other fields will automatically fill
     in.
 
@@ -255,23 +259,16 @@ manager part of a disaster recovery configuration.
 
 	You can click the **X** to dismiss the box.
 	    
-18. You should see **QM1** show up in the **Local Queue Managers**
-    widget. You may need to click the refresh button for **Local Queue
-    Managers** if you get an error message.
+18. You should see **QM1** show up in the **Queue Managers** with status *Stopped*. Notice that the *DR Status* is **Synchronization in progress**. You may need to click the refresh button for **Queue Managers** if you get an error message.
     
     ![](./images/pots/mq-appliance/lab8/image22.png)
-
-19. Check the DR status. Highlight **QM1**, then click ![](./images/pots/mq-appliance/lab8/image13.png) and **Disaster Recovery...**. Click **DR status** from the popup menu.
     
-    ![](./images/pots/mq-appliance/lab8/image23a.png)
-
-20. QM1 should have a **Normal** status. Click **Cancel**.
-
-    ![](./images/pots/mq-appliance/lab8/image24.png)
-     
+    Once synchronization is complete the *DR status* will change to **Normal**.
+    
+    ![](./images/pots/mq-appliance/lab8/image22a.png)
+         
      {% include note.html content="The information used to generate the command: 
-    
-    
+     
 	The **crtdrsecondary** command creates a secondary version of the queue manager on the recovery appliance in a disaster recovery configuration. All parameters are supplied by the equivalent **crtdrprimary** command and should be entered exactly as shown in the output from that command. After this command is run, synchronization of data from the main to the recovery appliance begins. The queue manager status is shown as stopped, and initial synchronization progress can be followed by using the **status** command. "
 	%}
   
@@ -428,70 +425,57 @@ Now let's start the test.
     **Stopped**. The DR functionality does not automatically start the
     queue manager.
 
-    Highlight **QM1**, click ![](./images/pots/mq-appliance/lab8/image13.png) and then **Disaster Recovery...**. Select **DR Status**.
+    Click ![](./images/pots/mq-appliance/lab8/image13.png) for **QM1** and select **Configure DR**. Select **DR Status**.
 
     ![](./images/pots/mq-appliance/lab8/image36.png)
 
-    ![](./images/pots/mq-appliance/lab8/image23a.png)
-
-13. Notice the status. Click **Cancel**.
-    
-    ![](./images/pots/mq-appliance/lab8/image38.png)
-
 14. Make queue manager **QM1** on MQAppl3 primary.
 
-	From the **MQAppl3** command line, enter the command:
-
-    **`makedrprimary -m QM1`**
-    
-    ![](./images/pots/mq-appliance/lab8/image39.png)
-
-    **OR**
-
-    From the MQ Console, with **QM1** highlighted, click ![](./images/pots/mq-appliance/lab8/image13.png) and then **Disaster Recovery...** again. 
-
-    ![](./images/pots/mq-appliance/lab8/image40.png)
-
-    Click **Make DR primary**
+    Click **Make primary**.
 
     ![](./images/pots/mq-appliance/lab8/image37.png)
+    
+    Click **Confirm** to make QM1 DR primary.
 
     You should receive a green bar with the **Successfully performed
-    disaster recovery operation** message. You can click on the **X** to
+    disaster recovery action** message. You can click on the **X** to
     dismiss the message.
 
     ![](./images/pots/mq-appliance/lab8/image41.png)
     
+     **OR**
+         
+    You can also run the command from the **MQAppl3** command line, enter the command:
+
+    **`makedrprimary -m QM1`**
+    
+    ![](./images/pots/mq-appliance/lab8/image39.png)  
+      
 15. Start queue manager **QM1** on MQAppl3.
 
+	From the web browser tab for MQAppl3 MQ Console:
+   
+    Click the *Manage* breadcrumb to return to *Manage Queue managers*. Click the
+    ![](./images/pots/mq-appliance/lab8/image13.png) button for **QM1** and select **Start**.
+
+	![](./images/pots/mq-appliance/lab8/image44.png)
+	
+	**OR**
+	
 	From the command line:
 
     **`strmqm QM1`**
 
     ![](./images/pots/mq-appliance/lab8/image42.png)
-    
-    **OR**
-
-	From the MQ Console:
-   
-    With **QM1** highlighted, click the
-    ![](./images/pots/mq-appliance/lab8/image43.png) button.
-
-	![](./images/pots/mq-appliance/lab8/image44.png)
-	
 	
 	 The queue manager has now been recovered on the secondary appliance and it is ready to accept connections and process messages.
  
-
 16. Switch back to the Windows environment (**Windows 10 x64**) browser
     session for **MQAppl3** if necessary.
 
-17. Click **Add Widget** and add a widget for **Queues** on **QM1**.
+17. Click the hyperlink for **QM1**.
 
     ![](./images/pots/mq-appliance/lab8/image45.png)
-
-    Re-position the queues widget next to the *Local Queue Managers*
-    widget.
 
     Note that **QM1** still has *three* messages on the **TEST.Q**.
 
@@ -499,12 +483,9 @@ Now let's start the test.
 
     There may be messages on other queues left from previous labs too.
 
-18. Browse the messages by highlighting **TEST.Q** and clicking the
-    ![](./images/pots/mq-appliance/lab8/image47.png) icon on the tool bar.
+18. Browse the messages by clicking the hyperlink for **TEST.Q**. 
 
-    ![](./images/pots/mq-appliance/lab8/image48.png)
-    
-    These messages will look familiar, as they are the ones you created
+	These messages will look familiar, as they are the ones you created
     on **QM1** on **MQAppl1**.
 
     ![](./images/pots/mq-appliance/lab8/image49.png)
@@ -590,35 +571,37 @@ part of the queue manager and are replicated.
 
 ### Remove a queue manager from a disaster recovery configuration
 
-1. Switch to the **MQAppl3** browser tab and stop queue manager
-    **QM1**, by clicking ![](./images/pots/mq-appliance/lab8/image57.png) **stop**.
+1. Switch to the **MQAppl3** browser tab and click the *Manage* icon. 
+
+	Stop queue manager **QM1**, by clicking the elipsis and select **Stop**.
     
     ![](./images/pots/mq-appliance/lab8/image58.png)
 
-2. Confirm by clicking **Stop**.
+2. You receive confirmation of the stop action. 
+	
+	Then click *Disaster recovery*.
 
     ![](./images/pots/mq-appliance/lab8/image59.png)
 
-3. Once QM1 is stopped, highlight **QM1**, then click
-    ![](./images/pots/mq-appliance/lab8/image60.png) and then **Disaster Recovery...**. Then click **Make DR
-    Secondary**.
+3. Click the elipsis for **QM1** and select *Configure DR*. 
 
     ![](./images/pots/mq-appliance/lab8/image61.png)
 
-    You will receive the green operation successful message.
+    Click **Make secondary**.
     
     ![](./images/pots/mq-appliance/lab8/image62.png)
 
-    Click **X** to dismiss the message.
+    Click **Confirm** on the pop-up to make QM1 secondary.
+    
+    ![](./images/pots/mq-appliance/lab8/image62a.png)
+    
+    You receive the green confirmation pop-up.
 
 4. From the Skytap dashboard, start **MQAppl1**.
 
     ![](./images/pots/mq-appliance/lab8/image63.png)
 
-5. Wait for MQAppl1 to initialize. You will know initialization is
-    complete when the login: prompt is displayed on the MQAppl1 console
-    or you are prompted to refresh the browser on the MQAppl1 browser
-    tab.
+5. Return to browser tab for MQAppl1. Wait for MQAppl1 to initialize. You will know initialization is complete when the login: prompt is displayed on the MQAppl1 console or you are prompted to refresh the browser on the MQAppl1 browser tab.
 
     ![](./images/pots/mq-appliance/lab8/image64.png)
 
@@ -628,60 +611,42 @@ part of the queue manager and are replicated.
     
     ![](./images/pots/mq-appliance/lab8/image66.png)
 
-7. **QM1** will display a **Starting** status, then **Running**.
+7. On the Windows VM, return to the browser tab for *MQAppl1*. You will be required to sign-in again since MQAppl1 was restartred. Click *Manage*. **QM1** will display a **Starting** status, then **Running**.
     
    ![](./images/pots/mq-appliance/lab8/image67.png)
 
-8. Click **Add Widget** for **Queues** on queue manager **QM1**, if
-    this widget is not already present.
-
+8. Click the hyperlink for **QM1** then **Queues**. You will see that the three persistent messages are still on **TEST.Q**.
+    
    ![](./images/pots/mq-appliance/lab8/image68.png)
 
-9. Reposition the **Queues on QM1** next to the widget for **Local
-    Queue Managers**. You will see that the three persistent messages
-    are still on **TEST.Q**.
-    
+10. Click **TEST.Q** to browse the messages.
+
     ![](./images/pots/mq-appliance/lab8/image69.png)
-
-10. Highlight **TEST.Q** then click
-    ![](./images/pots/mq-appliance/lab8/image70.png) to browse the messages.
-
-    ![](./images/pots/mq-appliance/lab8/image48.png)
 
 11. You have verified that your messages are still on **TEST.Q** on
     queue manager **QM1** when QM1 has been restored on the main
-    production appliance. Click **Close**.
-    
-    ![](./images/pots/mq-appliance/lab8/image49.png)
+    production appliance.
 
-12. On **MQAppl3**'s MQ Console, highlight **QM1** then click
-    ![](./images/pots/mq-appliance/lab8/image71.png) and then **Disaster Recovery...** and then **Delete
-    DR secondary**.
+12. On **MQAppl3**'s MQ Console **QM1** on the **Disaster Recovery** pane, **Delete DR secondary**.
 
     ![](./images/pots/mq-appliance/lab8/image72.png)
     
-    You will receive the green successful operation message.
+    Click *Confirm* on pop-up.
 
     ![](./images/pots/mq-appliance/lab8/image73.png)
 
-    Click the **X** to dismiss the message.
+    You will receive the green succes message pop-up. Click the **X** to dismiss the message.
 
 13. Wait a few seconds and you will see *QM1* disappear from the MQ
     Console. QM1 has been removed from the disaster recovery configuration.
     
     ![](./images/pots/mq-appliance/lab8/image73a.png)
 
-14. On **MQAppl1**'s MQ Console, stop queue manager **QM1**.
+14. On **MQAppl1**'s MQ Console click the *Manage* breadcrumb, then *Queue Managers*. Click the elipsis for **QM1** and select *Stop*.
     
     ![](./images/pots/mq-appliance/lab8/image74.png)
 
-15. Confirm by clicking **Stop**.
-
-    ![](./images/pots/mq-appliance/lab8/image75.png)
-
-16. Once *QM1* is stopped, highlight **QM1**, then click
-    ![](./images/pots/mq-appliance/lab8/image76.png) and **Disaster Recovery...** and then **Delete
-    DR primary**.
+15. You will receive the green success pop-up and **QM1** shows a *Stopped* status. Once *QM1* is stopped click **Disaster Recovery** and then **Delete primary**.
     
     ![](./images/pots/mq-appliance/lab8/image77.png)
 
@@ -782,14 +747,24 @@ If **QM1** was deleted in the previous exercise, you can skip the first two-thre
 1. Since space is limited on virtual appliances, you need to delete
     **QM1** as we will not use it in this exercise and need the space.
 
-    On **MQAppl1**, use the MQ Console and highlight **QM1** in the *Local Queue Managers* widget, and click the trash can icon.
+    On **MQAppl1**, use the MQ Console and go to *Manage* > *Queue Managers*. Click the elipsis for **QM1** and select *Stop*. 
 
     ![](./images/pots/mq-appliance/lab8/image91.png)
 
-2. Click **Delete** to confirm the deletion of QM1.
+2. Once *QM1* is stopped, click the elipsis again and select *View configuration*. 
 
-    ![](./images/pots/mq-appliance/lab8/image92.png)
+	![](./images/pots/mq-appliance/lab8/image91c.png)
 
+1.  Click **Delete queue manager**.
+
+    ![](./images/pots/mq-appliance/lab8/image91a.png)
+    
+    Type the name of queue manager and click *Delete*.
+    
+    ![](./images/pots/mq-appliance/lab8/image91b.png)
+    
+    Refresh the page to see that QM1 has been deleted.
+    
 3. Logon on to the **MQAppl2** MQ Console and repeat the previous step to delete the
     queue manager **QM2** (if it exists) on **MQAppl2**. Make sure the
     only queue managers you see on MQAppl2 are HAQM1 and HAQM2. Delete
@@ -798,53 +773,42 @@ If **QM1** was deleted in the previous exercise, you can skip the first two-thre
     ![](./images/pots/mq-appliance/lab8/image93.png)
 
 4. Staying on **MQAppl2**'s MQ Console, add a local queue named
-    "**TEST2**" on the **Queues on HAQM2** widget (add the widget first
-    if necessary).
+    "**TEST2**" on queue manager **HAQM2**.
 
     ![](./images/pots/mq-appliance/lab8/image94.png)
 
     ![](./images/pots/mq-appliance/lab8/image95.png)
 
-5. Open the properties for **TEST2** by clicking the **Properties**
-    icon.
+5. Open the properties for **TEST2** by clicking the elipsis and select *View configuration*. 
 
     ![](./images/pots/mq-appliance/lab8/image96.png)
 
-6. Change the **TEST2** queue default persistence to be  **persistent**. 
+6. Click *Edit* and change the **TEST2** queue default persistence to be  **persistent**. 
 
-    Click **Save** to save the change, then clock **Close**.
+    Click **Save** to save the change.
 
-    ![](./images/pots/mq-appliance/lab8/image97.png)    
+    ![](./images/pots/mq-appliance/lab8/image97.png)  
+    
+    ![](./images/pots/mq-appliance/lab8/image97a.png) 
 
-7. Click the **Put message** icon and put **three** messages on
+7. Click the hyperlink for **TEST2**, and put **three** messages on
     **TEST2**.
 
     ![](./images/pots/mq-appliance/lab8/image98.png)
-
-8. Click the **Folder** icon to browse the messages. Click **Close** after browsing them.
-
-   ![](./images/pots/mq-appliance/lab8/image99.png)
 
    You are now ready to test DR.
 
 ### Configure DR for HA queue manager
 
-1. On the **MQAppl1** MQ Console, click **HAQM1** to select it, then click
-    **Stop** to end the queue manager **HAQM1**.
+1. On the **MQAppl1** MQ Console, navigate to *Manage* > *Queue managers*. Click the elipsis for **HAQM1** then click **Stop** to end the queue manager **HAQM1**.
 
     ![](./images/pots/mq-appliance/lab8/image100.png)
     
-    Click **Stop** to confirm you want to stop HAQM1.
-
-    ![](./images/pots/mq-appliance/lab8/image101.png)
-
-2. Click **Refresh** to make sure it is stopped and shows *red*.
-
-    ![](./images/pots/mq-appliance/lab8/image102.png)
+    You will receive the green success pop-up.
 
 3. Repeat the previous steps to stop **HAQM2** on **MQAppl2**.
 
-    ![](./images/pots/mq-appliance/lab8/image103.png)
+    ![](./images/pots/mq-appliance/lab8/image101.png)
 
 ### Create a DR primary and backup QM on recovery device
 
@@ -860,44 +824,31 @@ appliance pair MQAppl1 and MQAppl2 need to be running also.
 
     ![](./images/pots/mq-appliance/lab8/image104.png)
 
-    If the HA status shows **Normal**, skip to Step 6.
+    If the HA status shows **Normal**, skip to [Partitioning Resolved - Continue](#Partitioning Resolved).
 
     In this instance, the HA status for **HAQM2** shows **Partitioned**
     which is also called split-brain. The amount of data which is out of
     sync is shown to be 137284KB (what you see might differ slightly).
-    This is easily resolved.
-
-2. On **MQAppl2**'s MQ Console, highlight **HAQM2**, click
-    ![](./images/pots/mq-appliance/lab8/image71.png) then **High Availability...**, and then **Resolve
-    partitioned state**.
-
-   ![](./images/pots/mq-appliance/lab8/image105.png)
-
-   ![](./images/pots/mq-appliance/lab8/image106.png)
-   
-3. You will receive the green successful operation message. Click the
-    **X** to dismiss the message.
-    
-    ![](./images/pots/mq-appliance/lab8/image106a.png)
+    This is easily resolved. Click this link to [Resolve Partitioning](#Resolve Partitioning). Then return here.
 
 4. Check the status for **HAQM2** again on MQAppl2's command line.
     Status is now **Normal**.
 
     ![](./images/pots/mq-appliance/lab8/image107.png)
+    
+#### <a name="Partitioning Resolved"></a>Partitioning Resolved - Continue
 
-5. Repeat Steps 2 - 4 on **MQAppl1** for **HAQM1** to resolve the
-    partitioned status.
+6. On the **MQAppl2** browser session in *Manage* > *Queue managers*, click *Disaster recovery*. 
 
-6. On the **MQAppl2** browser session, select **HAQM2** (stopped) and
-    click the
-    ![](./images/pots/mq-appliance/lab8/image71.png) pulldown and click **Disaster
-    Recovery...**
+	![](./images/pots/mq-appliance/lab8/image108.png)
+	
+1. Click the elipsis for **HAQM2** (stopped) and select *Configure DR*. 
 
-    ![](./images/pots/mq-appliance/lab8/image108.png)
+    ![](./images/pots/mq-appliance/lab8/image109.png)
 
-7. Click **Create DR Primary**.
+7. Click **Setup DR Primary**.
 
-   ![](./images/pots/mq-appliance/lab8/image109.png)
+   ![](./images/pots/mq-appliance/lab8/image110.png)
 
 8. Specify that the **HAQM2** queue manager is the primary instance in a
     disaster recovery configuration and include a floating IP address
@@ -911,35 +862,75 @@ appliance pair MQAppl1 and MQAppl2 need to be running also.
     **Standby appliance IP address: 10.0.4.3** (or appropriate eth4
     address of MQAppl3)
 
-    **DR port: 2023**
+    **Disaster recovery port: 2023**
 
-    **Floating IP address: 10.0.4.4**
+    **Floating IP address: 10.0.4.14**
 
-    ![](./images/pots/mq-appliance/lab8/image110.png)
-
-    Click **Create**. 
+    Click **Save**. 
     
-    This generates and runs the *crtdrprimary* command.
-    The crtdrprimary command configures the queue manager on both
-    appliances in the DR pair, and reserves storage for the data
-    snapshot on both appliances. The command would look like this if
-    entered manually:
+    ![](./images/pots/mq-appliance/lab8/image111a.png)
+    
+     If entering the command manually on the appliance CLI it would look like this:
+   
+   **`crtdrprimary -m HAQM2 -r MQAppl3 -i 10.0.4.3 -p 2023 -f 10.0.4.14 -t -a `**
+   
+   The parameters are as follows 
+    
+   -   *-m*  queue manager name
 
-    **`crtdrprimary -m HAQM2 -r MQAppl3 -i 10.0.4.3 -p 2023 -f 10.0.4.4`**
+   -	*-f*	Floating IP address of the high availability (HA) queue manager
+
+	-	*-r*	name of the recovery appliance
+
+	-   *-i*  ip address of DR replication interface on the recovery appliance
+
+	-   *-p*  data replication listener port 
+	
+	-   *-t*  replication type:
+
+	-	*a*		asynchronous
+   
+   The DR creation task can take a bit of time, wait at least a minute or two.
+      
+   This generates the *crtdrsecondary* command which you need to run on MQAppl3. Copy the command in the pop-up window so that you can submit it on MQAppl3.
+   
+   ![](./images/pots/mq-appliance/lab8/image112.png) 
+
+1. Logon to the **MQAppl3** MQ Console via the browser. Navigate to *Manage* > *Queue managers*, then click *Disaster recovery*.
+
+	![](./images/pots/mq-appliance/lab8/image113.png)
+	
+1. Click *Create DR secondary queue manager* button.
+
+	![](./images/pots/mq-appliance/lab8/image114.png) 
+	
+1.	Paste the command you copied from MQAppl2 into the field where it says to "Enter command to setup secondary". Notice the fields below are populated when you paste the command. You could also click the hyperlink and enter the fields manually if you didn't copy from MQAppl2. But it is much easier to copy from MQAppl2 and paste on MQAppl3. 
+	
+	Click *Create*.  
+	
+	![](./images/pots/mq-appliance/lab8/image115.png)
+	
+	The command configures the queue manager on both appliances in the DR pair, and reserves storage for the data snapshot on both appliances. The command would look like this if entered manually on the appliance CLI:
+
+    **`crtdrsecondary -m HAQM2 -l MQAppl2 -i 10.0.4.14 -p 2023 -t -a`**
 
 	The parameters are as follows
 
-	-   *-m*  the HA queue manager
+	-   *-m*  queue manager name
 
-	-   *-r*  name of the recovery appliance
+	-	*-l*	name of the main appliance
 
-	-   *-i*  ip address of the recovery appliance
+	-   *-i*  ip address of DR replication interface on the main appliance
 
-	-   *-p*  port number of the queue manager on the recovery appliance
+	-   *-p*  data replication listener port 
 
-	-   *-f*  floating IP address
+	-	*-fs*	file system size in megabytes (MB)
+	
+	-   *-t*  replication type:
 
-9. The floating IP address is an IPv4 address that is used to replicate
+	-	*a*		asynchronous	
+   
+	The floating IP address is an IPv4 address that is used to replicate
     queue manager data from *whichever HA appliance the queue manager is
     currently running on* to the queue manager on the recovery appliance.
     The floating IP address must be in the same subnet group as the
@@ -955,76 +946,36 @@ appliance pair MQAppl1 and MQAppl2 need to be running also.
     for each of the HA queue managers that you configure disaster
     recovery for.
 
-    The DR creation task can take a bit of time, wait at least a minute
-    or two.
-
-    Do **not** click **Finish**. The crtdrprimary command returns a
-    crtdrsecondary command when it has completed, for example:
-
-    **crtdrsecondary -m HAQM2 -s 2048 -l MQAppl2 -i 10.0.4.4 -p 2023**
-
-   ![](./images/pots/mq-appliance/lab8/image111.png)
-
-10. **Copy** the **crtdrsecondary** command.
-
-11. Switch to the **MQAppl3** browser tab or open a new tab for MQAppl3
-    and login.
-
-    In the top right corner of the MQ Console, click **Disaster Recovery** and then click **Create DR secondary**.
-    
-    ![](./images/pots/mq-appliance/lab8/image112.png)
-
-12. **Paste** the command (you copied from MQAppl2) into the "**Paste
-    command here**" box. The rest of the fields will be automatically
-    filled.
-
-    Click **Create**.
-
-    ![](./images/pots/mq-appliance/lab8/image113.png)
-
 13. Wait for the command to complete (a few seconds) and you will see
-    that **HAQM2** is added to the *Local Queue Managers* widget.
+    that **HAQM2** is added to the *Local Queue Managers*. Note that its *DR status* is *Secondary*.
     
-    ![](./images/pots/mq-appliance/lab8/image114.png)
-    
-    You will get the green box with the success message that you can close.
-
-14. Return to the **MQAppl2** browser and click the **Finish** button.
-
-    Then highlight **HAQM2**, then click
-    ![](./images/pots/mq-appliance/lab8/image115.png) and **Disaster Recovery...** and then **DR
-    status**.
-
     ![](./images/pots/mq-appliance/lab8/image116.png)
+
+14. Return to the **MQAppl2** browser and click *Disaster recovery*.
+
+	![](./images/pots/mq-appliance/lab8/image117.png)
+
+1.  You will now see that **HAQM2** has a *DR status* of *Normal* and *DR role* of *Primary*.
     
-15. The DR status for HAQM2 will show **Normal** (if it shows
-    'Synchronization in progress', wait a few seconds for it to
-    complete).
-
-16. In the popup window, click **HAQM2** to display the DR details. The display will reflect
-    what you entered on the DR Create Primary command. Click **Cancel**
-    to dismiss the status panel.
-
-    ![](./images/pots/mq-appliance/lab8/image117.png)
-
-    ![](./images/pots/mq-appliance/lab8/image118.png)
+    ![](./images/pots/mq-appliance/lab8/image118.png) 
     
-17. Repeat the DR Status command on **MQAppl3**'s MQ Console.
+    If the DR status for HAQM2 shows *Normal* 'Synchronization in progress', wait a few seconds for it to complete.
 
-    Highlight **HAQM2**, then click
-    ![](./images/pots/mq-appliance/lab8/image119.png) **Disaster Recovery...** followed by **DR
-    status**.
+16. Click the elipsis for **HAQM2** and select *Configure DR* to display the DR details. 
 
-    Click **HAQM2** to show the details.
+	![](./images/pots/mq-appliance/lab8/image119.png)
+
+	The display will reflect what you entered on the DR Create Primary command. It shows that the status is *Normal* and there is 0 data out-of-sync.
 
     ![](./images/pots/mq-appliance/lab8/image120.png)
+    
+17. Repeat the DR Status command on **MQAppl3**'s MQ Console. Click the elipsis for **HAQM2** and select *Configure DR*. 
 
-	Notice that MQAppl3's role is DR *secondary* and the DR address is the
-floating IP address you entered on the command.
-
-	![](./images/pots/mq-appliance/lab8/image121.png)
-
-18. Click **Cancel** to dismiss the status display.
+	![](./images/pots/mq-appliance/lab8/image121.png) 
+	
+	The status shows *Normal* on MQAppl3 also. 
+	
+	![](./images/pots/mq-appliance/lab8/image122.png)
 
 ### Test DR for HA group
 
@@ -1033,31 +984,32 @@ the MQAppl1 and MQAppl2 virtual appliances.
 
 1. On the **Skytap** dashboard, shut down **MQAppl1** first, then
     shutdown **MQAppl2**. You only need to wait between shutdowns as
-    long as it takes Skytap to return control.
+    long as it takes Skytap to return control. 
 
-    ![](./images/pots/mq-appliance/lab8/image122.png)
+    ![](./images/pots/mq-appliance/lab8/image122a.png)
 
-2. Return to the **MQAppl2** MQ Console. Wait for the "*Lost
-    communication with the server*" message.
+2. When **MQAppl2** has been shut down, return to the **MQAppl2** MQ Console. Wait for the "*Lost communication with the server*", "*Problem loading page*", or "*The connection has timed out*" message.
 
     ![](./images/pots/mq-appliance/lab8/image123.png)
     
-3. Now you can return to the **MQAppl3** MQ Console.
-
-    Highlight **HAQM2**, then click
-    ![](./images/pots/mq-appliance/lab8/image71.png) and **Disaster Recovery...** and then **Make DR
-    primary**.
+3. Now you can return to the **MQAppl3** MQ Console. In *Manage* > *Queue managers*, click *Disaster recovery*.
+    
 
     ![](./images/pots/mq-appliance/lab8/image124.png)
+    
+1. Click the elipsis for **HAQM2** and select *Make primary*.
+
+	![](./images/pots/mq-appliance/lab8/image124a.png) 
+	
+	You could also select *Configure DR*, which takes you the status page where you can click the hyperlink for *Make Primary*. 
+	
+	![](./images/pots/mq-appliance/lab8/image124b.png) 
 
 4. You will receive the green successful operation message. HAQM2 is
     now primary on MQAppl3 and can be started. Before you start the
     queue manager, check the DR status once more to see that it in fact
-    shows DR primary.
-
-    The status display shows that the remote appliance is no longer
-    available and the recovery appliance is now the primary. Dismiss the
-    display by clicking **Cancel.**
+    shows DR primary. The status display shows that the remote appliance is no longer
+    available and the recovery appliance is now the primary.
     
     ![](./images/pots/mq-appliance/lab8/image124a.png)
 
@@ -1070,29 +1022,26 @@ the MQAppl1 and MQAppl2 virtual appliances.
 
     ![](./images/pots/mq-appliance/lab8/image126.png)
     
-    ![](./images/pots/mq-appliance/lab8/image127.png)
+1. Click the elipsis for **HAQM2** and select *Configure DR*. This will display the overall disaster recovery status for the queue manager.  
     
-	Click **Cancel** to dismiss the dialog.
-	
-	HAQM2 is now running and is now the DR Primary.
+    ![](./images/pots/mq-appliance/lab8/image127.png) 
+    
+    HAQM2 is now running and is now the DR Primary.
 
-6. Add a widget for **Queues on HAQM2** on the **MQAppl3** MQ Console, and
-    position it next to the *Local Queue Managers* widget.
+6. Click *HAQM2* in the breadcrumbs. 
 
     ![](./images/pots/mq-appliance/lab8/image128.png)
+    
+    This will take you to the MQ Console for *HAQM2* while it is now running on *MQAppl3*. By default *Queues* are displayed first.
     
 7. Oh look! There are three messages on the **TEST2** queue. This is
     expected since you gave TEST2 default persistence.
 
     ![](./images/pots/mq-appliance/lab8/image129.png)
 
-8. Browse those message, and as you would expect they are the messages
-    you put on the queue while HAQM2 was running on MQAppl2. Click
-    **Close** to dismiss the display.
+8. Browse those message by clicking the hyperlink for *TEST2*. As you would expect they are the messages you put on the queue while HAQM2 was running on MQAppl2. 
 
     ![](./images/pots/mq-appliance/lab8/image130.png)
-    
-    ![](./images/pots/mq-appliance/lab8/image131.png)
     
 	HAQM2 has successfully failed over to the disaster recovery site and all
 messages are available for processing. Client applications will need to
@@ -1100,3 +1049,150 @@ reconnect to 10.0.0.3, and they would connect automatically if the CCDT
 has both addresses coded.
 
 Congratulations, you have completed Lab 8 Disaster Recovery.
+
+## <a name="Resolve Partitioning"></a>Resolve Partitioning
+
+### Resolving a partitioned problem in a high availability configuration
+
+A partitioned problem occurs when the two appliances in a high availability configuration lose the ability to communicate with each other. If both the primary and secondary connections are lost, the queue manager will run on both appliances at the same time.
+
+If the two appliances in your high availability configuration lose both primary and secondary interface connections, then replication no longer occurs between the two appliances. After the connection is restored, the data replication system detects that there have been independent changes to the same resources on both appliances. This situation is described as a partitioned situation, because the two appliances have two different views of the current state of the queue manager (it is sometimes called a 'split-brain' situation). When the first connection is restored (either primary or secondary), the queue manager is stopped on one appliance but continues to run on the other. The HA status is shown as partitioned.
+
+### Choosing the 'winner'
+
+To resolve the situation, you must decide which of the two appliances has the data that you want to retain, you then issue a command that identifies this appliance as the “"winner"”. Data on the other appliance is discarded. The queue manager is then started on one appliance, and the data replicated to the other appliance.
+
+To help you decide, you can run the status command for the affected queue manager on each appliance. The status command returns an HA status of partitioned together with a report of how much out-of-sync data the appliance has for that queue manager. See Viewing the status of a high availability queue manager.
+
+You can also view the actual data associated with the affected queue manager on each appliance by interrogating the state of each queue manager. Stop all your HA queue managers and disable HA control by issuing the following command for each HA queue manager:
+
+	```
+	endmqm -w qmgr
+	```
+	
+Then follow these steps to run each affected queue manager on each appliance, outside of HA control, so that you can interrogate the state of each version of the queue manager:
+
+1. Display the HA status to confirm that the HA control field shows disabled, and that the queue manager is ended on both appliances:
+
+    ```
+    status qmgr
+    ```
+    
+    See Viewing the status of a high availability queue manager. (If the queue manager is running on the other appliance, end it there too.) You can use the HA last in sync field in the status reports to help determine when the queue manager data diverged and the seriousness of the partitioning.
+
+1. On the appliance that is the primary for the queue manager, restart the queue manager outside of HA control:
+
+	```
+	strmqm -ns qmgr
+	``` 
+	
+	This command starts the queue manager without starting the listener, to prevent any applications connecting. (If you need a listener in order to connect to the queue manager from, for example, IBM MQ Explorer, then you should start a listener manually by using a RUNMQSC command. Start the listener on a different port to the normal one so that applications cannot connect.)
+
+1. Display the HA status again and verify that the queue manager is running and that HA control still shows disabled:
+
+	```
+	status qmgr
+	```
+
+1. Interrogate the state of the queue manager, for example, by browsing messages.
+
+1. End the queue manager once more:
+
+	```
+	endmqm -w qmgr
+	```
+
+1. Display the HA status again and verify that the queue manager is ended on both appliances:
+
+	```
+	status qmgr
+	```
+
+1. Suspend the HA group on this appliance by entering the following command:
+
+	```
+	sethagrp -s
+	```
+
+1. Display the HA status of this appliance to confirm that it is in the standby state:
+
+	```
+	dsphagrp
+	```
+
+1. Log in to the other appliance and start the queue manager:
+
+	```
+	strmqm -ns qmgr
+	```
+	
+	(This command starts the queue manager without the listener. If you need a listener, see the advice in step 2.)
+
+1. Check the status and confirm that the queue manager is running and that HA control is still disabled:
+
+	```
+	status qmgr
+	```
+
+1. Interrogate the state of the queue manager on that appliance, for example, by browsing messages.
+
+1. End the queue manager:
+
+	```
+	endmqm -w qmgr
+	```
+
+1. Display the HA status and confirm that HA control is still disabled and that the queue manager is ended on both appliances.
+
+1. Resume the suspended appliance:
+
+	```
+	sethagrp -r
+	```
+
+1. Display the HA status and confirm the suspended appliance is now active, and HA control is still disabled, and HA status is Partitioned on both appliances.
+
+	```
+	dsphagrp
+	status qmgr
+	```
+
+### Implementing your choice of winning appliance
+
+{% include note.html content="It is a good idea to take back ups of both sets of data before you implement your choice of 'winner', see Backing up a queue manager."%}
+
+You identify the winner by running the following commands on the chosen appliance:
+
+1. Make the queue manager on the winning appliance the primary:
+
+	```
+	makehaprimary HAQMName
+	```
+
+1. Where HAQMName is the name of the queue manager. The data is then synchronized between the queue managers on the winning appliance and the other appliance.
+Check the HA status to confirm that synchronization has finished and a status of Normal is reported on both appliances:
+
+	```
+	status qmgr
+	```
+
+1. Start the queue manager with HA control:
+
+	```
+	strmqm qmgr
+	```
+
+1. Whichever appliance that you start the queue manager on, it should run on the appliance that has been designated as its preferred appliance.
+Display the HA status on both appliances and confirm HA control is enabled and the queue manager is active on only the preferred appliance:
+
+	```
+	status qmgr
+	```
+
+### Other situations
+
+If the two appliances lose the replication interface, the HA status is reported as Remote appliance(s) unavailable. The running queue manager might accumulate out-of-sync data. The other queue manager remains in standby with no out-of-sync data. When the connection is remade, replication is resumed.
+
+If your HA queue manager is configured for disaster recovery, and failed over to the recovery appliance when your HA group went out of service, then you might have to resolve data partitioning between the HA group and the recovery appliance. After you have restored your HA group, and resolved data partitioning between the primary and secondary appliances, you must follow the procedure described in Switching back to the main appliance.
+
+[Partitioning Resolved](#Partitioning Resolved)
