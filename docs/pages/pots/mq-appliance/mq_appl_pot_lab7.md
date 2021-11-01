@@ -1,6 +1,6 @@
 ---
 title: Service and Maintenance
-toc: false
+toc: toc
 sidebar: labs_sidebar
 folder: pots/mq-appliance
 permalink: /mq_appl_pot_lab7.html
@@ -23,9 +23,9 @@ appliance you will use for this lab will be **MQAppl4** and the Windows
 image, **Windows 10 x64** in the CSIDE environment. You must suspend or
 shut down all other VMs.
 
-The MQAppl4 appliance is currently running version 9.0.1.0 of the
-firmware. In this lab, you will upgrade the firmware to V9.1.4.0, before
-reverting to V9.0.1.0 again.
+The MQAppl4 appliance is currently running version 9.1.3.0 of the
+firmware. In this lab, you will upgrade the firmware to V9.2.2.0, before
+reverting to V9.1.3.0 again.
 
 ## Back up the IBM MQ Appliance configuration
 
@@ -43,11 +43,9 @@ To back up your IBM MQ Appliance, you back up the following features:
 
 -   Key repository
 
--   Queue manager configurations
+-   Queue manager configurations and data
 
--   IBM MQ Console configurations
-
--   IBM MQ messages (optional)
+-   IBM MQ Appliance UI configurations
 
 You use URIs to copy the backed-up information from the appliance to
 safe storage. You also use URIs to restore backed-up information to a
@@ -63,9 +61,7 @@ target appliance. You restore an appliance in the following order:
 
 -   Restore queue manager configurations
 
--   Restore IBM MQ Console configurations
-
--   Restore IBM MQ messages (if necessary)
+-   Restore IBM MQ Appliance UI configurations
 
 Commands are available to back up and restore a queue manager. You can
 back up a queue manager to an archive file that can subsequently be
@@ -76,7 +72,7 @@ For this lab, you will first back up the IBM MQ Appliance configuration,
 in preparation to upgrade the firmware. After upgrading the firmware,
 you will then try using the commands to backup and restore a queue
 manager. You will then restore the MQ Appliance configuration after you
-have reverted the firmware back to V9.0.1.0.
+have reverted the firmware back to V9.1.3.0.
 
 ### Performing the backup of the appliance configuration
 
@@ -101,8 +97,8 @@ external storage.
 	
 	![](./images/pots/mq-appliance/lab7/image1.png)
 
-	The installed firmware is at the 9.0.1.0 level. You will upgrade the
-    firmware to v9.1.3.0.
+	The installed firmware is at the 9.1.3.0 level. You will upgrade the
+    firmware to v9.2.2.0.
 
 4.  Type the following command to enter configuration mode:
 
@@ -125,14 +121,17 @@ external storage.
     <https://10.0.0.4:9090>). Login as **admin** (password =
     **passw0rd**).
 
-8.  Remember this is the old version of the GUI, running at V9.0.1.0. In
+8.  Remember this is the old version of the GUI, running at V9.1.3.0. In
     this version, there are two primary options: *Manage Appliance* and *MQ
-    Console*. Then there is the V9.0.1.0 addition along the tabs at the
-    top -- File Management. Click on **File Management**. 
+    Console*. By default the UI opens to the MQ Console with *Local Queue Managers*. You see *High Availability* and *Disaster Recovery* across the top of the page.
+    
+    ![](./images/pots/mq-appliance/lab7/image2a.png)
+    
+1. Click the *Administration* icon. Expand *Main* and click on **File Management**. 
     
     ![](./images/pots/mq-appliance/lab7/image3.png)
 
-9.  The *File Management* tool opens. You used the V9.1.4 File Management
+9.  The *File Management* tool opens. You used the V9.2.2.0 File Management
     tool in Lab 3 and Lab 5. It enables you to upload a file from the
     system running your browser to the MQ Appliance; save a file from
     the MQ Appliance to your system; and move, copy, rename and delete
@@ -158,7 +157,7 @@ external storage.
 	
 	![](./images/pots/mq-appliance/lab7/image5.png)
 
-14. Then **Enter name of file to save to...** dialog box opens up. Select
+14. Then *Enter name of file to save to...* dialog box opens up. Select
     **C:\\Setup-Install** as the location to save the file. The file
     name of **autoconfig.cfg** and file type of **Text Document
     (\*.cfg)** should be set for you. Click **Save**. 
@@ -212,7 +211,7 @@ repository for all available and supported firmware images for IBM MQ
 Appliances. The fixes are cumulative, so always choose the most recent
 image.
 
-In the lab environment, the download of Fix Pack V9.1.3.0 has already
+In the lab environment, the download of Fix Pack V9.2.2.0 has already
 been done for you and is stored in the directory C:\\Setup-Install\\. 
 
 ![](./images/pots/mq-appliance/lab7/image7.png)
@@ -246,7 +245,7 @@ You will again use the File Management tool to copy the firmware
 
 	![](./images/pots/mq-appliance/lab7/image9.png)
 	
-4. Navigate to the **C:\\Setup-Install** directory. Select the **9.1.3.0-IBM-MQ-Appliance-U0000.scrypt4** file. 
+4. Navigate to the **C:\\Setup-Install** directory. Select the **9.2.2.0-IBM-MQ-Appliance-U0000.scrypt4** file. 
 
 	Click **Open**. 
 	
@@ -327,7 +326,7 @@ You will again use the File Management tool to copy the firmware
     where *firmware\_file* is the name of the file that contains the new
     firmware image. For this lab the command will be:
 
-    **`boot image accept-license 9.1.3.0-IBM-MQ-Appliance-U0000.scrypt4`** 
+    **`boot image accept-license 9.2.2.0-IBM-MQ-Appliance-U0000.scrypt4`** 
     
     ![](./images/pots/mq-appliance/lab7/image19.png)
   
@@ -341,7 +340,7 @@ You will again use the File Management tool to copy the firmware
     **`show firmware`**
 
     which shows the following results. You should see a version of
-    9.1.3.0 and a 'build date' of 2019-06-12. 
+    9.2.2.0 and a 'build date' of 2019-06-12. 
     
     ![](./images/pots/mq-appliance/lab7/image20.png)
 
@@ -409,7 +408,7 @@ deleted or otherwise changed while the backup is running.
     
     ![](./images/pots/mq-appliance/lab7/image24.png)
     
-    If you receive an information box concerning the upgrade from the V9.0.x
+    If you receive an information box concerning the upgrade from the V9.1.3
     version of the MQ Console configuration to the current version, you
     may click on the **X** at the far right of the box to dismiss the
     message.
@@ -432,51 +431,55 @@ deleted or otherwise changed while the backup is running.
     
       ![](./images/pots/mq-appliance/lab7/image28.png)  
     	
-1.  You should have the **Local Queue Managers** widget visible with the
-    **QM4** queue manager shown as running.
-
-	 Click **Add Widget**. 
+1.  You should have the *Manage* home page visible with the
+    one queue manager shown as running.
 	 
-	 ![](./images/pots/mq-appliance/lab7/image29.png)  
+	 ![](./images/pots/mq-appliance/lab7/image29.png)
+	 
+	 Click the *Manage* square.  
 
-7. The **QM4** queue manager should be selected as the Queue Manager already. Click 	**Queues** to create a Queues widget. 
+7. The **QM4** queue manager should be selected as the Queue Manager already. Click the hyperlink for **QM4**. 	
 
 	![](./images/pots/mq-appliance/lab7/image29a.png)
 
-8. Now click the **+** sign in the **Queues on QM4** widget to create a queue. 
+8. You are taken to the *Manage* > *Queues* page. There are no application queues defined. Click the *Create* button to create a queue. 
 
 	![](./images/pots/mq-appliance/lab7/image30.png)
+	
+1. Click the *Local* block.
+
+	![](./images/pots/mq-appliance/lab7/image30a.png)
 
 9. Enter **MYQUEUE** as the Queue name, ensure the Object type is Local, and click 	**Create**. 
 
 	![](./images/pots/mq-appliance/lab7/image31.png)
 
-10. *MYQUEUE* should be visible in the widget. Click on **MYQUEUE** to
-    highlight the queue, and then click the **Properties** icon.
+10. *MYQUEUE* should now be visible on the page. 
     
     ![](./images/pots/mq-appliance/lab7/image32.png)
     
-11. Use the dropbox to set the **Default persistence** to
+1. Click the elipsis for **MYQUEUE** then click **View configuration**.
+
+	 ![](./images/pots/mq-appliance/lab7/image32a.png)
+
+11. Click *Edit*. Use the dropbox to set the **Default persistence** to
     **Persistent**. Click **Save**.
     
     ![](./images/pots/mq-appliance/lab7/image33.png)
 
-12. Now click the **Envelope** **PUT message** icon. 
+12. When you return to the properties page, click *Actions* > *Create message*. 
 
 	![](./images/pots/mq-appliance/lab7/image31.png)    
 
-13. Enter a message (e.g. **Test persistent message 1**) in the **Message** field and 	click **Put.** 
+13. Enter a message (e.g. **Test persistent message 1**) in the **Application Data** field and click **Create**.
 
-	![](./images/pots/mq-appliance/lab7/image32.png)
+	![](./images/pots/mq-appliance/lab7/image31a.png)
 
-14. Repeat the previous step two times, so you have three messages on
-    the queue.
+14. Click the 'x' to remove the success message. Repeat the previous step two times, so you have three messages on the queue.
 
-15. The *MYQUEUE* queue should now have a Queue depth of **3**. Now that we
-    have a queue manager with some objects and queue data, proceed with
-    the backup of it.
-
-    ![](./images/pots/mq-appliance/lab7/image33.png)
+15. Click the breadcrumb *QM4*. The *MYQUEUE* queue should now have a Queue depth of **3**. 
+    
+    Now that we have a queue manager with some objects and queue data, proceed with the backup of it.
 
 16. Switch back to the command line for **MQAppl4**.
 
@@ -489,19 +492,22 @@ deleted or otherwise changed while the backup is running.
     **where "-s" is the *size* of the space that is allocated in GB** (you
     can use the "**m**" modifier to signify a size in megabytes if desired). 
     
-    ![](./images/pots/mq-appliance/lab7/image34.png)
+    ![](./images/pots/mq-appliance/lab7/image35.png)
 
-    A directory that is named **mqbackup:///QMgrs** is created and
-    allocated that storage.
+1.  In the browser tab for *MQAppl4* > *Administration* > *File management* you will see a new directory that is named **mqbackup:///QMgrs** has been created and allocated that storage.
+
+	![](./images/pots/mq-appliance/lab7/image36.png)
 
 18. Now that we have a queue manager with some objects and queue data, as well as 	space allocated, let us proceed with the backup of it. Enter the following command:
     
     **`mqbackup -m QM4`**
     
-    ![](./images/pots/mq-appliance/lab7/image39.png)
+    ![](./images/pots/mq-appliance/lab7/image37.png)
     
     A backup file named **QM4.bak** is created and stored in the
     **mqbackup:///QMgrs** URI.
+    
+    ![](./images/pots/mq-appliance/lab7/image38.png)
   
 	{% include note.html content="The backup can take some time to|run, during which period you cannot use the CLI. By default, the archive file is named *QM\_name*.bak, but you can add the **-o outfilename** argument to the mqbackup command to specify a file name, if required.  " %}
 
@@ -526,7 +532,7 @@ You can only restore one queue manager at a time.
     
     **`dltmqm QM4`**
     
-     ![](./images/pots/mq-appliance/lab7/image40.png)
+     ![](./images/pots/mq-appliance/lab7/image41.png)
 
     If you receive a message of "*IBM MQ Appliance queue manager 'QM4'
     ending.*", then wait some more then try the dltmqm command again.
@@ -535,7 +541,7 @@ You can only restore one queue manager at a time.
     
     **`mqrestore -f QM4.bak`**
     
-     ![](./images/pots/mq-appliance/lab7/image41.png)
+     ![](./images/pots/mq-appliance/lab7/image42.png)
      
      The restore should complete successfully.
      
@@ -545,39 +551,36 @@ You can only restore one queue manager at a time.
     
     **`strmqm QM4`**
     
-    ![](./images/pots/mq-appliance/lab7/image42.png)
-
-5. Return to the Windows image and the browser. Refresh the browser if
-    necessary. *QM4* should be shown as running in the *Local Queue
-    Managers* widget, and *MYQUEUE* with a queue depth of **3** should be seen
-    in the *Queues on QM4* widget.
-
     ![](./images/pots/mq-appliance/lab7/image43.png)
 
-6. Click on **MYQUEUE** and then click the **folder** icon to browse
-    the messages.
+5. Return to the Windows image and the browser. In *Manage* > *Queue managers*, refresh the browser if necessary. *QM4* should be shown as running in the *Queue managers* window.
 
-    ![](./images/pots/mq-appliance/lab7/image44.png)    
+1.  Click the hyperlink for *QM4*. *MYQUEUE* with a queue depth of **3/5000** should be seen
+    in the *Queues on QM4*.
+
+    ![](./images/pots/mq-appliance/lab7/image45.png)
+
+6. Click the elipsis for **MYQUEUE** and select **View messages** to browse the messages.
+
+    ![](./images/pots/mq-appliance/lab7/image46.png)    
     
 7. The messages should look familiar. Check the timestamp to prove
     these are the messages you put on the queue before you deleted the
     queue manager. Click **Close**. 
     
-    ![](./images/pots/mq-appliance/lab7/image45.png)
-
-8. To prepare for the next step, stop the QM4 queue manager. Click on
-    **QM4** in the **Local Queue Managers** widget, then click the
-    **Stop** icon.
-
-    ![](./images/pots/mq-appliance/lab7/image46.png)
-
-9. Click **Stop** to confirm.
-
     ![](./images/pots/mq-appliance/lab7/image47.png)
+
+8. To prepare for the next step, stop the QM4 queue manager. Click the *Manage* breadcrumb. Click the elipsis for **QM4** on the **Queue Managers** page, and select **Stop**.
+
+    ![](./images/pots/mq-appliance/lab7/image48.png)
+
+9. The status will change to *Stopping*, then **Stopped** and you receive the green success pop-up.
+
+    ![](./images/pots/mq-appliance/lab7/image49.png)
 
 ## Reverting to the previous level of firmware and restoring configuration
 
-You will now revert the appliance back to the previous, V9.0.1.0 level
+You will now revert the appliance back to the previous, V9.1.3.0 level
 of the firmware, and restore the configuration of the appliance.
 
 ### Reverting to the previous level of firmware
@@ -616,7 +619,7 @@ During this switch operation, do not power off or restart the appliance.
 7. Wait for the appliance to reboot, and then login.
 
 8. Enter **show version** to check the firmware level. Notice the
-    return to the previous V9.0.1.0 level.
+    return to the previous V9.1.3.0 level.
     
     ![](./images/pots/mq-appliance/lab7/image51.png)
 
@@ -641,32 +644,32 @@ Appliance and then restart the appliance.
 
 2. Click on **File Management**.
 
-    ![](./images/pots/mq-appliance/lab7/image50.png)
+    ![](./images/pots/mq-appliance/lab7/image52.png)
 
 3. Click on the **Actions...** link to the right of the **config:**
     folder. On the popup menu, click **Upload Files**.
 
-    ![](./images/pots/mq-appliance/lab7/image51.png)
+    ![](./images/pots/mq-appliance/lab7/image53.png)
     
 4. Click **Browse**.
     
-    ![](./images/pots/mq-appliance/lab7/image52.png)
+    ![](./images/pots/mq-appliance/lab7/image54.png)
 
 5. In the **File Upload** dialog, navigate to **C:\\Setup-Install** and
     select the **autoconfig.cfg** file. Note the date modified to ensure
     this is the file you copied earlier. Click **Open**.
 
-    ![](./images/pots/mq-appliance/lab7/image53.png)
+    ![](./images/pots/mq-appliance/lab7/image55.png)
 
 6. Note the **autoconfig.cfg** file as the name to upload and the name
     to save the file in the **config:** folder. Click the **Overwrite
     Existing Files** checkbox, and then click **Upload**.
     
-    ![](./images/pots/mq-appliance/lab7/image54.png)
+    ![](./images/pots/mq-appliance/lab7/image55a.png)
     
 7. Note the Status confirmation, then click **Continue**.
     
-	![](./images/pots/mq-appliance/lab7/image55.png)
+	![](./images/pots/mq-appliance/lab7/image56.png)
 
 8. Return to the **MQAppl4** command line..
 
@@ -677,7 +680,7 @@ Appliance and then restart the appliance.
 
 10. Answer **y** to the prompt for reboot.
 
-	![](./images/pots/mq-appliance/lab7/image56.png)
+	![](./images/pots/mq-appliance/lab7/image57.png)
    
     You can move on to the next section and start reading, but you will
     have to wait for the reboot to complete before taking the next lab
@@ -720,7 +723,7 @@ Because you are using a virtual appliance, you will simulate the above steps. Yo
 
 	![](./images/pots/mq-appliance/lab7/image60.png)
 	
-	There is also a shortcut the desktop:
+	There is also a shortcut on the desktop:
     
     ![](./images/pots/mq-appliance/lab7/image59.png)
 
@@ -758,18 +761,19 @@ Because you are using a virtual appliance, you will simulate the above steps. Yo
 
 11. If the image directory is empty or the correct image is not present,
     go to [IBM Fix Central](http://www-933.ibm.com/support/fixcentral/)
-    and obtain the latest firmware release. 
-    
-    The download has been done
+    and obtain the latest firmware release. The download has been done
     for you and is located in the directory C:\\Setup-Install. The
     normal extension for the firmware is \*.scrypt3. However for the
-    virtual appliance, the firmware has the extension \*.scrypt4. We
-    will use the 9.0.1.0-IBM-MQ-Appliance-M2000-U001.scrypt4 file.
+    virtual appliance, the firmware has the extension \*.scrypt4. 
+    
+    ![](./images/pots/mq-appliance/lab7/image64a.png)
+    
+    We will use the 9.2.2.0-IBM-MQ-Appliance-U0000.scrypt4 file.
 
 12. Refresh your **Firefox** browser to reconnect to the **MQAppl4** appliance
     after the appliance reboot. Login as **admin**.
 
-13. Click on **File Management**.
+13. Click *Administration* > *Main* > **File Management**.
 
 14. Click the **Actions...** link to the right of **image:**, then click
     **Upload Files** on the popup menu.
@@ -781,13 +785,13 @@ Because you are using a virtual appliance, you will simulate the above steps. Yo
 	 In the **File Upload** dialog, navigate to **C:\\Setup-Install**
     directory.
 
-    Select **9.0.1.0-IBM-MQ-Appliance-U0001.scrypt4**. Click **Open**.
+    Select **9.2.2.0-IBM-MQ-Appliance-U0000.scrypt4**. Click **Open**.
     
     ![](./images/pots/mq-appliance/lab7/image67.png)
 
-17. Click **Upload**.
-    
-*     ![](./images/pots/mq-appliance/lab7/image69.png)
+17. Click **Upload**. 
+
+	![](./images/pots/mq-appliance/lab7/image68.png)
     
 18. Wait for the upload to complete. It is complete when you receive the
     confirmation message. Click **Continue**.
@@ -812,7 +816,7 @@ Because you are using a virtual appliance, you will simulate the above steps. Yo
 
 	*For example:*
 
-	**`reinitialize 9.0.1.0-IBM-MQ-Appliance-M2000-U0001.scrypt4`**
+	**`reinitialize 9.2.2.0-IBM-MQ-Appliance-U0000.scrypt4`**
 
 22. You will be prompted to verify that you want to reinitialize the
     device as this will wipe out everything. Enter **y** to confirm.
@@ -824,7 +828,7 @@ Because you are using a virtual appliance, you will simulate the above steps. Yo
 
     ![](./images/pots/mq-appliance/lab7/image73.png)  
     
-    {% include note.html content="On the virtual appliance, the factory reset function is not a supported function; therefore, it does not complete the same as it would on a physical appliance. On the physical appliance, the factory reset will take a few minutes and then the appliance will reboot. The factory reset would then be complete. You would wait for the Login: prompt to reappear. 
+    {% include note.html content="On the virtual appliance, the factory reset function is not a supported function; therefore, it does not complete the same as it would on a physical appliance. On the physical appliance, the factory reset will take a few minutes and then the appliance will reboot. The factory reset would then be complete. You would wait for the *Login:* prompt to reappear. 
     
     
     After reinitialization is complete, you must log in as admin, using the password admin, and follow the initial setup procedure described in initializing the appliance in the KnowledgeCenter (the steps you performed in Lab 1). 
@@ -839,7 +843,7 @@ Because you are using a virtual appliance, you will simulate the above steps. Yo
 
 You have seen how to do a backup of the IBM MQ Appliance, including how
 to backup and restore a queue manager. You also have upgraded the MQ
-Appliance firmware from V9.0.1.0 to V9.1.3.0. You tested the factory
+Appliance firmware from V9.1.3.0 to V9.2.2.0. You tested the factory
 reset option, loaded the latest firmware and restored the configuration
 from a backup.
 

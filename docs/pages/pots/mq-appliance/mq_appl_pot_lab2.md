@@ -1,6 +1,6 @@
 ---
 title: IBM MQ Appliance High Availability
-toc: false
+toc: true
 sidebar: labs_sidebar
 folder: pots/mq-appliance
 permalink: /mq_appl_pot_lab2.html
@@ -25,11 +25,11 @@ The virtual appliances you will use for this lab will be **MQAppl1**,
 If you successfully completed Lab 1 on a CSIDE environment, you can
 continue to use your CSIDE environment. If so, you must have configured
 MQAppl2 in addition to MQAppl1. Otherwise, you can use the CSIDE
-template **MQ Appliance PoT 9.1.4 Configured -- ready for HA**, which is
+template **MQ Appliance PoT Configured - Ready for HA**, which is
 the solution for Lab 1. 
 
 {% include important.html content="**This lab assumes that Lab 1 has been completed! 
-You must either complete Lab 1 before attempting this lab, or use the “MQ Appliance PoT 9.1.4 Configured – Ready for HA” CSIDE template.** 
+You must either complete Lab 1 before attempting this lab, or use the “MQ Appliance PoT Configured – Ready for HA” CSIDE template.** 
 
 If Lab 1 has not been completed on the virtual appliance you are using, the results you see will differ from the examples in this lab guide." %} 
 
@@ -41,8 +41,6 @@ If Lab 1 has not been completed on the virtual appliance you are using, the resu
     ![](./images/pots/mq-appliance/lab2/image9.png)
 
 2. Log in with user / password **admin** / **passw0rd**.
-
-	![](./images/pots/mq-appliance/lab2/image10.png)
 	
 	![](./images/pots/mq-appliance/lab2/image11.png)
 
@@ -274,7 +272,11 @@ is different from the user who administers the appliance itself." %}
     password** radio button.
 
     ![](./images/pots/mq-appliance/lab2/image29.png)
-
+    
+    {% include note.html content=" If *Use saved password* is greyed out, click the hyperlink which will bring up the preferences for the MQ Explorer. Expand *MQ Explorer* > *Passwords*. Click the radio button for *Save passwords to a file*, then click *Apply and close*." %}
+    
+    ![](./images/pots/mq-appliance/lab2/image140a.png)    
+   
 14. Click **Enter password** and enter the password for the messaging
     user (**passw0rd**).
 
@@ -411,7 +413,7 @@ interface to the appliance queue managers.
     
     ![](./images/pots/mq-appliance/lab2/image139.png)
 
-6. In *Manage* all queue managers defined on *MQAppl1* are displayed. HAQM1 should be *Running* and HAQM2 should be *Running elsewhere*. QM1 was defined in the previous in lab. Click the *High availability* tab.
+6. In *Manage*, all queue managers defined on *MQAppl1* are displayed. HAQM1 should be *Running* and HAQM2 should be *Running elsewhere*. QM1 was defined in the previous in lab. Click the *High availability* tab.
 
 	![](./images/pots/mq-appliance/lab2/image140.png)
 	
@@ -453,7 +455,7 @@ interface to the appliance queue managers.
 
     ![](./images/pots/mq-appliance/lab2/image147.png)
 
-19. Enter some test messages by entering some text and clicking **Put message.**
+19. Enter some test messages by entering some text and clicking **Put message**.
 
 	![](./images/pots/mq-appliance/lab2/image149.png)
 

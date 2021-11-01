@@ -1,6 +1,6 @@
 ---
 title: IBM MQ Appliance Security
-toc: false
+toc: true
 sidebar: labs_sidebar
 folder: pots/mq-appliance
 permalink: /mq_appl_pot_lab5.html
@@ -95,9 +95,7 @@ following *authentication* methods:
 
 You can specify the following *authorization* methods:
 
--   Access policies can be defined in an XML file. (If you authenticate
-    by using an LDAP server, then you must use this method for
-    authorization.)
+-   Access policies can be defined in an XML file. 
 
 -   Access policies can be defined in local user groups.
 

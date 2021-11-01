@@ -1,6 +1,6 @@
 ---
 title: Getting Started with the MQ Appliance
-toc: false
+toc: true
 sidebar: labs_sidebar
 folder: pots/mq-appliance
 permalink: /mq_appl_pot_lab1.html
@@ -334,8 +334,6 @@ including connections from MQ Explorer.
     
     ![](./images/pots/mq-appliance/lab1/image135.png)
 
-	We can now add widgets for our MQ objects.
-
 5. Click the **QM1** hyperlink. The details of the queue manager are now displayed and here you can manage the queue manager.
     
     ![](./images/pots/mq-appliance/lab1/image136.png)
@@ -601,9 +599,6 @@ that was created in the previous exercise will be used.
 25. Click **Close**.
 
 	![](./images/pots/mq-appliance/lab1/image75.png)
-
-	You may wish to go back to the web console and add a queues widget to
-your QM1 tab to see the messages on the queue from there.
 
 ## Testing performance
 
