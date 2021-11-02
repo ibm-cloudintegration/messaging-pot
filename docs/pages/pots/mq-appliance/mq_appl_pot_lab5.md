@@ -15,7 +15,7 @@ Appliance compared to a standard IBM MQ installation. This lab assumes
 that you are familiar with basic IBM MQ security functions.
 
 The lab environment uses a single MQ Appliance virtual image (MQAppl1)
-and the Windows virtual image (**MQ V9 -- Windows10**). The Windows image is
+and the Windows virtual image (**Windows10**). The Windows image is
 used to:
 
 -   Demonstrate SSL/TLS protection of channels between queue managers on
@@ -189,7 +189,9 @@ There is a shortcut to the MQAppl1 image on the FireFox bookmarks bar.  " %}
 
     ![](./images/pots/mq-appliance/lab5/image4.png)
     
-1.  Queue Manager **QM1** may still be running from previous labs. If it is not running, start **QM1** now.
+1.  Click the *Manage* block to see *Queue managers*. Queue Manager **QM1** may still be running from previous labs. If it is not running, start **QM1** now.
+
+	![](./images/pots/mq-appliance/lab5/image4a.png)
 
 1.  Click the **Administration** tab and then expand the **Access**
     settings menu. You will see a list of menu items that you may use to
@@ -304,7 +306,11 @@ There is a shortcut to the MQAppl1 image on the FireFox bookmarks bar.  " %}
 	![](./images/pots/mq-appliance/lab5/image17.png) 
 	
 	c.  Click **Apply**.
-
+	
+	d.  In the pop-up, click the drop-down for *Username* and select **LAB5USER**. Click *Save*.
+	
+	![](./images/pots/mq-appliance/lab5/image17a.png) 
+		
 1.  Perform the following steps in order to test out the new User
     account and Group.
 
@@ -313,33 +319,41 @@ There is a shortcut to the MQAppl1 image on the FireFox bookmarks bar.  " %}
 
        ![](./images/pots/mq-appliance/lab5/image18.png)
 
-    b.  Note that the **Local Queue Managers** widget allows the
+    b.  Click the *Queue managers* block. Note that the **Queue managers** page allows the
         **LAB5USER** to view various properties of the queue manager,
         but does not allow the user to change any properties or start
-        and stop the queue manager. Click the **Add widget** link to add
-        an additional widget to the page.
+        and stop the queue manager. Click the drop-down for **QM1** and select *Stop*.
+        
+       ![](./images/pots/mq-appliance/lab5/image19.png) 
+       
+       The command fails because LAB5USER does not have the correct authority.
 
-       ![](./images/pots/mq-appliance/lab5/image19.png)
+       ![](./images/pots/mq-appliance/lab5/image19a.png)
 
-    c.  Click the **Queues** link to add a Queues widget for **QM1** to
-        the page.
+    c.  Click the hyperlink for **QM1**. Click *Create* to add a queue then click *Local*. Name the queue **LAB5Q** and click the *Create* button. The command fails again due to lack of authority.
 
        ![](./images/pots/mq-appliance/lab5/image20.png)
 
     d.  Try to perform various operations against any of the queues. You
         will find that with **MQ Web User** privileges, you can view
         various queue manager objects and their properties, but you are
-        not able to make changes to any objects.
-
+        not able to make changes to any objects. Return to *Manage* > *Queue managers*. Click the 			drop-down for **QM1** and select *View configuration*.       
+        
        ![](./images/pots/mq-appliance/lab5/image21.png)
+       
+    e.  *LAB5USER* can view the queue manager properties. Click *Edit*. Try to change a property and click *Save*. The command fails again.
+       
+       ![](./images/pots/mq-appliance/lab5/image21a.png)
 
 10. Log out of the MQ console.
 
+	![](./images/pots/mq-appliance/lab5/image21b.png)
+	
 ## Securing access to MQ resources
 
 ### User repositories
 
-The IBM MQ Appliance is based on IBM MQ V9.1.4.0 with several
+The IBM MQ Appliance is based on IBM MQ V9.2.2.0 with several
 modifications to enable support of an appliance form factor. One
 modification that has been made to MQ is the management of messaging
 users that are allowed to access IBM MQ objects.
