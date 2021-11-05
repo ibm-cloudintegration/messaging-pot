@@ -10,7 +10,6 @@ applies_to: [developer,administrator]
 
 # Lab 2 - IBM MQ Appliance High Availability
 
-
 In this lab, you will configure two virtual appliances for high
 availability (HA) and test that HA works as expected.
 
@@ -23,10 +22,9 @@ The virtual appliances you will use for this lab will be **MQAppl1**,
 **MQAppl2** and **Windows 10 x64** in the CSIDE environment.
 
 If you successfully completed Lab 1 on a CSIDE environment, you can
-continue to use your CSIDE environment. If so, you must have configured
-MQAppl2 in addition to MQAppl1. Otherwise, you can use the CSIDE
-template **MQ Appliance PoT Configured - Ready for HA**, which is
-the solution for Lab 1. 
+continue to use your CSIDE environment. MQAppl2 was pre-configured so it is ready to use for this lab. 
+
+Otherwise, you can use the CSIDE template **MQ Appliance PoT Configured - Ready for HA**, which is the solution for Lab 1. 
 
 {% include important.html content="**This lab assumes that Lab 1 has been completed! 
 You must either complete Lab 1 before attempting this lab, or use the “MQ Appliance PoT Configured – Ready for HA” CSIDE template.** 
@@ -44,7 +42,7 @@ If Lab 1 has not been completed on the virtual appliance you are using, the resu
 	
 	![](./images/pots/mq-appliance/lab2/image11.png)
 
-	{% include note.html content="If you see a message that states *Notice: startup config contains errors*, you can ignore the message. " %}
+	{% include note.html content="If you see a message that states *Notice: startup config contains errors*, you can ignore the message." %}
 
 ## The virtual environment
 
@@ -81,7 +79,9 @@ You will now create the HA group on the two appliances. You should be at the mqc
 
 1. On *MQAppl2*, run the following command:
 
-	**`prepareha -s SomeSecret -a 10.0.1.1`**
+	```
+	prepareha -s SomeSecret -a 10.0.1.1
+	```
 
 	![](./images/pots/mq-appliance/lab2/image15.png)
 	
@@ -97,7 +97,9 @@ You will now create the HA group on the two appliances. You should be at the mqc
 2. Now go to *MQAppl1* (do not wait for the prepareha command to
     complete) and issue the following command:
 
-	**`crthagrp -s SomeSecret -a 10.0.1.2`**
+	```
+	crthagrp -s SomeSecret -a 10.0.1.2
+	```
 
 	![](./images/pots/mq-appliance/lab2/image16.png)
 	
@@ -125,7 +127,9 @@ You will now create the HA group on the two appliances. You should be at the mqc
 
 1. On the *MQAppl1* appliance, issue the following command:
 
-	**`crtmqm -p 1511 -fs 2 -sx HAQM1`**
+	```
+	crtmqm -p 1511 -fs 2 -sx HAQM1
+	```
 
 
 	{% include note.html content="About filesystem size (-fs) and (-sx):
@@ -156,7 +160,9 @@ You will now create the HA group on the two appliances. You should be at the mqc
 3. You should now run the following command to check the status of the
     queue manager:
 
-	**`status HAQM1`**
+	```
+	status HAQM1
+	```
 
 4. You should now see that the queue manager is running, HA is enabled
     and running normally, with "This appliance" as the preferred
@@ -171,7 +177,9 @@ You will now create the HA group on the two appliances. You should be at the mqc
 
 7. Create another HA queue manager. Issue the following command:
 
-	**`crtmqm -p 1512 -fs 2 -sx HAQM2`**
+	```
+	crtmqm -p 1512 -fs 2 -sx HAQM2
+	```
 
 8. Again, you expect to see the successful creation of the queue
     manager and successful completion of the HA configuration.
@@ -181,7 +189,9 @@ You will now create the HA group on the two appliances. You should be at the mqc
 9. Run the status command for this queue manager to check that initial
     synchronization has completed successfully.
 
-	**`status HAQM2`**
+	```
+	status HAQM2
+	```
 
 10. Staying on *MQAppl2*, run the status command for the HAQM1 queue
     manager. If you contrast this with the HAQM2 status results you see
@@ -205,19 +215,23 @@ is different from the user who administers the appliance itself." %}
 
 1. Validate that *testuser* is defined, by entering the following command on either appliance:
 
-	**`userlist -u testuser`**
+	```
+	userlist -u testuser
+	```
 
 	![](./images/pots/mq-appliance/lab2/image22a.png)
 
 	If *testuser* does not exist, enter the following command on both MQAppl1 and MQAppl2:
 	
-	**`usercreate -u testuser -p passw0rd -g mqm`**
+	```
+	usercreate -u testuser -p passw0rd -g mqm
+	```
 	
 	You now need to set up the **SYSTEM.ADMIN.SVRCONN** channel that the MQ Explorer uses for communication.
 
 2. Go to the MQAppl1 appliance and enter the following commands:
 
-	~~~~
+	```
 	runmqsc HAQM1
 	
 	DEFINE CHANNEL(SYSTEM.ADMIN.SVRCONN) CHLTYPE(SVRCONN)
@@ -229,7 +243,7 @@ is different from the user who administers the appliance itself." %}
 	REFRESH SECURITY TYPE(CONNAUTH)
 	
 	END
-	~~~~
+	```
 
 	![](./images/pots/mq-appliance/lab2/image24.png)
 
@@ -266,23 +280,23 @@ is different from the user who administers the appliance itself." %}
 
 11. Click **Next** twice.
 
-12. Click **Enable user identification**.
+43. Select the check box next to **Enable user identification**.
 
-13. Enter the messaging user (**testuser**) and click the **Use saved
-    password** radio button.
+44. Enter **testuser** as the **Userid**.
 
-    ![](./images/pots/mq-appliance/lab2/image29.png)
-    
-    {% include note.html content=" If *Use saved password* is greyed out, click the hyperlink which will bring up the preferences for the MQ Explorer. Expand *MQ Explorer* > *Passwords*. Click the radio button for *Save passwords to a file*, then click *Apply and close*." %}
-    
-    ![](./images/pots/mq-appliance/lab2/image140a.png)    
-   
-14. Click **Enter password** and enter the password for the messaging
-    user (**passw0rd**).
+45. Select the **Prompt for password** radio button. 
 
-    ![](./images/pots/mq-appliance/lab2/image30.png)
+	Click **Finish**. 
+	
+	![](./images/pots/mq-appliance/lab2/image30a.png)
+	
+46. In the *Password details* popup, enter the password ("passw0rd") and then click **OK**. 
 
-15. Click **OK**, then click **Finish**.
+	![](./images/pots/mq-appliance/lab2/image30b.png)
+	
+49. The queue manager should now be visible in MQ Explorer.
+
+	![](./images/pots/mq-appliance/lab2/image30c.png)
 
 16. Repeat the steps above to add the
     HAQM2 using the following details:
@@ -298,12 +312,12 @@ is different from the user who administers the appliance itself." %}
 17. You will now see the two MQ Appliance queue managers in the Queue
     Managers folder.
 
-    ![](./images/pots/mq-appliance/lab2/image31.png)
+    ![](./images/pots/mq-appliance/lab2/image31a.png)
 
 18. In the content pane, you will see that the queue managers are
     identified as Appliance queue managers.
 
-	![](./images/pots/mq-appliance/lab2/image32.png)
+	![](./images/pots/mq-appliance/lab2/image32a.png)
 
 You are now ready to test the HA Failover.
 
@@ -313,12 +327,13 @@ You are now ready to test the HA Failover.
 
 2. Ensure you are at the mqcli interface and issue the following command:
 
-	**`sethagrp -s`**
+	```
+	sethagrp -s
+	```
 
 	{% include note.html content="About *sethagrp -s*. 
  This command pauses and resumes an appliance in a high availability group. When you use the sethagrp command to pause (or suspend) an appliance that is part of a high availability group, any queue managers running on that appliance fail over to the other appliance in the group.  "%} 
                   
-
 3. Run a **status HAQM1** command and note what it displays.
 
     ![](./images/pots/mq-appliance/lab2/image33.png)
@@ -338,18 +353,20 @@ You are now ready to test the HA Failover.
 5. You will now see three queue managers listed, but both queue
     managers are now running on the MQAppl2 appliance.
 
-    ![](./images/pots/mq-appliance/lab2/image34.png)
+    ![](./images/pots/mq-appliance/lab2/image34a.png)
 
 6. The queue manager on MQAppl1 appliance shows as disconnected and
     does not show a status.
 
-    ![](./images/pots/mq-appliance/lab2/image35.png)
+    ![](./images/pots/mq-appliance/lab2/image35a.png)
 
 	Now resume the appliance from standby mode.
 
 7. Go back to *MQAppl1* and enter the following command:
 
-	**`sethagrp -r`**
+	```
+	sethagrp -r
+	```
 
 8. Check the status of the HAQM1 queue manager and note what it
     displays.
@@ -380,7 +397,7 @@ You are now ready to test the HA Failover.
 13. Check in the MQ Explorer to verify that you can add (and then see)
     the HAQM2 running on the MQAppl1 (10.0.0.1) appliance.
 
-    ![](./images/pots/mq-appliance/lab2/image38.png)
+    ![](./images/pots/mq-appliance/lab2/image38a.png)
 
 14. Finally, go back to the MQAppl2 and use the **sethagrp -r** command
     to resume the appliance.
@@ -541,16 +558,15 @@ You can use the default svrconn channel for your client
 
 1. Using **runmqsc** on each of the appliances, perform the following:
 
-	~~~~
-	SET CHLAUTH(SYSTEM.DEF.SVRCONN) TYPE(BLOCKUSER)
-USERLIST('*whatever')
+	```
+	SET CHLAUTH(SYSTEM.DEF.SVRCONN) TYPE(BLOCKUSER) USERLIST('*whatever')
 
 	ALTER AUTHINFO('SYSTEM.DEFAULT.AUTHINFO.IDPWOS') AUTHTYPE(IDPWOS) ADOPTCTX(YES)
 
 	REFRESH SECURITY TYPE(CONNAUTH)
 
 	END
-	~~~~
+	```
 
 ### Set up variables
 
@@ -562,19 +578,19 @@ Depending on whether you are running your test in a Windows or a
 
 1. For Windows:
 	
-	~~~~
+	```
 	set MQSERVER=SYSTEM.DEF.SVRCONN/TCP/ipaddress(port) 
 
 	set MQSAMP_USER_ID=testuser
-	~~~~
+	```
 
 2. For Linux:
 
-	~~~~
+	```
 	export MQSERVER=SYSTEM.DEF.SVRCONN/TCP/'ipaddress(port)'
 
 	export MQSAMP\_USER\_ID=testuser
-	~~~~
+	```
 
 You can change these variables to suit whichever particular appliance
 and queue manager you are running a test for.

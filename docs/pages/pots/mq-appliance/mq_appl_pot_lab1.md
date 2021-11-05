@@ -19,7 +19,7 @@ The lab environment consists of multiple virtual appliances
 virtual appliances (**MQAppl2**, **MQAppl3**, and **MQAppl4**) will not be used in
 this lab. Please make sure they are suspended or shut down. You need to
 create a CSIDE environment to work in based on the template *MQ
-Appliance PoT 9.2.2.0 Unconfigured*. Log on to CSIDE and create a new
+Appliance PoT Unconfigured*. Log on to CSIDE and create a new
 environment from the template.
 
 Please be sure you have read the introductory details in the [Overview the IBM MQ Appliance PoT](mq_appl_pot_overview.html)
@@ -209,7 +209,8 @@ appliance.**
 
 	![](./images/pots/mq-appliance/lab1/image23.png)
 
-## Create and configure a queue manager 
+## Create and configure a queue manager
+ 
 The next part of the lab will create and configure a queue manager. This
 will be done using the command line interface provided by the appliance
 console. This could also be done using a secure shell connection, using
@@ -279,13 +280,18 @@ available. To exit from MQ administration mode, use the **exit** command.
 
 12. Execute the following command:
 
-	**`crtmqm -p 1414 -u SYSTEM.DEAD.LETTER.QUEUE -fs 2 QM1`**
+	```
+	crtmqm -p 1414 -u SYSTEM.DEAD.LETTER.QUEUE -fs 2 QM1
+	```
 
 	![](./images/pots/mq-appliance/lab1/image30.png)
 
 13. Execute the **strmqm QM1** command to start the queue manager.
 
-	**`strmqm QM1`**
+	```
+	strmqm QM1
+	```
+	
 
 	![](./images/pots/mq-appliance/lab1/image31.png)
 
@@ -309,7 +315,9 @@ including connections from MQ Explorer.
 1. First, we will create a messaging user. Execute the following
     command:
 
-    **`usercreate -u testuser -g mqm -p passw0rd`**
+    ```
+    usercreate -u testuser -g mqm -p passw0rd
+    ```
 
 	![](./images/pots/mq-appliance/lab1/image33.png)
 
@@ -334,15 +342,13 @@ including connections from MQ Explorer.
     
     ![](./images/pots/mq-appliance/lab1/image135.png)
 
-5. Click the **QM1** hyperlink. The details of the queue manager are now displayed and here you can manage the queue manager.
-    
-    ![](./images/pots/mq-appliance/lab1/image136.png)
+5. Click the **QM1** hyperlink. The details of the queue manager are now displayed and here you can manage the queue manager. 
 
-6. In this window you can select MQ objects to manage. This default opens to *Queues*. You can also navigate to *Topics*, *Subscriptions*, or *Communication*. Click *Communication*. 
+	In this window you can select MQ objects to manage. This default opens to *Queues*. You can also navigate to *Topics*, *Subscriptions*, or *Communication*. Click *Communication*. 
 
 	![](./images/pots/mq-appliance/lab1/image137.png)
 
-1. In the Communication tab, you can view or create *Listeners*, *Queue manager channesl* such as sender/receiver channels, or *App channels* better known as server connection channels. Click *App channels*. 
+1. In the Communication tab, you can view or create *Listeners*, *Queue manager channels* such as sender/receiver channels, or *App channels* better known as server connection channels. Click *App channels*. 
 
 	![](./images/pots/mq-appliance/lab1/image138.png)
 
@@ -450,17 +456,16 @@ including connections from MQ Explorer.
 
 44. Enter **testuser** as the **Userid**.
 
-45. Select the **Use saved password** radio button. The **Enter
-    password...** button on the right should become active.
+45. Select the **Prompt for password** radio button. 
 
-46. Click the **Enter password...** button.
-
-47. In the *Password details* popup, enter the password ("passw0rd") and then click **OK**.
+	Click **Finish.** 
+	
+	![](./images/pots/mq-appliance/lab1/image58a.png)
+	
+46. In the *Password details* popup, enter the password ("passw0rd") and then click **OK**. 
 
 	![](./images/pots/mq-appliance/lab1/image59.png)
 	
-48. Click **Finish.**
-
 49. The queue manager should now be visible in MQ Explorer.
 
 	![](./images/pots/mq-appliance/lab1/image60.png)
@@ -479,13 +484,17 @@ including connections from MQ Explorer.
 
 52. From the mqcli (command line interface), enter:
 
-	**`runmqsc QM1`**
+	```
+	runmqsc QM1
+	````
 
 	![](./images/pots/mq-appliance/lab1/image62.png)
 
 53. Create a new local queue named **TEST.IN**
 
-	**`define ql(TEST.IN) defpsist(YES)`**
+	```
+	define ql(TEST.IN) defpsist(YES)
+	```
 
 54. Create another queue named **TEST.OUT**
 
@@ -517,14 +526,11 @@ that was created in the previous exercise will be used.
     
     The command would be:
 
-    **`SET CHLAUTH('USER.SVRCONN') TYPE(BLOCKUSER)
-    USERLIST('\*whatever')`**
+    **`SET CHLAUTH('USER.SVRCONN') TYPE(BLOCKUSER) USERLIST('\*whatever')`**
 
 	![](./images/pots/mq-appliance/lab1/image160.png)
 	
 	And refresh security: click *Actions* > 
-
-	
 	
 	You will now use RFHUtilc to test the configuration.
 
@@ -648,14 +654,14 @@ RFHutil, and are located in the same folder.
 
 Congratulations! You have completed the lab successfully.
 
-You can use this environment to perform the other labs. If you wish to
-use this environment for the HA and DR Labs, you will need to configure
-MQAppl2 and MQAppl3 as you did for MQAppl1.
 
-There is also a pre-configured environment for your use in the HA/DR
-labs if you wish to save time. 
+{% include tip.html content="If you are proceeding to Lab 2 - HA you may continue to use this  image. The basic configuration done in Section 1.2 [Basic appliance configuration](#_Basic_appliance_configuration) for Appliance 2 (MQAppl2) and Appliance 3 (MQAppl3) has been configured previously. They will use the IP address tables in the [Overview the IBM MQ Appliance PoT](mq_appl_pot_overview.html) document. You may go directly to Lab 2 and not do the following shutdown steps." %} 
 
-{% include warning.html content="Note if you are continuing with the use of this image that you have been using for the next lab, you need to repeat the basic configuration done in Section 1.2 [Basic appliance configuration](#_Basic_appliance_configuration) for Appliance 2 (MQAppl2) and Appliance 3 (MQAppl3). Use the IP address tables in the [Overview the IBM MQ Appliance PoT](mq_appl_pot_overview.html) document, to guide you through the initial set up of MQAppl2 and MQAppl3. After completing the configuration of MQAppl2 and MQAppl3, go directly to Lab 2 and do not do the shutdown steps." %} 
+There is a pre-configured solution environment for your use in the HA/DR
+labs: 
+
+* MQ Appliance PoT - Configured - Ready for HA
+* MQ Appliance PoT - Configured - HA COmplete - RE
   
 When all the other parts of the lab are finished and any other
 exploration is complete, you can shut down the appliance.
@@ -666,7 +672,9 @@ exploration is complete, you can shut down the appliance.
 
 3. Use the **shutdown halt** command to shut down the appliance.
 
-	**`shutdown halt`**
+	```
+	shutdown halt
+	```
 
 4. Respond **y** to the "**Do you want to continue?**" prompt.
 

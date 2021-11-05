@@ -18,7 +18,7 @@ applies_to: [developer,administrator]
 
 For this lab, you should use the same CSIDE environment that you created
 for Lab 1. The virtual appliance you will use for this lab will be
-**MQAppl1** and also the **Windows 10 x64*** VM.
+**MQAppl1** and also the **Windows 10 x64** VM.
 
 {% include important.html content="It is assumed that Lab 1 has been completed. You must either complete Lab 1 before attempting this lab, or see the *MQ Appliance PoT Configured - ready for HA* CSIDE template. Screen shots are from after Lab 2 completion. If Lab 2 has not been completed on the virtual appliance you are using, the results you see will differ from the examples in this lab guide." %}
 
