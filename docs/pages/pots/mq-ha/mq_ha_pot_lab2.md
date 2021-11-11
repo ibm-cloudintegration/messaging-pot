@@ -539,7 +539,7 @@ Don't forget, each node must have these ports opened in the firewall.
 
 	```
 	cd /opt/mqm/samp/bin
-	./amqsmhac -s SOURCE –t TARGET –m QMHA
+	./amqsmhac -s SOURCE -t TARGET -m QMHA
 	```	
 		![](./images/pots/mq-ha/lab2/image238.png)
 	
