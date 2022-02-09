@@ -447,4 +447,6 @@ However, if you plan to continue with more labs, you can leave them running.
 
 This concludes the IBM MQ Appliance Web UI and MQ Console lab.
 
- 
+[Return MQ Appliance Menu](mq_appl_pot_overview.html)
+
+[Continue with Lab 4](mq_appl_pot_lab4.html)

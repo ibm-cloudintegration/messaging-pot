@@ -598,6 +598,8 @@ please speak to the instructor.
 
 [Return MQ Appliance Menu](mq_appl_pot_overview.html)
 
+[Continue with Lab 3](mq_appl_pot_lab3.html)
+
 <a name="configure"></a>
 ## Configure HA Using MQ Console
 
