@@ -436,3 +436,7 @@ You will not be doing this in the lab; however, the command can be used as follo
 
 
 Congratulations, this concludes the Monitoring and troubleshooting lab.
+
+[Return MQ Appliance Menu](mq_appl_pot_overview.html)
+
+[Continue with Lab 5](mq_appl_pot_lab5.html)
