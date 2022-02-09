@@ -12,6 +12,19 @@ applies_to: [developer,administrator]
 
 ## Overview 
 
+In this lab, you will be introduced to the MQ Appliance Web UI and MQ Console in more detail than in the previous labs.
+
+VMs required:
+
+* **Windows 10 x64**
+* **MQAppl1**
+* **MQAppl2**
+
+The lab environment consists of two virtual appliances (MQAppl1 and
+MQAppl2) and a Windows environment to perform console operations and
+testing. There are other virtual appliances (MQAppl3, MQAppl4, MQAppl5, MQAppl6, and MQAppl7)
+that will not be used in this lab. You should suspend them.
+
 
 * What is the IBM MQ Appliance Web UI and MQ Console? 
 
@@ -24,6 +37,8 @@ applies_to: [developer,administrator]
 * The MQ Console dashboard
 
 * Clean Up
+
+
 
 
 ## What is the IBM MQ Appliance Web UI and MQ Console?
@@ -55,11 +70,10 @@ Admin interface as well as the IBM MQ Console.
 
 ## Starting the MQ Appliance Web UI
 
-For this lab, you should use the same CSIDE environment that you created
-for Lab 1. The virtual appliance you will use for this lab will be
-**MQAppl1** and also the **Windows 10 x64** VM.
+ The virtual appliances you will use for this lab will be
+**MQAppl1** and **MQAppl2**, and also the **Windows 10 x64** VM. There are other virtual appliances (MQAppl3, MQAppl4, MQAppl5, MQAppl6, and MQAppl7) that will not be used in this lab. You should suspend them.
 
-{% include important.html content="It is assumed that Lab 1 has been completed. You must either complete Lab 1 before attempting this lab, or see the *MQ Appliance PoT Configured - Ready for HA* CSIDE template. Screen shots are from after Lab 2 completion. If Lab 2 has not been completed on the virtual appliance you are using, the results you see will differ from the examples in this lab guide." %}
+
 
 ### Connect to the MQ Appliance
 
@@ -67,8 +81,7 @@ for Lab 1. The virtual appliance you will use for this lab will be
     appliance MQAppl1. If you still have those addresses, you can skip
     this step.
 
-    To obtain the IP addresses available on virtual appliance *MQAppl1*,
-    issue the **show ipaddress** command (remember you must be at the high level shell). Take note of the IP addresses
+    To obtain the IP addresses available on virtual appliance *MQAppl1*, login (**admin** / **passw0rd**) and then issue the **show ipaddress** command (remember you must be at the high level shell). Take note of the IP addresses
     shown.
 
     Use the IP address for **eth0** to access the appliance using the
@@ -76,7 +89,7 @@ for Lab 1. The virtual appliance you will use for this lab will be
 
     ![](./images/pots/mq-appliance/lab3/image164.png)
 
-2. Double-click the Firefox icon on the Windows image to start a web
+2. Double-click the **Firefox** icon on the Windows image to start a web
     browser session (login as **ibmdemo** / **passw0rd** if necessary).
 
 	![](./images/pots/mq-appliance/lab3/image166.png)    
@@ -101,7 +114,7 @@ for Lab 1. The virtual appliance you will use for this lab will be
 
     ![](./images/pots/mq-appliance/lab3/image173.png)
  
-	{% include note.html content="The MQ Appliance 'Appliance Administration' and 'MQ Administration' are separate roles. Neither is a superset or subset of the other. " %}
+	{% include note.html content="On the MQ Appliance,  'Appliance Administration' and 'MQ Administration' are separate roles. Neither is a superset or subset of the other. " %}
   
 2. Notice the drop downs at the very top on the grey bar. This is the
     one part of the Web GUI that does not change when you select
@@ -112,8 +125,7 @@ for Lab 1. The virtual appliance you will use for this lab will be
 3. The "admin" shown on the bar is the user name logged into the Web
     GUI. When you click the drop down arrow here, you get the option to
     logout. The circled question mark is the help menu. Clicking the
-    drop down arrow here gives you options to get to the Knowledge
-    Center, the Support Portal, or to generate an error report
+    drop down arrow here gives you options to get to IBM Documentation for the MQ Appliance, the Support Portal, or to generate an error report
     that contains configuration information, trace snippets, etc. for
     the 'system' level processes on the box.
 
@@ -124,7 +136,7 @@ for Lab 1. The virtual appliance you will use for this lab will be
 
     ![](./images/pots/mq-appliance/lab3/image176.png)
 
-5. When you log in you start on the home page where you can manage your queue managers or link to the various other functions. When you hover your pointer over an icon, the name of the option displays. Click the *Manage* icon. 
+5. When you log in you start on the home page where you can manage your queue managers or link to the various other functions. When you hover your pointer over an icon, the name of the option displays. Click the **Manage** icon. 
 
     ![](./images/pots/mq-appliance/lab3/image177.png)
     
@@ -132,9 +144,10 @@ for Lab 1. The virtual appliance you will use for this lab will be
 
 	![](./images/pots/mq-appliance/lab3/image177a.png)
 	
-1. Click the hamburger menu in top left corner to see what the icons mean.
+1. Click the hamburger menu in the top left corner to see what the icons mean.
 
 	![](./images/pots/mq-appliance/lab3/image177b.png)	
+
 ## The Appliance Administrator role
 
 ### Explore the Appliance Administration options
@@ -172,7 +185,7 @@ The **appliance administrator** manages the appliance as a whole. A
 4. You then see the various options under the View Logs category. Now
     click **System Logs**. The page will now display the list of log
     records in the system log. We do not care right now what is in the
-    logs. Click the **question mark** symbol.
+    logs. Click the **question mark** symbol (top right corner).
 
     ![](./images/pots/mq-appliance/lab3/image181.png)
     
@@ -242,10 +255,10 @@ The **appliance administrator** manages the appliance as a whole. A
 6. There is an Apply button at both the bottom of the page and the
     top. Click **Apply** at the top of the page to apply the change.
 
-7. Click **System Settings** again. This (or clicking on any other
-    option) forces the interface to recognize the need to save the
-    changes there were made. Click **Review changes** to see a window
-    detailing the changes that will be made.
+7. Actually saving changes is a two step process. A yellow box appears at the top of the screen, warning you to save the changes (changes are not actually saved to the system until this is done). Click **Review changes** to see a window
+    detailing the changes that will be made. (If the box is not shown, simply click **System Settings** again or click on any other
+    option, which forces the interface to recognize the need to save the
+    changes there were made.) 
 
     ![](./images/pots/mq-appliance/lab3/image195.png)
 
@@ -270,8 +283,7 @@ The **appliance administrator** manages the appliance as a whole. A
     remember to click the "*Save changes*" button to actually make the
     change.
 
-11. Within the Administration page is the File Management tool. This is
-    very useful for copying files on (such as certificates or firmware)
+11. Within the Administration page is the File Management tool. This is very useful for copying files on (such as certificates or firmware)
     and off (logs, FDCs, backups, etc.) the appliance. This is where
     within the GUI you can access error logs (in the mqerr: URI), etc.
     
@@ -293,7 +305,7 @@ The **appliance administrator** manages the appliance as a whole. A
 
     ![](./images/pots/mq-appliance/lab3/image202.png)
 
-14. Since it is a text file, we can open and view the file. Click the hyperlink for the file. It opens in a new tab in the browser. Close the browser tab and return to the MQ Appliance Web GUI.
+14. Since it is a text file, we can open and view the file. Clicking the hyperlink for the file opens it in a new tab in the browser. Close the browser tab and return to the MQ Appliance Web GUI.
 
     ![](./images/pots/mq-appliance/lab3/image203.png)
 
@@ -304,7 +316,7 @@ The **appliance administrator** manages the appliance as a whole. A
 
     ![](./images/pots/mq-appliance/lab3/image204.png)
 
-16. Select the **Local Disk (C:)** > **Users** > **ibmdemo** as the destination, then click *Save* to save the file on your local system. This is how you can save backup files, logs and FDCs, etc. off the appliance.
+16. Select the **Local Disk (C:)** > **Users** > **ibmdemo** as the destination, then click **Save** to save the file on your local system. This is how you can save backup files, logs and FDCs, etc. off the appliance.
 
     ![](./images/pots/mq-appliance/lab3/image205.png)
 
@@ -325,6 +337,8 @@ The **appliance administrator** manages the appliance as a whole. A
     all the appliance objects. Note some objects here are duplicated in
     other options, but there are some specific objects that are only
     found here too. 
+    
+    ![](./images/pots/mq-appliance/lab3/image206a.png)
     
 2. Click the **Device Management** twisty and then
     click **REST Management Interface**. You notice that the SSH Service
@@ -352,22 +366,20 @@ The **appliance administrator** manages the appliance as a whole. A
 
 	![](./images/pots/mq-appliance/lab3/image209a.png)
 	
-1. Then click *Manage*. Let us now complete exploring the functionality in
+1. Then click **Manage**. Let us now complete exploring the functionality in
     this page.
     
     ![](./images/pots/mq-appliance/lab3/image209.png)
 
-2. Notice the buttons across the top right of the page:
+2. Notice the buttons across the top of the page:
 
     ![](./images/pots/mq-appliance/lab3/image210.png)
 
-3. Click the *High Availability* button. This provides an overview of your HA configuration. The green checkmarks are a quick signal that high availability is configured and working, meaning that the *HA group* is configured correctly and both appliances in the HA group are running. 
+3. Click the **High Availability** button. This provides an overview of your HA configuration. The green checkmarks are a quick signal that high availability is configured and working, meaning that the *HA group* is configured correctly and both appliances in the HA group are running. 
     
-    {% include important.html content="What you see here depends on what labs and/or template you have completed -- whether you have created the HA group or not. " %}
+    {% include important.html content="What you see here depends on if you started both MQAppl1 and MQAppl2 as instructed. " %}
 
-    At the top of the drop down, you will get the status of the HA
-    group. In this case, it is showing both appliances being online. If
-    one appliance was shutdown or suspended from the HA group, you would
+    If one appliance was shutdown or suspended from the HA group, you would
     see it show the status appropriately. 
     
     ![](./images/pots/mq-appliance/lab3/image212.png)
@@ -388,51 +400,54 @@ The **appliance administrator** manages the appliance as a whole. A
 4. Click the **Disaster Recovery** button. Here are options to get the
     DR queue manager status and where you can use the GUI to create the
     DR secondary (more on this in the DR lab).
+    
+    ![](./images/pots/mq-appliance/lab3/image212d.png)
 
 ### Local Queue Managers
 
-1. Click the *Queue managers* button to work with the local queue managers. Remember that you are on **MQAppl1's** console. By default, all queue managers on the appliance will be displayed. You should see the queue manager that was created in Lab 1 (QM1), and Lab 2 if completed (HAQM1 and HAQM2). 
+1. Click the **Queue managers** button to work with the local queue managers. Remember that you are on **MQAppl1's** console. By default, all queue managers on the appliance will be displayed. You should see the queue manager that was created in Lab 1 (QM1), and Lab 2 (HAQM1 and HAQM2). 
 
-	This display shows all queue managers that have been defined on this appliance and their statuses. *HAQM1* is currently running on this appliance. QM1 is a local queue manager, but not part of the HA group. It is currently stopped. *HAQM2* since it is part of the HA group was defined on this appliance, but it is currently running on its preferred location - MQAppl2.
+	This display shows all queue managers that have been defined on this appliance and their statuses. *HAQM1* is currently running on this appliance. QM1 is a local queue manager, but not part of the HA group. It is currently stopped. *HAQM2*, since it is part of the HA group, was defined on this appliance, but it is currently running on its preferred location - MQAppl2.
 
 	![](./images/pots/mq-appliance/lab3/image247a.png)
     
     {% include important.html content="If QM1 does not have a status of Running, that is not a problem. You will start it shortly." %}
 
-1. Click the hyperlink for *HAQM1*. 
+1. Click the hyperlink for **HAQM1**. 
 
 	![](./images/pots/mq-appliance/lab3/image500.png)
 	
 	This should look familiar as you used this during Labs 1 and 2. Here find MQ objects such as queues, topics, subscriptions, and communication channels. 
 	
 	![](./images/pots/mq-appliance/lab3/image501.png)	
-1. Click the *Manage* breadcrumb to return to *Queue managers*. 
+1. Click the **Manage** breadcrumb to return to *Queue managers*. 
 
-1. Click the elipsis on the far right of *HAQM1*. Here you can stop or start the queue manager or view the configuration (properties) of the queue manager. Click *View configuration*.
+1. Click the elipsis on the far right of *HAQM1*. Here you can stop or start the queue manager or view the configuration (properties) of the queue manager. Click **View configuration**.
 
 	![](./images/pots/mq-appliance/lab3/image502.png)
 	
-1. This page should also look familiar from Lab 1 where we looked at queue manager properties and security. If you look closer, you see two new tabs since we now have an HA group - *High availability* and *Disaster recovery*. Click *High Availability*.
+1. This page should also look familiar from Lab 1 where we looked at queue manager properties and security. If you look closer, you see two new tabs since we now have an HA group - *High availability* and *Disaster recovery*. Click **High Availability**.
 
 	![](./images/pots/mq-appliance/lab3/image503.png)
 	
-1. You ran *mqcli* commands to display status of HA queue managers in Lab 2. This is where you find those statuses in MQ Console. You can see that HA is enabled and the preferred location is this appliance - **MQAppl1**. 
+1. You ran *mqcli* commands to display the status of HA queue managers in Lab 2. This is where you find those statuses in the MQ Console. You can see that HA is enabled and the preferred location is this appliance - *MQAppl1*. 
 
 	![](./images/pots/mq-appliance/lab3/image504.png)
 	
-1. This is not only displays statuses, but you can click the *Edit* button and change those properties. Don't make any changes at this time. Click *Cancel*.
+1. This not only displays statuses, but you can click the **Edit** button and change those properties. Don't make any changes at this time. Click **Cancel**.
 	
 	![](./images/pots/mq-appliance/lab3/image505.png)
 	
 	{% include note.html content="Since HAQM2 is running on MQAppl2, you would need to use the MQ Console for MQAppl2 to see HAQM2 status or change its HA config. " %}
 	
-1. Click *Disaster recovery*. This is where you can setup the disaster recovery between appliances. There is a disaster recovery lab which will cover the setup. Click the *Manage* breadcrumb.
+1. Click **Disaster recovery**. This is where you can setup the disaster recovery between appliances. There is a disaster recovery lab which will cover the setup. Click the **Manage** breadcrumb.
 
 	![](./images/pots/mq-appliance/lab3/image506.png)	     
+
 ## Clean Up
 
 The only clean up required is to close the MQ Console browser tabs. 
-However if you plan to continue with more labs, you can leave them running.
+However, if you plan to continue with more labs, you can leave them running.
 
 
 This concludes the IBM MQ Appliance Web UI and MQ Console lab.

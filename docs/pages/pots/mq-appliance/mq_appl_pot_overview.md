@@ -9,21 +9,7 @@ summary: Overview of IBM MQ Appliance PoT
 
 # IBM MQ Appliance Proof of Technology Overview
 
-This guide and associated VMware images help you get started with IBM® MQ Appliance V9.1.2.  
-
-There are three environments to choose from: 
-
-* Start at appliance power-up and configure the appliance 
-
-	[Setup the IBM MQ Appliance](mq_appl_pot_lab1.html)
-
-* Appliances are setup and you want to configure them for high availability 
-
-	[Configure High Availability for the IBM MQ Appliance](mq_appl_pot_lab2.html)
-
-* Appliances are setup and configured for high availability, and now you want to set up a disaster recovery environment 
-
-	[Configure Disaster Recovery for the IBM MQ Appliance](mq_appl_pot_lab8.html)
+This guide and associated VMware images help you get started with IBM® MQ Appliance V9.2.4.  
 
 # Introduction
 
@@ -62,7 +48,7 @@ their business:
 
 *   IBM MQ Appliance M2002A: A high-end solution for enterprise use
 
-*   IBM MQ Appliance M2002B: Lower-end solution for branch office or
+*   IBM MQ Appliance M2002B: Lower-end solution for smaller needs or great for branch office or
     factory deployment
 
 ### Audience
@@ -92,65 +78,6 @@ guidance is available.
 
 {% include troubleshooting.html content="This is trouble.
 " %}
-
-## IP Addresses
-
-This document details all of the IP addresses you need for the
-appliances in the labs.
-
-Use the tables below to guide you through the initial set up of MQAppl1
-in Lab 1 and also MQAppl2 and MQAppl3 if you choose to manually
-configure the appliances for the HA and DR labs.
-
-You do not have to configure MQAppl2 and MQAppl3 unless you choose to
-continue using the initial environment for the HA and DR labs. A
-separate environment has been created for you to use if you choose not
-to.
-
-The network adapters are described here. Pay particular attention to
-eth1, eth2, and eth3 and eth4. They are the adapters used for HA and DR.
-
-Ensure you enter the addresses exactly as shown here in conjunction with
-the lab instructions.
-
-### MQAppl1 Addresses
-
-Note that the IP addresses of eth1 through eth4 MUST be entered in CIDR
-notation as shown below. 
-
-|Virtual Adapter Network Name | Appliance Ethernet Interface | Usage | DHCP | IP Address | Gateway Addresses |
-|:---------------------------:|:----------------------------:|:-----:|:----:|:----------:|:-----------------:|
-| Network 1 | eth0 | Management and client traffic | Yes | 10.0.0.1 | |
-| HA1 | eth1 | HA primary connection | No | 10.0.1.1 | 10.0.1.254 |
-| HA2 | eth2 | HA alternate connection | No | 10.0.2.1 | 10.0.2.254 |
-| HArep | eth3 | HA replication connection | No | 10.0.3.1 | 10.0.3.254 |
-| DRrep | eth4 | DR replication connection | No| 10.0.4.1 | 10.0.4.254 |
-
-### MQAppl2 Addresses
-
-Note that the IP addresses of eth1 through eth4 MUST be entered in CIDR
-notation as shown below. 
-
-|Virtual Adapter Network Name | Appliance Ethernet Interface | Usage | DHCP | IP Address | Gateway Addresses |
-|:---------------------------:|:----------------------------:|:-----:|:----:|:----------:|:-----------------:|
-| Network 1 | eth0 | Management and client traffic | Yes | 10.0.0.2 |  |
-| HA1 | eth1 | HA primary connection | No | 10.0.1.2 | 10.0.1.254 |
-| HA2 | eth2 | HA alternate connection | No | 10.0.2.2 | 10.0.2.254 |
-| HArep | eth3 | HA replication connection | No | 10.0.3.2 | 10.0.3.254 |
-| DRrep | eth4 | DR replication connection | No| 10.0.4.2 | 10.0.4.254 |
-
-### MQAppl3 Addresses
-
-Note that the IP addresses of eth1 through eth4 MUST be entered in CIDR
-notation as shown below. 
-
-|Virtual Adapter Network Name | Appliance Ethernet Interface | Usage | DHCP | IP Address | Gateway Addresses |
-|:---------------------------:|:----------------------------:|:-----:|:----:|:----------:|:-----------------:|
-| Network 1 | eth0 | Management and client traffic | Yes | 10.0.0.3 | |
-| HA1 | eth1 | HA primary connection | No | 10.0.1.3 | 10.0.1.254 |
-| HA2 | eth2 | HA alternate connection | No | 10.0.2.3 | 10.0.2.254 |
-| HArep | eth3 | HA replication connection | No | 10.0.3.3 | 10.0.3.254 |
-| DRrep | eth4 | DR replication connection | No| 10.0.4.3 | 10.0.4.254 |
 
 [Return to MQ Appliance Menu](mq_appl_pot_overview.html)
 

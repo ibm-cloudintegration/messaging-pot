@@ -13,20 +13,17 @@ applies_to: [developer,administrator]
 In this lab, you will configure the appliance and test that the
 basic configuration is working as expected.
 
-The lab environment consists of multiple virtual appliances
-(**MQAppl1,** **MQAppl2** and **MQAppl3**) and a Windows environment
-(**Windows 10 x64**) to perform console operations and testing. Some
-virtual appliances (**MQAppl2**, **MQAppl3**, and **MQAppl4**) will not be used in
-this lab. Please make sure they are suspended or shut down. You need to
-create a CSIDE environment to work in based on the template *MQ
-Appliance PoT Unconfigured*. Log on to CSIDE and create a new
-environment from the template.
+VMs required:
 
-Please be sure you have read the introductory details in the [Overview the IBM MQ Appliance PoT](mq_appl_pot_overview.html)
-document, and use it as a reference for the IP addresses you will use through all of the labs.
+* **Windows 10 x64**
+* **MQAppl7**
+
+Please be sure you have read the introductory details in the [IBM MQ Appliance PoT Environment](mq_appl_pot_setup.html) document, and use it as a reference for the IP addresses you will use through all of the labs.
+
+This lab simulates the initial configuration of a physical MQ Appliance. When you are setting up a new MQ Appliance for the first time, you must connect a serial cable to the appliance through the Serial "Console Connector." When shipped, this is the ONLY port that is available to use -- all others are unconfigured. So this process configures the network adapters, as well as optionally (which you do in this lab) remote access via SSH and the MQ web console.
 
 
-## Open the virtual appliance (MQAppl1)
+## Open the virtual appliance (MQAppl7)
 
 
 1.  Start the environment.
@@ -70,7 +67,7 @@ document, and use it as a reference for the IP addresses you will use through al
 
 	![](./images/pots/mq-appliance/lab1/image9.png)
 
-	{% include important.html content="As mentioned earlier, ensure that you use the information from the IP Addresses table in the [Overview of the IBM MQ Appliance PoT](mq_appl_pot_overview.html) 
+	{% include important.html content="As mentioned earlier, ensure that you use the information from the IP Addresses table in the [IBM MQ Appliance PoT Environment](mq_appl_pot_setup.html) 
 document for the following interfaces. " %}
 
 12. Enter **y** to the question **- "Do you want to
@@ -79,11 +76,11 @@ document for the following interfaces. " %}
 13. Enter **n** to the question **- "Do you want to
     enable DHCP?"**
 
-14. Enter **10.0.1.1/24** as the IP address.
+14. Enter **10.0.1.7/24** as the IP address.
 
 15. Enter **10.0.1.254** as the default gateway address.
 
-	![](./images/pots/mq-appliance/lab1/image10.png)
+	![](./images/pots/mq-appliance/lab1/image10a.png)
 	
 16. Enter **y** to the question **- "Do you want to
     configure the eth2 interface?"**
@@ -91,15 +88,15 @@ document for the following interfaces. " %}
 17. Enter **n** to the question **- "Do you want to
     enable DHCP?"**
 
-18. Enter **10.0.2.1/24** as the IP address.
+18. Enter **10.0.2.7/24** as the IP address.
 
 19. Enter **10.0.2.254** as the default gateway address.
 
 20. Similarly configure **eth3** and **eth4** with address
-    **10.0.3.1/24** with gateway **10.0.3.254** and address
-    **10.0.4.1/24** with gateway **10.0.4.254** as shown in the below screen shot.
+    **10.0.3.7/24** with gateway **10.0.3.254** and address
+    **10.0.4.7/24** with gateway **10.0.4.254** as shown in the below screen shot.
 
-	![](./images/pots/mq-appliance/lab1/image11.png)
+	![](./images/pots/mq-appliance/lab1/image11a.png)
 
 21. Enter **y** next to **"Do you want to configure
     network services?"**
@@ -109,9 +106,9 @@ document for the following interfaces. " %}
 
 23. Enter **y** next to **Step 3 -- Do you want to assign a unique identifier for the appliance?"**
 
-24. Enter a unique identifier for the appliance: **MQAppl1**.
+24. Enter a unique identifier for the appliance: **MQAppl7**.
 
-	![](./images/pots/mq-appliance/lab1/image12.png)
+	![](./images/pots/mq-appliance/lab1/image12a.png)
 
 	{% include note.html content="A unique system identifier is required when using high availability, to uniquely identify each appliance within the high availability group. " %} 
   
@@ -147,7 +144,7 @@ document for the following interfaces. " %}
 
 36. Enter the same password next to **"Re-enter new password"**
 
-	![](./images/pots/mq-appliance/lab1/image16.png)
+	![](./images/pots/mq-appliance/lab1/image16a.png)
 
 37. Enter **y** next to **"Do you want to review the current
     configuration?"**
@@ -165,7 +162,7 @@ document for the following interfaces. " %}
 
 40. Execute **show ipaddress**.
 
-	![](./images/pots/mq-appliance/lab1/image18.png)
+	![](./images/pots/mq-appliance/lab1/image18a.png)
 
 	**Ensure that the IP addresses match those in the IP Address table in the Overview document. They will be used to access the
 appliance.**
@@ -181,11 +178,11 @@ appliance.**
 44. Navigate to **https://\<address of eth0\>:9090** (or use the
     shortcut that is there for you). If you receive any warnings, allow the exception and continue.
 
-	![](./images/pots/mq-appliance/lab1/image19.png)
+	![](./images/pots/mq-appliance/lab1/image19a.png)
 
 45. You will now see the console log in screen.
 
-	![](./images/pots/mq-appliance/lab1/image20.png)
+	![](./images/pots/mq-appliance/lab1/image20a.png)
 
 46. Enter **admin** as the User name.
 
@@ -199,7 +196,7 @@ appliance.**
 
 50. The appliance will now process the license acceptance. All logged in users will now be disconnected.
 
-	![](./images/pots/mq-appliance/lab1/image22.png)
+	![](./images/pots/mq-appliance/lab1/image22a.png)
 
 51. After waiting a couple of minutes, you will see the log in screen again.
 
@@ -207,7 +204,7 @@ appliance.**
 
 53. You are now logged on to the console.
 
-	![](./images/pots/mq-appliance/lab1/image23.png)
+	![](./images/pots/mq-appliance/lab1/image23a.png)
 
 ## Create and configure a queue manager
  
@@ -223,7 +220,7 @@ can be used to change to MQ administration mode. Once in MQ
 administration mode, the normal administration commands are not
 available. To exit from MQ administration mode, use the **exit** command.
 
-1. Return to the MQAppl1 image.
+1. Return to the MQAppl7 image.
 
 2. You will need to log on again as **admin**.
 
@@ -272,35 +269,36 @@ available. To exit from MQ administration mode, use the **exit** command.
     Execute the **help crtmqm** command.
 
 	![](./images/pots/mq-appliance/lab1/image29.png)
+	
+	{% include important.html content="Remnember that MQ is case sensitive." %}
 
-	You will now create a queue manager named **QM1** using the
+	You will now create a queue manager named **QM7** using the
     **crtmqm** command. The listener port will be 1414. The default file
     system size is set to 64GB on a real appliance, but you need to set
-    it to only 2GB on the virtual appliance.
+    it to only 2GB (using the **-fs** flag) on the virtual appliance.
 
 12. Execute the following command:
 
 	```
-	crtmqm -p 1414 -u SYSTEM.DEAD.LETTER.QUEUE -fs 2 QM1
+	crtmqm -p 1414 -u SYSTEM.DEAD.LETTER.QUEUE -fs 2 QM7
 	```
 
-	![](./images/pots/mq-appliance/lab1/image30.png)
+	![](./images/pots/mq-appliance/lab1/image30a.png)
 
 13. Execute the **strmqm QM1** command to start the queue manager.
 
 	```
-	strmqm QM1
+	strmqm QM7
 	```
-	
 
-	![](./images/pots/mq-appliance/lab1/image31.png)
+	![](./images/pots/mq-appliance/lab1/image31a.png)
 
-	You can see that the queue manager is started and is at MQ v9.1.2.0.
+	You can see that the queue manager is started and is at MQ v9.2.4.0.
     The status of the queue managers can be displayed with the **dspmq** command.
 
 14. Execute the **dspmq** command.
 
-	![](./images/pots/mq-appliance/lab1/image32.png)
+	![](./images/pots/mq-appliance/lab1/image32a.png)
 
 	The queue manager must now be configured to allow connections,
     **including from MQ Explorer**. This will be done in the next
@@ -316,10 +314,10 @@ including connections from MQ Explorer.
     command:
 
     ```
-    usercreate -u testuser -g mqm -p passw0rd
+    usercreate -u ibmdemo -g mqm -p passw0rd
     ```
 
-	![](./images/pots/mq-appliance/lab1/image33.png)
+	![](./images/pots/mq-appliance/lab1/image33a.png)
 
 	It is worth mentioning here that this user is different than the
     users that you have worked with previously. The other users are
@@ -333,99 +331,98 @@ including connections from MQ Explorer.
     command line. However, given that the commands are quite long to
     enter, we will use the web console to do this.
 
-2. Swap back to the web console and log in again if you are not already logged in. Scroll down so you can see the whole window. Notice that the *Manage* tile shows that one queue manger is running (QM1). Click the *Manage* tile -- we will use this one
-    for administering QM1.
+2. Swap back to the web console and log in again if you are not already logged in. Scroll down so you can see the whole window. Notice that the *Manage* tile shows that one queue manger is running (QM7). Click the **Manage** tile -- we will use this one for administering QM7.
     
-    ![](./images/pots/mq-appliance/lab1/image134.png)
+    ![](./images/pots/mq-appliance/lab1/image134a.png)
 
-4. The *Manage* tab shows a list of queue managers defined on this appliance. You defined and started **QM1** on the appliance's command line. You can see that it is running and the version is 9.2.2.0.
+4. The *Manage* tab shows a list of queue managers defined on this appliance. You defined and started **QM7** on the appliance's command line. You can see that it is running. 
     
-    ![](./images/pots/mq-appliance/lab1/image135.png)
+    ![](./images/pots/mq-appliance/lab1/image135a.png)
 
-5. Click the **QM1** hyperlink. The details of the queue manager are now displayed and here you can manage the queue manager. 
+5. Click the **QM7** hyperlink. The details of the queue manager are now displayed and here you can manage the queue manager. 
 
-	In this window you can select MQ objects to manage. This default opens to *Queues*. You can also navigate to *Topics*, *Subscriptions*, or *Communication*. Click *Communication*. 
+	In this window you can select MQ objects to manage. This default opens to *Queues*. You can also navigate to *Topics*, *Subscriptions*, or *Communication*. Click **Communication**. 
 
-	![](./images/pots/mq-appliance/lab1/image137.png)
+	![](./images/pots/mq-appliance/lab1/image137a.png)
 
-1. In the Communication tab, you can view or create *Listeners*, *Queue manager channels* such as sender/receiver channels, or *App channels* better known as server connection channels. Click *App channels*. 
+1. In the Communication tab, you can view or create *Listeners*, *Queue manager channels* such as sender/receiver channels, or *App channels*, better known as server connection channels. Click **App channels**. 
 
-	![](./images/pots/mq-appliance/lab1/image138.png)
+	![](./images/pots/mq-appliance/lab1/image138a.png)
 
-1. You have not created any channels yet, so none are shown. But there are *SYSTEM.\** channels. Click the funnel icon which will allow you to *Show system channels*. Click the button to show those channels.
+1. You have not created any channels yet, so none are shown. However, there are *SYSTEM.\** channels. Click the **Filter** icon (looks like a funnel), which will allow you to *Show system channels*. Click the button in that popup to show those channels (if you click the *Filter* again, it toggles the display off).
 
-	![](./images/pots/mq-appliance/lab1/image139.png)
+	![](./images/pots/mq-appliance/lab1/image139a.png)
 	
-1. The *System.\** channels are now visible. You now need to create a SVRCONN channel for MQ Explorer. Click *Create*.
+1. The *System.\** channels are now visible. You now need to create a SVRCONN channel for MQ Explorer. Click **Create**.
 
 	![](./images/pots/mq-appliance/lab1/image140.png)
 	
-1. A definition of *server connection channel* is provided. Click *Next*. Enter the name for your server connection channel - **SYSTEM.ADMIN.CHANNEL**. Click *Create*.
+1. A definition of *server connection channel* is provided. Click **Next**. Enter the name for your server connection channel - **SYSTEM.ADMIN.SVRCONN**. Click **Create**.
 
-	![](./images/pots/mq-appliance/lab1/image141.png)
+	![](./images/pots/mq-appliance/lab1/image141a.png)
 	
 	A green success message is displayed and the new channel appears in the list. 
 	
-	![](./images/pots/mq-appliance/lab1/image142.png) 
+	![](./images/pots/mq-appliance/lab1/image142a.png) 
 	
-	You now need to create the channel authentication record for this channel. Click *View configuration* in the top right corner. This will take you to the queue manager properties.
+	You now need to create the channel authentication record for this channel. Click **View configuration** in the top right corner. This will take you to the queue manager properties.
 	
-1. The queue manager configuration is divided into four sections - *Properties*, *Security*, *High availability*, and *Disaster recovery*. Click *Security*.
+1. The queue manager configuration is divided into four sections - *Properties*, *Security*, *High availability*, and *Disaster recovery*. Click **Security**.
 
-	![](./images/pots/mq-appliance/lab1/image143.png) 
+	![](./images/pots/mq-appliance/lab1/image143a.png) 
 	 
-1. Objects in the Security section are *Authentication information*, *Authority records*, and *Channel authentication*. Click *Channel authentication* to create a new record.
+1. Objects in the Security section are *Authentication information*, *Authority records*, and *Channel authentication*. Click **Channel authentication** to create a new record.
 
-	![](./images/pots/mq-appliance/lab1/image144.png)
+	![](./images/pots/mq-appliance/lab1/image144a.png)
 	
-1. The default records are displayed. Click *Create*. 
+1. The default records are displayed. Click **Create**. 
 
-	![](./images/pots/mq-appliance/lab1/image145.png) 	 
+	![](./images/pots/mq-appliance/lab1/image145a.png) 	 
 1. You will create a new channel authentication record that allows access to the new channel for your *testuser* that you created. Click the drop-down under *Rule type* and select **Allow**. 
 
-	![](./images/pots/mq-appliance/lab1/image146.png) 
+	![](./images/pots/mq-appliance/lab1/image146a.png) 
 	
-1. Click the *Client application user ID* box to specify the user that will be allowed to use this channel.
+1. Click the **Client application user ID** box to specify the user that will be allowed to use this channel.
 
-	![](./images/pots/mq-appliance/lab1/image147.png) 
+	![](./images/pots/mq-appliance/lab1/image147a.png) 
 	
-1. Enter the channel name **SYSTEM.ADMIN.SVRCONN** in the *Channel name* field. Enter **testuser** in the *Client user ID* field. Notice that the rule type is auto-filled to *User Map*. Click *Create*. 
+1. Enter the channel name **SYSTEM.ADMIN.SVRCONN** in the *Channel name* field. Enter **ibmdemo** in the *Client user ID* field. Notice that the rule type is auto-filled to *User Map*. Click **Create**. 
 
-	![](./images/pots/mq-appliance/lab1/image148.png) 
+	![](./images/pots/mq-appliance/lab1/image148a.png) 
 	
 1. A green Success message is displayed. Click the wrench icon if you want to view or edit the rule. 
 
-	![](./images/pots/mq-appliance/lab1/image149.png)
+	![](./images/pots/mq-appliance/lab1/image149a.png)
 	
-1. You also need to set the authentication object to accept the credentials as presented via CSP as the context. Click *Authentication information*. Click the wrench for the **IDPW OS** object (that is, operating system userid and password checking). 
+1. You also need to set the authentication object to accept the credentials as presented via CSP as the context. Click **Authentication information**. Click the *wrench* for the **IDPW OS** object (that is, operating system userid and password checking). 
 
-	![](./images/pots/mq-appliance/lab1/image150.png)
+	![](./images/pots/mq-appliance/lab1/image150a.png)
 
-20. Select the **User ID + password** tab. The *Adoption context* is already set to **Yes**. There is nothing to change. But if a change was necessary, you could click edit and change the values.
+20. Select the **User ID + password** tab. The *Adoption context* is already set to **Yes**. There is nothing to change. But if a change was necessary, you could click *edit* and change the values.
 
-	![](./images/pots/mq-appliance/lab1/image151.png)   
+	![](./images/pots/mq-appliance/lab1/image151a.png)   
 	
-1. Click the browser back button to return to *Security*. Click  *Channel authentication* tab, then click the *Create* button to add another record. Click the drop-down for *Rule type* and select **Block**. 
+1. Click the *browser back button* to return to *Security*. Click the **Channel authentication** tab, then click the **Create** button to add another record. Click the drop-down for **Rule type** and select **Block**. 
 
-	![](./images/pots/mq-appliance/lab1/image152.png)
+	![](./images/pots/mq-appliance/lab1/image152a.png)
 
-1. Click the *Final assigned user ID* box.
+1. Click the **Final assigned user ID** box.
 
-	![](./images/pots/mq-appliance/lab1/image153.png)
+	![](./images/pots/mq-appliance/lab1/image153a.png)
 
-1. Again enter **SYSTEM.ADMIN.SVRCONN** in the *Channel name* field. Enter "**\*whatever**" in the *User list* field then click the "+" sign to add the list. Once the list is added, you can click *Create*.
+1. Again enter **SYSTEM.ADMIN.SVRCONN** in the *Channel name* field. Enter "**\*whatever**" in the **User list** field then click the "**+**" sign to add the list. Once the list is added, you can click **Create**.
 
-	![](./images/pots/mq-appliance/lab1/image154.png)
+	![](./images/pots/mq-appliance/lab1/image154a.png)
 
 28. Once again you receive the green success message and all the rules are displayed.
 
-	![](./images/pots/mq-appliance/lab1/image155.png)
+	![](./images/pots/mq-appliance/lab1/image155a.png)
 
-1.	Last but not least, we need to refresh the queue manager security to pick up the changes in the CONNAUTH. Click the elipsis in the *Actions* box in the top right corner and select *Refresh connection authentication*. 
+1.	Last but not least, we need to refresh the queue manager security to pick up the changes in the CONNAUTH. Click the *elipsis* in the **Actions** box in the top right corner and select **Refresh connection authentication**. 
 
-	![](./images/pots/mq-appliance/lab1/image156.png)
+	![](./images/pots/mq-appliance/lab1/image156a.png)
 	
-1. Click *Refresh* to confirm you want to update the connection authentication records.
+1. Click **Refresh** to confirm you want to update the connection authentication records.
 
 	![](./images/pots/mq-appliance/lab1/image157.png)
 
@@ -439,41 +436,41 @@ including connections from MQ Explorer.
 
 	![](./images/pots/mq-appliance/lab1/image56.png)
 
-39. Enter **QM1** as the Queue manager name. Click **Next**.
+39. Enter **QM7** as the Queue manager name. Click **Next**.
 
-	![](./images/pots/mq-appliance/lab1/image57.png)
+	![](./images/pots/mq-appliance/lab1/image57a.png)
 
-40. Enter the IP address of the MQAppl1 appliance.
+40. Enter the IP address of the *MQAppl7* appliance.
 
-41. Click **Next**.
-
-	![](./images/pots/mq-appliance/lab1/image58.png)
+	![](./images/pots/mq-appliance/lab1/image57b.png)
+	
+	Click **Next**.
 
 42. It is not possible to use security exits on the appliance, so click
     **Next** again.
 
 43. Select the check box next to **Enable user identification**.
 
-44. Enter **testuser** as the **Userid**.
+44. Enter **ibmdemo** as the **Userid**.
 
 45. Select the **Prompt for password** radio button. 
 
 	Click **Finish.** 
 	
-	![](./images/pots/mq-appliance/lab1/image58a.png)
+	![](./images/pots/mq-appliance/lab1/image58b.png)
 	
 46. In the *Password details* popup, enter the password ("passw0rd") and then click **OK**. 
 
-	![](./images/pots/mq-appliance/lab1/image59.png)
+	![](./images/pots/mq-appliance/lab1/image59a.png)
 	
 49. The queue manager should now be visible in MQ Explorer.
 
-	![](./images/pots/mq-appliance/lab1/image60.png)
+	![](./images/pots/mq-appliance/lab1/image60a.png)
 
-50. If you look at the Properties Quickview pane (click on the **QM1 on '10.0.0.1(1414)'** entry in the Navigator to populate this pane), you will see that the
+50. If you look at the Properties Quickview pane (click on the **QM7 on '10.0.0.7(1414)'** entry in the Navigator to populate this pane), you will see that the
     MQ Explorer has identified that this is a queue manager running on an appliance.
 
-	![](./images/pots/mq-appliance/lab1/image61.png)
+	![](./images/pots/mq-appliance/lab1/image61a.png)
 
 	You will need a couple of local queues for testing, so you will use
     the runmqsc interface on the appliance console to explore it.
@@ -485,10 +482,10 @@ including connections from MQ Explorer.
 52. From the mqcli (command line interface), enter:
 
 	```
-	runmqsc QM1
+	runmqsc QM7
 	````
 
-	![](./images/pots/mq-appliance/lab1/image62.png)
+	![](./images/pots/mq-appliance/lab1/image62a.png)
 
 53. Create a new local queue named **TEST.IN**
 
@@ -498,14 +495,14 @@ including connections from MQ Explorer.
 
 54. Create another queue named **TEST.OUT**
 
-	![](./images/pots/mq-appliance/lab1/image63.png)
+	![](./images/pots/mq-appliance/lab1/image63a.png)
 
 55. Type **end** to exit from runmqsc
 
 56. Go back to MQ Explorer; both of these queues should be visible in
     MQ Explorer (drill down to the **Queues** folder in the Navigator).
 
-	![](./images/pots/mq-appliance/lab1/image64.png)
+	![](./images/pots/mq-appliance/lab1/image64a.png)
 
 ## Running applications against the appliance
 
@@ -513,24 +510,24 @@ The appliance has now been configured for administrative access with MQ
 Explorer and two queues have been created. The next part of the lab will
 run MQ applications against the appliance. The appliance must be
 configured to allow connections. A SVRCONN channel (USER.SVRCONN) will
-be created and configured to allow client access. The user (testuser)
+be created and configured to allow client access. The user (ibmdemo)
 that was created in the previous exercise will be used.
 
 1. Return to the web console.
 
-2. Click the *QM1* breadcrumb to return the Manage page for QM1. As before, create a SVRCONN channel named USER.SVRCONN; click *Communication* > *App channels* > *Create* > *Next*. 
+2. Click the **QM7** breadcrumb to return the Manage page for QM7. As before, create a SVRCONN channel named **USER.SVRCONN**; click **Communication** > **App channels** > **Create** > **Next**. 
 
-	![](./images/pots/mq-appliance/lab1/image159.png)
+	![](./images/pots/mq-appliance/lab1/image159a.png)
 
-1. As before, create a channel authentication record to allow the testuser access to the channel; click *View Configuration* > *Security* > *Channel authentication* > *Create*. Then *Block* > *Final assigned user ID* > **USER.SVRCONN** > \**whatever*.
+1. As before, create a channel authentication record to allow the ibmdemo user access to the channel; click **View Configuration** > **Security** > **Channel authentication** > **Create**. Then **Block** > **Final assigned user ID** > **USER.SVRCONN** > \***whatever**.
     
     The command would be:
 
     **`SET CHLAUTH('USER.SVRCONN') TYPE(BLOCKUSER) USERLIST('\*whatever')`**
 
-	![](./images/pots/mq-appliance/lab1/image160.png)
+	![](./images/pots/mq-appliance/lab1/image160a.png)
 	
-	And refresh security: click *Actions* > 
+	And refresh security: click **Actions** > **Refresh connection authentication** > **Refresh**.
 	
 	You will now use RFHUtilc to test the configuration.
 
@@ -544,13 +541,13 @@ that was created in the previous exercise will be used.
 
 	![](./images/pots/mq-appliance/lab1/image67.png)
 
-8. Set the **Queue manager** to **USER.SVRCONN/TCP/10.0.0.1(1414)**
+8. Set the **Queue manager** to **USER.SVRCONN/TCP/10.0.0.7(1414)**
 
 9. Click **Set Conn Id**.
 
-	![](./images/pots/mq-appliance/lab1/image68.png)
+	![](./images/pots/mq-appliance/lab1/image68a.png)
 
-10. Enter the Userid as **testuser**.
+10. Enter the Userid as **ibmdemo**.
 
 11. Enter the Password as **passw0rd**.
 
@@ -558,7 +555,7 @@ that was created in the previous exercise will be used.
 
 13. Click **OK**.
 
-	![](./images/pots/mq-appliance/lab1/image69.png)
+	![](./images/pots/mq-appliance/lab1/image69a.png)
 
 	The next step will load the drop-down box with the queues that are
     defined on the queue manager. It will connect to the queue manager
@@ -566,7 +563,7 @@ that was created in the previous exercise will be used.
     
 14. Click **Load Names**.
 
-	![](./images/pots/mq-appliance/lab1/image70.png)
+	![](./images/pots/mq-appliance/lab1/image70a.png)
 	
 	If successful, you see nothing happen.
 
@@ -574,7 +571,7 @@ that was created in the previous exercise will be used.
 
 16. Click **Open File**.
 
-    ![](./images/pots/mq-appliance/lab1/image71.png)
+    ![](./images/pots/mq-appliance/lab1/image71a.png)
 
 17. Navigate to the provided data file: **test1.txt**. It is in the
     same directory as the rfhutilc application you started.
@@ -588,7 +585,7 @@ that was created in the previous exercise will be used.
 20. Click **Write Q**. This command puts the message to the **TEST.IN**
     queue.
 
-	![](./images/pots/mq-appliance/lab1/image73.png)
+	![](./images/pots/mq-appliance/lab1/image73a.png)
 
 21. Return to **MQ Explorer**.
 
@@ -604,7 +601,7 @@ that was created in the previous exercise will be used.
 
 25. Click **Close**.
 
-	![](./images/pots/mq-appliance/lab1/image75.png)
+	![](./images/pots/mq-appliance/lab1/image75a.png)
 
 ## Testing performance
 
@@ -624,11 +621,11 @@ RFHutil, and are located in the same folder.
 3. Change the **qmgr** parameters to match those that you used in
     RFHUtilc:
 
-	**USER.SVRCONN/TCP/10.0.0.1(1414)**
+	**USER.SVRCONN/TCP/10.0.0.7(1414)**
 
 4. Confirm that the user id and password are correct.
 
-	![](./images/pots/mq-appliance/lab1/image76.png)
+	![](./images/pots/mq-appliance/lab1/image76a.png)
 
 5. Save the file (**Ctrl+S**).
 
@@ -636,7 +633,7 @@ RFHutil, and are located in the same folder.
 
 7. Execute the **measure.cmd** file.
 
-	![](./images/pots/mq-appliance/lab1/image77.png)
+	![](./images/pots/mq-appliance/lab1/image77a.png)
 
 8. Start a *second* command window.
 
@@ -644,27 +641,19 @@ RFHutil, and are located in the same folder.
 
 10. Execute the **driver.cmd** file.
 
-	![](./images/pots/mq-appliance/lab1/image78.png)
+	![](./images/pots/mq-appliance/lab1/image78a.png)
 
 11. Swap to the other command window to see the results.
 
-	![](./images/pots/mq-appliance/lab1/image79.png)
+	![](./images/pots/mq-appliance/lab1/image79a.png)
 
 ## Shutting down the appliance
 
 Congratulations! You have completed the lab successfully.
 
-
-{% include tip.html content="If you are proceeding to Lab 2 - HA you may continue to use this  image. The basic configuration done in Section 1.2 [Basic appliance configuration](#_Basic_appliance_configuration) for Appliance 2 (MQAppl2) and Appliance 3 (MQAppl3) has been configured previously. They will use the IP address tables in the [Overview the IBM MQ Appliance PoT](mq_appl_pot_overview.html) document. You may go directly to Lab 2 and not do the following shutdown steps." %} 
-
-There is a pre-configured solution environment for your use in the HA/DR
-labs: 
-
-* MQ Appliance PoT - Configured - Ready for HA
-* MQ Appliance PoT - Configured - HA COmplete - RE
-  
-When all the other parts of the lab are finished and any other
-exploration is complete, you can shut down the appliance.
+{% include tip.html content="If you are proceeding to Lab 2 - HA you may continue to use this image. The basic configuration done in Section 1.2 [Basic appliance configuration](#_Basic_appliance_configuration) for Appliance 5 (MQAppl5) and Appliance 6 (MQAppl6) has been configured previously. They will use the IP address tables in the [Overview the IBM MQ Appliance PoT](mq_appl_pot_overview.html) document. You may go directly to Lab 2 and not do the following shutdown steps." %} 
+ 
+When all the other parts of the lab are finished and any other exploration is complete, you can shut down the appliance.
 
 1. Return to the appliance console.
 
@@ -679,5 +668,9 @@ exploration is complete, you can shut down the appliance.
 4. Respond **y** to the "**Do you want to continue?**" prompt.
 
 	![](./images/pots/mq-appliance/lab1/image81.png)
-
+	
 The appliance will start its shutdown.
+
+[Return MQ Appliance Menu](mq_appl_pot_overview.html)
+
+[Continue with Lab 2](mq_appl_pot_lab2.html)
