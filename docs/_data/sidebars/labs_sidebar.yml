@@ -318,6 +318,10 @@ entries:
       url: /mq_appl_pot_overview.html
       output: web, pdf
 
+    - title: Environment Setup
+      url: /mq_appl_pot_setup.html
+      output: web, pdf
+
     - title: Lab 1 - Getting Started with the MQ Appliance
       url: /mq_appl_pot_lab1.html
       output: web, pdf
