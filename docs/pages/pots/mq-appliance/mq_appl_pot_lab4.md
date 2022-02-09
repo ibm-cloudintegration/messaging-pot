@@ -14,13 +14,15 @@ applies_to: [developer,administrator]
 
 ## Monitoring and troubleshooting
 
+VMs required:
+
+* **Windows 10 x64**
+* **MQAppl1**
+
 ### Monitoring and reporting
 
-For this lab, you should use the same CSIDE environment that you created
-for Lab 1. The virtual appliance you will use for this lab will be
-**MQAppl1** and also the **Windows 10 x64** VM.
-
-{% include important.html content="It is assumed that Lab 1 has been completed. You must either complete Lab 1 before attempting this lab, or see the *MQ Appliance PoT Configured - ready for HA* CSIDE template. Screen shots are from after Lab 2 completion. If Lab 2 has not been completed on the virtual appliance you are using, the results you see will differ from the examples in this lab guide." %}
+For this lab, you will use one virtual appliance, MQAppl1, and a Windows environment to perform console operations. There are other virtual appliances (MQAppl2, MQAppl3, MQAppl4, MQAppl5, MQAppl6, and MQAppl7)
+that will not be used in this lab. You should suspend them.
 
 You will be exploring some of the options available for monitoring the
 MQ Appliance using a combination of command line and reporting in the MQ Console. You will also look at how you can implement the use
@@ -31,7 +33,7 @@ problems.
 ### Monitoring system resource usage
 
 1.  Open the *MQAppl1* image, if it is not already running from previous
-    labs.
+    labs, and login (**admin** / **passw0rd**) if needed.
 
 	Before you investigate the MQ-specific resource monitoring, you will
 start by monitoring the operation of the appliance itself. You can use
@@ -44,7 +46,7 @@ view. The show command is available at login, and in most configuration
 modes.
 
 	There is a large list of *status_provider* values available for the *show* command. The complete
-list can be found in the IBM Knowledge Center for the MQ Appliance.
+list can be found in the IBM Documentation for the MQ Appliance.
 
 	You will investigate a few of these.
 
@@ -55,7 +57,7 @@ list can be found in the IBM Knowledge Center for the MQ Appliance.
 
 4. Now enter **show version**. This will show the firmware and library version, similar to what is shown below.
 
-	![](./images/pots/mq-appliance/lab4/image101.png)
+	![](./images/pots/mq-appliance/lab4/image9a.png)
 
 	One of the other things that you can find out from the show command is
 which users have been defined for the appliance.
@@ -76,7 +78,7 @@ which users have been defined for the appliance.
     logged on to the MQ Console (if you are not logged on, log on to the
     MQ Console [web admin] and rerun the command).
 
-	![](./images/pots/mq-appliance/lab4/image11.png)
+	![](./images/pots/mq-appliance/lab4/image11b.png)
 
 8. Next, get monitoring information about the MQ environment on the
     appliance.
@@ -160,7 +162,7 @@ which users have been defined for the appliance.
     " %}
 
 
-11. Enter the command for QM1:
+11. Enter the status command for QM1:
 
 	**`status QM1`**
 
@@ -221,7 +223,7 @@ system resource usage of a queue manager.
     If you are not already logged on to the MQ Console on the Windows
     VM, do so now.
 
-19. Return to the *MQ Console > Manage > QM1*. Click the elipsis on far right for the *TEST.IN* queue and select **Clear queue**. 
+19. Return to the **MQ Console > Manage > QM1**. Click the elipsis on far right for the **TEST.IN** queue and select **Clear queue**. 
 
 	![](./images/pots/mq-appliance/lab4/image15.png)
 
@@ -245,7 +247,7 @@ QM1, go to the MQ console and create a new local queue on **QM1** named **MONITO
 	![](./images/pots/mq-appliance/lab4/image107.png)	
 12. Open the **Properties** of the **MONITOR** queue and change the
     default persistence to **Persistent** if it is not already set to
-    that. Click *Save*.
+    that. Click **Save**.
 
 	![](./images/pots/mq-appliance/lab4/image108.png)
 	
@@ -264,7 +266,7 @@ lab. The applications are part of SupportPac IH03.
     
     ![](./images/pots/mq-appliance/lab4/image110.png)
 
-7. Make sure the **qmgr** parameter is:
+7. Change the **qmgr** parameter to:
 
     **USER.SVRCONN/TCP/10.0.0.1(1414)**
 
@@ -298,7 +300,7 @@ lab. The applications are part of SupportPac IH03.
     get the same result -- but if not, you may wish to increase the
     number of messages).
 
-	![](./images/pots/mq-appliance/lab4/image110.png)
+	![](./images/pots/mq-appliance/lab4/image110a.png)
 
 17. Oops, we have run out of space for the queue manager!!! This is not
     likely to happen on a real appliance but you may recall that we have
@@ -429,7 +431,7 @@ copied from the MQ Appliance.
 You will not be doing this in the lab; however, the command can be used as follows: 
     
     
-<https://www.ibm.com/support/knowledgecenter/en/SS5K6E_9.1.0/com.ibm.mqa.doc/reference/filecmds/copy_flash.htm>
+<https://www.ibm.com/docs/en/mq-appliance/9.2?topic=commands-copy>
 
  " %}
 
