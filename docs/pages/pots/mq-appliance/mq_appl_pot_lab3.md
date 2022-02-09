@@ -38,9 +38,6 @@ that will not be used in this lab. You should suspend them.
 
 * Clean Up
 
-
-
-
 ## What is the IBM MQ Appliance Web UI and MQ Console?
 
 The IBM MQ Appliance M2002 provides a browser-based administrative
@@ -72,8 +69,6 @@ Admin interface as well as the IBM MQ Console.
 
  The virtual appliances you will use for this lab will be
 **MQAppl1** and **MQAppl2**, and also the **Windows 10 x64** VM. There are other virtual appliances (MQAppl3, MQAppl4, MQAppl5, MQAppl6, and MQAppl7) that will not be used in this lab. You should suspend them.
-
-
 
 ### Connect to the MQ Appliance
 

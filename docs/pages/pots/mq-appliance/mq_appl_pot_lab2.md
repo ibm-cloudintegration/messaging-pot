@@ -10,8 +10,7 @@ applies_to: [developer,administrator]
 
 # Lab 2 - IBM MQ Appliance High Availability
 
-In this lab, you will configure two virtual appliances for high
-availability (HA) and test that HA works as expected.
+In this lab, you will configure two virtual appliances for high availability (HA) and test that HA works as expected.
 
 VMs required:
 
@@ -21,8 +20,7 @@ VMs required:
 
 The lab environment consists of two virtual appliances (MQAppl5 and
 MQAppl6) and a Windows environment to perform console operations and
-testing. There are other virtual appliances (MQAppl1, MQAppl2, MQAppl3, MQAppl4, and MQAppl7)
-that will not be used in this lab. You should suspend them.
+testing. There are other virtual appliances (MQAppl1, MQAppl2, MQAppl3, MQAppl4, and MQAppl7) that will not be used in this lab. You should suspend them.
 
 ## Start the environment
 
@@ -763,6 +761,5 @@ managers using the MQ Console.
 
 25. Repeat the process by suspending MQAppl6 and observe the queue manager statuses on both appliances.
 
-125. Return to [Process Messages](#processmessages) to process messages on HA queue managers.
-
+125. Return to [Process Messages](#processmessages) to process messages on HA queue managers. 
 

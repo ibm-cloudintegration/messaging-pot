@@ -22,9 +22,7 @@ Please be sure you have read the introductory details in the [IBM MQ Appliance P
 
 This lab simulates the initial configuration of a physical MQ Appliance. When you are setting up a new MQ Appliance for the first time, you must connect a serial cable to the appliance through the Serial "Console Connector." When shipped, this is the ONLY port that is available to use -- all others are unconfigured. So this process configures the network adapters, as well as optionally (which you do in this lab) remote access via SSH and the MQ web console.
 
-
 ## Open the virtual appliance (MQAppl7)
-
 
 1.  Start the environment.
 
