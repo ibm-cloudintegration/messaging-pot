@@ -8,8 +8,6 @@ summary: Monitoring and Troubleshooting
 applies_to: [developer,administrator]
 ---
 
-
-
 # Lab 4 - Monitoring and Troubleshooting
 
 ## Monitoring and troubleshooting
@@ -52,10 +50,10 @@ list can be found in the IBM Documentation for the MQ Appliance.
 
 2. If you are at the *mqcli* command prompt, exit from it.
 
-3. First, enter the **show** command. This will give a list of all of
+3. First, enter the *show* command. This will give a list of all of
     the available *status_provider* values.
 
-4. Now enter **show version**. This will show the firmware and library version, similar to what is shown below.
+4. Now enter *show version*. This will show the firmware and library version, similar to what is shown below.
 
 	![](./images/pots/mq-appliance/lab4/image9a.png)
 
