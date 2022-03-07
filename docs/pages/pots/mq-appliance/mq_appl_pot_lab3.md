@@ -19,6 +19,7 @@ VMs required:
 * **Windows 10 x64**
 * **MQAppl1**
 * **MQAppl2**
+* **MQAppl3**
 
 The lab environment consists of two virtual appliances (MQAppl1 and
 MQAppl2) and a Windows environment to perform console operations and
@@ -37,6 +38,9 @@ that will not be used in this lab. You should suspend them.
 * The MQ Console dashboard
 
 * Clean Up
+
+
+
 
 ## What is the IBM MQ Appliance Web UI and MQ Console?
 
@@ -69,6 +73,8 @@ Admin interface as well as the IBM MQ Console.
 
  The virtual appliances you will use for this lab will be
 **MQAppl1** and **MQAppl2**, and also the **Windows 10 x64** VM. There are other virtual appliances (MQAppl3, MQAppl4, MQAppl5, MQAppl6, and MQAppl7) that will not be used in this lab. You should suspend them.
+
+
 
 ### Connect to the MQ Appliance
 
@@ -437,8 +443,242 @@ The **appliance administrator** manages the appliance as a whole. A
 	
 1. Click **Disaster recovery**. This is where you can setup the disaster recovery between appliances. There is a disaster recovery lab which will cover the setup. Click the **Manage** breadcrumb.
 
-	![](./images/pots/mq-appliance/lab3/image506.png)	     
+	![](./images/pots/mq-appliance/lab3/image506.png)	
+### Remote Queue Managers   
 
+In the previous section, you managed local queue managers by using a separate browser tab and connecting to the dedicated console port for each server. Then you could manage all "local" queue managers on that server. For example:
+
+```sh
+https://10.0.0.1:9090
+``` 
+
+or 
+
+```
+httpsL//10.0.0.2:9090
+```
+
+IBM MQ 9.2.3 introduced the ability to manage queue managers running on multiple remote systems from a single IBM® MQ Console. These queue managers are referred to as "remote" queue managers. This allows you to manage local and remote queue managers from the same web browser. For example:
+
+```
+https://localhost:9443/ibmmq/console
+``` 
+
+
+You must prepare the queue manager on the remote system so that it can be administered remotely. This was previously done in the previous labs when queue managers were created on the MQ Appliances and the appropriate channel configurations were defined for remote connections.
+
+You must also set up a configuration file that controls how you can use remote connections from the IBM MQ Console. You create the configuration file by using the setmqweb command with the remote parameter. You cannot edit the configuration file directly. Alternatively you can use the MQ Console to connect a remote queue manager. In the exercise you will connect two remote queue managers using both methods.
+
+You use a client connection definition table (CCDT) in JSON format to specify the remote connection details. You can create a JSON CCDT by using a text editor or you can create one by using the IBM MQ Console. You can use *Notepad++* to create the ccdt. 
+
+Alternatively, you can create the CCDT from the IBM MQ Console by specifying connection details directly as you add the remote queue manager.
+
+#### Start MQ Appliance queue managers
+
+Let's start the queue managers we will add to the console. You may use the MQ Appliance command line, the command using *Putty*, or the MQ Console for each appliance on the *Firefox* browser.
+
+1. Using your choice of methods, start queue managers **QM1** on *MQAppl1*, **QM2** on *MQAppl2*, and **QM3** on *MQAppl3*.
+
+#### Start the web server and MQ Console
+
+1. From the Windows command prompt start the web server with the following command: 
+
+	```
+	strmqweb
+	```
+ 
+1. Once the server is started display the properties of the web server with the following command: 
+
+	```
+	dspmqweb
+	``` 
+	
+	![](./images/pots/mq-appliance/lab3/image507.png)
+
+1. When you use the IBM® MQ Console, you can create connections to remote queue managers. That is, you can connect to queue managers that are not part of the same installation as the mqweb server that runs the IBM MQ Console.  
+
+	We will use the *Chrome* browser for exercising the "central" MQ Console. Start the *Chrome* browser by double-clicking its icon on the desktop.
+
+	![](./images/pots/mq-appliance/lab3/image509.png)
+
+1. Navigate to the web server's URL:
+
+	```
+	https://localhost:9443/ibmmq/console
+	```
+	
+	![](./images/pots/mq-appliance/lab3/image510.png)
+	
+1. Sign onto the console with user **mqadmin** password **mqadmin**. Click *Login*.
+
+	![](./images/pots/mq-appliance/lab3/image511.png)
+
+1. 	Review the *Home* page. Notice that there is no tile to add a remote queue manager. So you will use the command line to add a remote queue manager. Then we will fix the console to allow adding remote queue managers later. Also notice in the *Manage* tile that there is one queue manager running (that this console instance knows about). Is that a "local" or "remote" queue manager?
+
+	![](./images/pots/mq-appliance/lab3/image512.png)
+	
+1. Click the *Manage* tile. It appears that there are no remote queue managers connected to the console. Click *Local queue managers*. 
+
+	![](./images/pots/mq-appliance/lab3/image513.png)
+	
+1. Now you see the active queue manager - *QMMFT*. But it happens to be running on your local workstation. This is not a queue manager that we are interested in as it is not running on the MQ Appliance.
+
+	![](./images/pots/mq-appliance/lab3/image514.png)
+
+#### Add remote queue manager using the command line
+	
+1. Open the *Notepad++* text editor by double-clicking its icon on the desktop.
+
+	![](./images/pots/mq-appliance/lab3/image515.png)
+	
+1. Click *File* > *New* to create a CCDT for QM1 on MQAppl1; copy the following text and paste it into the Notepad++ editor. 
+
+	```sh
+	{
+  "channel": [
+    {
+      "name": "USER.SVRCONN",
+      "clientConnection": {
+        "connection": [
+          {
+            "host": "10.0.0.2",
+            "port": 1414
+          }
+        ],
+        "queueManager": "QM2"
+      },
+      "transmissionSecurity": {
+        "cipherSpecification": "",
+        "certificateLabel": "",
+        "certificatePeerName": ""
+      },
+      "type": "clientConnection"
+    }
+  ]
+}
+```
+
+	Then click *File* > *Save as* > **C:\MQ924\QM1-mqappl1.json**. Make sure to change the file type to *JSON file (\*.json)*. Click *Save*.
+
+	![](./images/pots/mq-appliance/lab3/image516.png)
+
+1. Now you have what you need to add the remote queue manager to the console using the command line. Return to the command prompt window. Enter the following command to add the queue manager: 
+
+	```
+	setmqweb remote add -uniqueName "QM1-mqappl1" -qmgrName "QM1" -ccdtURL "c:\MQ924\QM1-mqappl1.json" -username "ibmdemo" -password "passw0rd"
+	```
+	
+	![](./images/pots/mq-appliance/lab3/image521.png)
+	
+1. Return to the console in the Chrome browser. Click *Remote queue managers*.
+
+	![](./images/pots/mq-appliance/lab3/image517.png)
+	
+1. The remote queue manager has now been added to the console with the unique name you provided with the command. 
+
+	![](./images/pots/mq-appliance/lab3/image518.png)
+	
+	The unique name is important because it is not the name of the actual queue manager. **QM1** is the queue manager that is running. Click the hyperlink for *QM1-mqappl1* and you will see the unique name beside *Queue Manager*.
+
+	![](./images/pots/mq-appliance/lab3/image519.png)
+
+1. Click *View configuration*. Now you see the properties of the queue manager and the actual queue manager name - **QM1**.
+
+	![](./images/pots/mq-appliance/lab3/image520.png)
+	
+1. Click the *Manage* breadcrumb to return to the main display. Now you can see either the local queue managers or remote queue managers. You can see the status and manage multiple queue managers running on multiple servers or appliances.
+
+	Next, you will add a remote queue manager using the console. 	
+#### Add remote queue manager using the MQ Console
+
+Remember when you first logged into the console you noticed that there was no tile to add remote queue managers. You need to add the tile to allow you to add remote queue managers. There are a number of configuration options you can set to control the behavior of the remote queue manager connections.
+
+1. Return to the Windows command prompt and enter the following command to display the properties.
+
+	```
+	dspmqweb properties -a
+	``` 
+	 
+1. Review the properties for *mqConsole...*. Look for the property **mqConsoleRemoteUIAdmin**. This property is to prevent or allow remote queue manager connections to be added by using the IBM MQ Console, or by only the command line. Notice it is set to *false*. 
+ 
+	![](./images/pots/mq-appliance/lab3/image508.png)
+	
+	You need to enable this property to add remote queue managers from the MQ Console. Enter the following command:
+
+
+	```
+	setmqweb properties -k mqConsoleRemoteUIAdmin -v enabled
+	```
+
+	![](./images/pots/mq-appliance/lab3/image522.png)
+
+1. Now you need to restart the web server. In the command prompt enter the following command to stop the web server:
+
+	```
+	endmqweb 
+	```
+	
+	Then restart the server with this command:
+	
+	```
+	strmqweb
+	```
+	
+	![](./images/pots/mq-appliance/lab3/image523.png)
+
+1. Return to the Chrome browser where you are logged onto the console. Click the *Home* icon. If you are already on the *Home* page, refresh the page. You will now see the tile *Connect remote queue manager*.
+
+	![](./images/pots/mq-appliance/lab3/image524.png)
+	
+1. Click the *Connect remote queue manager* tile.
+
+1. This time connect queue manager **QM2** which is running on *MQAppl2*. Enter **QM2** in the *Queue manager name* field. For the *Unique name* follow the *qmgr-hostname* naming convention so enter **QM2-mqappl2** in the *Unique name* field.
+	
+	![](./images/pots/mq-appliance/lab3/image525.png)
+	
+	You could create another *ccdt.json* file and upload it like you did previously. But this time try typing in the connection information. Click the *Manual entry* button.
+	
+1. Enter **USER.SVRCONN** for the *Channel name*, **10.0.0.2** for *Host name*, and **1414** for the port. Click *Add*.
+	
+	![](./images/pots/mq-appliance/lab3/image526.png)
+	
+1. Click *Next*.
+
+	![](./images/pots/mq-appliance/lab3/image527.png)
+	
+1. For the user information enter **ibmdemo** for *User ID* and **passw0rd** for *Password*. Click *Next*.
+
+	![](./images/pots/mq-appliance/lab3/image528.png)
+
+1. You will not use TLS for this queue manager so leave the defaults on *Certificate* page and click *Next*.
+
+1. You are taken to the *Summary* page. Review the information to make sure it is correct. Click *Connect*.
+
+	![](./images/pots/mq-appliance/lab3/image529.png)
+	
+1. You receive the success message.
+
+	![](./images/pots/mq-appliance/lab3/image530.png)
+	
+1. Click the *Manage* tile to see the queue managers. 
+
+	![](./images/pots/mq-appliance/lab3/image531.png)
+
+	You should now see that both remote queue managers have been added and are running.
+
+	![](./images/pots/mq-appliance/lab3/image532.png)
+	
+	If you receive a connection error, make sure that the queue manager is running then refresh the page. 
+	
+	![](./images/pots/mq-appliance/lab3/image533.png)
+
+You have now used both methods to add a remote queue manager to the central console. You should have queue manager QM3 running on MQAppl3. If you have enough time you can try to add it with either method.
+
+## Congratulations
+
+This concludes the MQ Console lab.
+You should now feel comfortable using the console to manage your appliances.	
+	
 ## Clean Up
 
 The only clean up required is to close the MQ Console browser tabs. 
@@ -450,3 +690,5 @@ This concludes the IBM MQ Appliance Web UI and MQ Console lab.
 [Return MQ Appliance Menu](mq_appl_pot_overview.html)
 
 [Continue with Lab 4](mq_appl_pot_lab4.html)
+
+ 
