@@ -19,8 +19,7 @@ VMs required:
 
 ### Monitoring and reporting
 
-For this lab, you will use one virtual appliance, MQAppl1, and a Windows environment to perform console operations. There are other virtual appliances (MQAppl2, MQAppl3, MQAppl4, MQAppl5, MQAppl6, and MQAppl7)
-that will not be used in this lab. You should suspend them.
+For this lab, you will use one virtual appliance, MQAppl1, and a Windows environment to perform console operations. There are other virtual appliances (MQAppl2, MQAppl3, MQAppl4, MQAppl5, MQAppl6, and MQAppl7)cthat will not be used in this lab. You should suspend them.
 
 You will be exploring some of the options available for monitoring the
 MQ Appliance using a combination of command line and reporting in the MQ Console. You will also look at how you can implement the use
@@ -52,7 +51,9 @@ list can be found in the IBM Documentation for the MQ Appliance.
 
 3. First, enter the *show* command. This will give a list of all of
     the available *status_provider* values.
-
+    
+    {% include important.html content="For this lab the appliance clock should be  synchronized with the Windows desktop VM time. Automatic time sync is not available on the Skytap virtual MQ Appliances. Therefore the time on the appliance will start from the time the VM was last shut down or suspended. You should make sure the appliance time is in sync with the Windows desktop VM time. Use the \"show clock\" to display the time. If it doesn't match, use the \"clock\" command to set the appliance time to sync with the Windows time." %} 
+    
 4. Now enter *show version*. This will show the firmware and library version, similar to what is shown below.
 
 	![](./images/pots/mq-appliance/lab4/image9a.png)
@@ -181,10 +182,7 @@ system resource usage of a queue manager.
 	
 
     
-    
     If you do not specify this parameter, the command runs until either an error occurs, or the queue manager shuts down.
-	
-	
 	
         
     
@@ -294,16 +292,25 @@ lab. The applications are part of SupportPac IH03.
 
 	![](./images/pots/mq-appliance/lab4/image113.png)
 
-16. Below is the output from the example we have just run (you may not
-    get the same result -- but if not, you may wish to increase the
-    number of messages).
+16. Below is the output from the example we have just run. You may not
+    get the same result. If you did not receive an error, you may wish to increase the
+    number of messages in the parmtst1.txt and rerun the driver.cmd.
 
 	![](./images/pots/mq-appliance/lab4/image110a.png)
-
-17. Oops, we have run out of space for the queue manager!!! This is not
+	
+	You have received an MQ error on the *MONITOR* queue. The reason code is 2102. If the 	script did not end, hit **CTRL-C** to end the job and reply *Y* to confirm. Make a note 	of the time the error occurred.
+	
+	Enter the following command to determine what the error means:
+	
+	```
+	mqrc 2102
+	```
+	
+	![](./images/pots/mq-appliance/lab4/image110b.png)
+	
+17. Oops! You have run out of space for the queue manager!!! This is not
     likely to happen on a real appliance but you may recall that we have
-    a very small queue manager file system size on our appliance). If
-    the script did not end, hit **CTRL-C** to end the job.
+    a very small queue manager file system size on our appliance). 
 
 20. Go back to the MQ Explorer. Here you see the thousand
     (probably 994) messages you have just put on the queue. There may be
@@ -312,6 +319,8 @@ lab. The applications are part of SupportPac IH03.
     ![](./images/pots/mq-appliance/lab4/image112.png)
 
 21. Clear the messages from the **MONITOR** queue on **QM1**.
+
+1.  In the next section, *Troubleshooting*, you will check the MQ logs to find the error.
 
 ### Troubleshooting
 
@@ -366,13 +375,7 @@ and first failure data captures (FDCs) by using the dspmqerr command.
 
 	![](./images/pots/mq-appliance/lab4/image46.png)
 	
-10. Look at the AMQERR01.LOG for QM1. Enter:
-
-	**`dspmqerr -m QM1 AMQERR01.LOG`**
-
-	![](./images/pots/mq-appliance/lab4/image47.png)
-	
-	 {% include note.html content="About dspmqerr: 
+	{% include note.html content="About dspmqerr: 
     
     
     The command is based on the UNIX *less* command. The less command provides controls for navigating the contents of a file, and you can use these controls when you view system error logs.: 
@@ -394,6 +397,16 @@ and first failure data captures (FDCs) by using the dspmqerr command.
     * Enter *h* to display full help while you view a log. The help lists further commands, for example, for searching for strings or jumping a set number of lines. 
     " %}
 	
+10. Look at the AMQERR01.LOG for QM1. Enter:
+
+	**`dspmqerr -m QM1 AMQERR01.LOG`**
+
+	![](./images/pots/mq-appliance/lab4/image47.png)
+    
+1.  Review the log entries. Hold the space bar down to scroll to the end. When you ran the test you received an error for filling the *MONITOR* queue. You should see FDCs created at the end of the log. Notice that they were due to the write command.
+
+	![](./images/pots/mq-appliance/lab4/image47a.png)
+	
 11. When done reviewing the log, enter **q**.
 
 12. Enter this command to see the system log.
@@ -409,14 +422,7 @@ and first failure data captures (FDCs) by using the dspmqerr command.
     **copy** command or from the MQ Console (using the File Management
     option).
 
-	We can also perform most of the file operations from the console.
-    You did this in the Console lab -- if you did not get to it, take
-    some time now to go back and complete the "tour" of the files.
-
-## Extra Credit 
-
-When we ran our previous test, we received an error for filling the
-queue manager file system. In the console -- can you find it?
+We can also perform most of the file operations from the console. You did this in the Console lab -- if you did not get to it, take some time now to go back and complete the "tour" of the files.
 
 You can also run *strmqtrc* from the command line interface, and after,
 the *endmqtrc* command. The trace files (AMQppppp.qq.TRC) can also be
@@ -433,9 +439,8 @@ You will not be doing this in the lab; however, the command can be used as follo
 
  " %}
 
-
-
-Congratulations, this concludes the Monitoring and troubleshooting lab.
+## Congratulations
+This concludes the Monitoring and troubleshooting lab.
 
 [Return MQ Appliance Menu](mq_appl_pot_overview.html)
 
