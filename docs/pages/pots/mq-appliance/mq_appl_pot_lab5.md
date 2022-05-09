@@ -642,49 +642,40 @@ The following steps should be performed on the Windows VM image.
 42. At this point, you should have a set of channels, local queues and remote queues that will enable sending messages between the two platforms and having the SENDER channels auto-triggered. 
 
 	The IP address of the Windows VM has been changed since the MQSC file was created, so the properties of the sender channel need to be updated. Open MQ Explorer. Expand *Channels* under **QM1**. Right-click the channel **QM1.TO.WINQM1** and select properties. 
-   	
-   	![](./images/pots/mq-appliance/lab5/image52a.png)
-   	
-   	Change the *Connection name* to **10.0.0.8(3414)**. Click *OK*.
+	
+	![](./images/pots/mq-appliance/lab5/image52a.png). 
+	
+	Change the *Connection name* to **10.0.0.8(3414)**. Click *OK*. 
+	
+	![](./images/pots/mq-appliance/lab5/image52b.png) 
+	
+	Refresh MQ Explorer. 
+	
+	![](./images/pots/mq-appliance/lab5/image52c.png) 
+	
+	The channel should now be running. 
+	
+	![](./images/pots/mq-appliance/lab5/image52d.png)
    
-   ![](./images/pots/mq-appliance/lab5/image52b.png)
-   
-   Refresh MQ Explorer. 
-   
-   ![](./images/pots/mq-appliance/lab5/image52c.png)
-   
-   The channel should now be running.
-   
-   ![](./images/pots/mq-appliance/lab5/image52d.png)
-   
-1. Test your configuration by completing the following steps:   	 
-    	 
-    a.  Expand the **QM1** queue manager entry.
-        Right click the **WINTESTQ** queue and click the **Put Test
-        Message...** menu item.
+1.  Test your configuration by completing the following steps:
 
-       ![](./images/pots/mq-appliance/lab5/image53.png)
+	 a. Expand the **QM1** queue manager entry. Right click the **WINTESTQ** queue and click the **Put Test Message...** menu item. 
+	
+	 ![](./images/pots/mq-appliance/lab5/image53.png) 
+	 
+	 b. Enter a simple message and click the **Put message** button. 
+	 
+	 ![](./images/pots/mq-appliance/lab5/image54.png)
+	 
+	 c. Close the test window, then expand the **WINQM1** queue manager and right click the **WINTESTQ** queue. Select the **Browse Messages...** menu item.
+    
+    ![](./images/pots/mq-appliance/lab5/image55.png) 
+    
+    d. Your message should be listed in the browser window. Click the **Close** button to continue. 
+    
+    ![](./images/pots/mq-appliance/lab5/image56.png)
 
-    b.  Enter a simple message and click the **Put message** button.
-
-       ![](./images/pots/mq-appliance/lab5/image54.png)
-
-    c.  Close the test window, then expand the **WINQM1** queue manager
-        and right click the **WINTESTQ** queue. Select the **Browse
-        Messages...** menu item.
-
-       ![](./images/pots/mq-appliance/lab5/image55.png)
-
-    d.  Your message should be listed in the browser window. Click the
-        **Close** button to continue.
-
-       ![](./images/pots/mq-appliance/lab5/image56.png)
-
-    e.  Repeat steps **a** through **d** to test triggering of channels
-        from **WINQM1** to **QM1** by putting a simple message on
-        **WINQM1**'s **MQAPPLQ** remote queue definition and ensuring it
-        is PUT to the corresponding local queue on **QM1**. Correct any
-        configuration issues before proceeding.
+    e. Repeat steps **a** through **d** to test triggering of channels from **WINQM1** to **QM1** by putting a simple message on **WINQM1**'s **MQAPPLQ** remote queue definition and ensuring it is PUT to the corresponding local queue on **QM1**. Correct any configuration issues before proceeding.
 
 43. Stop the **SENDER** channels on both queue managers, setting their
     status to **Inactive.**
