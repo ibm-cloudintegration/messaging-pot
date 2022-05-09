@@ -14,12 +14,8 @@ In this lab, we will explore the unique security aspects of the MQ
 Appliance compared to a standard IBM MQ installation. This lab assumes
 that you are familiar with basic IBM MQ security functions.
 
-VMs required:
-
-* **Windows 10 x64**
-* **MQAppl1**
-
-The following instructions assume you are using **MQAppl1**. Any VMs not in use should be suspended or shut down. These include the virtual appliances **MQAppl2,** **MQAppl3**, **MQAppl4**, **MQAppl5**, **MQAppl6** and **MQAppl7**. The Windows image is
+The lab environment uses a single MQ Appliance virtual image (MQAppl1)
+and the Windows virtual image (**Windows10**). The Windows image is
 used to:
 
 -   Demonstrate SSL/TLS protection of channels between queue managers on
@@ -33,6 +29,7 @@ used to:
     authorization functions.
 
 ## Prerequisites
+
 
 -   The Skytap environment has been created and both VM images have been
     started. NOTE: The starting point for this lab reflects the
@@ -58,7 +55,7 @@ used to:
         ![](./images/pots/mq-appliance/lab5/image2.png)
 
 -   Verify that the IP addresses for the Windows and Appliance images
-    are 10.0.0.8 and 10.0.0.1 respectively. Otherwise, all the
+    are 10.0.0.5 and 10.0.0.1 respectively. Otherwise, all the
     references to IP addresses, as well as the provided mqsc scripts,
     will need to be edited to reflect the proper addresses.
     
@@ -170,7 +167,7 @@ Appliance and queue managers hosted on remote platforms.
 Since Lab 1 covered the initial tasks required to enable connections to
 the MQ Appliance, we will not repeat those steps in this lab. Instead,
 we will review the steps required to create an additional IBM MQ
-Appliance user and utilize the appliance's Role-Based Management (RBM)
+Appliance user and utilize the appliance's Rule-Based Management (RBM)
 features to control which functions the user may access.
 
 1.  Start the FireFox web browser in the Windows VM image and navigate to
@@ -434,19 +431,19 @@ to use!)
     userlist
     ```
 
-    ![](./images/pots/mq-appliance/lab5/image28a.png)
+    ![](./images/pots/mq-appliance/lab5/image28.png)
 
-16. Note that there is a single user named **ibmdemo** listed. To
+16. Note that there is a single user named **testuser** listed. To
     display details of this user enter the following command: 
     
     ```
-    userlist -u ibmdemo
+    userlist -u testuser
     ```
 
-    ![](./images/pots/mq-appliance/lab5/image29a.png)
+    ![](./images/pots/mq-appliance/lab5/image29.png)
 
-17. As you can see, **ibmdemo** is a member of the **mqm** group. Just
-    like IBM MQ, being a member of the **mqm** group gives **ibmdemo**
+17. As you can see, **testuser** is a member of the **mqm** group. Just
+    like IBM MQ, being a member of the **mqm** group gives **testuser**
     full access to all resources in a queue manager. We will want to
     create a new user and group that *does not* have full access.
 
@@ -466,7 +463,7 @@ to use!)
     grouplist
     ```
 
-    ![](./images/pots/mq-appliance/lab5/image31a.png)
+    ![](./images/pots/mq-appliance/lab5/image31.png)
 
 20. Now create a new user by entering the following command:
 
@@ -529,7 +526,7 @@ to use!)
 
 30. Now you will need to use the **rfhutilc** program to test the
     security settings you have defined. Refer to the steps in Lab 1 to
-    launch the program and connect to the queue manager as **ibmdemo**.
+    launch the program and connect to the queue manager as **testuser**.
     Continue through the steps in Lab 1 until you have successfully
     written a test message to the **TEST.IN** queue.
 
@@ -631,7 +628,7 @@ The following steps should be performed on the Windows VM image.
     configuration objects on **QM1**:
     
     ```
-    runmqsc -c -u ibmdemo QM1 < QM1.mqsc
+    runmqsc -c -u testuser QM1 < QM1.mqsc
     ```
 
 	{% include note.html content="**Note regarding redirecting input for runmqsc commands from mqsc files**: 
@@ -639,27 +636,12 @@ The following steps should be performed on the Windows VM image.
 
 	![](./images/pots/mq-appliance/lab5/image52.png)
 
-42. At this point, you should have a set of channels, local queues and remote queues that will enable sending messages between the two platforms and having the SENDER channels auto-triggered. 
+42. At this point, you should have a set of channels, local queues and
+    remote queues that will enable sending messages between the two
+    platforms and having the SENDER channels auto-triggered. Test your
+    configuration by completing the following steps:
 
-	The IP address of the Windows VM has been changed since the MQSC file was created, so the properties of the sender channel need to be updated. Open MQ Explorer. Expand *Channels* under **QM1**. Right-click the channel **QM1.TO.WINQM1** and select properties. 
-   	
-   	![](./images/pots/mq-appliance/lab5/image52a.png)
-   	
-   	Change the *Connection name* to **10.0.0.8(3414)**. Click *OK*.
-   
-   ![](./images/pots/mq-appliance/lab5/image52b.png)
-   
-   Refresh MQ Explorer. 
-   
-   ![](./images/pots/mq-appliance/lab5/image52c.png)
-   
-   The channel should now be running.
-   
-   ![](./images/pots/mq-appliance/lab5/image52d.png)
-   
-1. Test your configuration by completing the following steps:   	 
-    	 
-    a.  Expand the **QM1** queue manager entry.
+    a.  Open the MQ Explorer and expand the **QM1** queue manager entry.
         Right click the **WINTESTQ** queue and click the **Put Test
         Message...** menu item.
 
@@ -1017,7 +999,7 @@ Perform the following steps to create and configure the keystore for the **WINQM
 
 ### Overview of MQ usage of an LDAP repository
 
-With the MQ Appliance, an LDAP repository may be used for authentication
+With the MQ Appliance, a LDAP repository may be used for authentication
 and authorization purposes.
 
 A queue manager may be configured to require an application to present a
@@ -1117,7 +1099,7 @@ following information about the LDAP server:
 
 | Entry                     | Description                                  | Value                 | 
 |:-------------------------:|:--------------------------------------------:|:---------------------:|
-| **LDAP server name:** |  Host name / IP Address of server. Include the port number in parenthesis if it is not the default. | 10.0.0.8 |
+| **LDAP server name:** |  Host name / IP Address of server. Include the port number in parenthesis if it is not the default. | 10.0.0.5 |
 | **User name:** | A valid user ID that the queue manager may use to query the LDAP | cn=root |
 | **Password:** | The password for the above user | db2admin |
 |**Equivalent short user:** | The LDAP attribute that is used to map between an LDAP entry and the underlying O/S. Examples for the **inetOrgPerson** LDAP object class would be either **sn** or **uid**. |  sn |
@@ -1162,7 +1144,7 @@ contains the following users:
 	then migrated to the appliance. 
 	
 	a. In order to support the use of an LDAP, a queue manager needs to be 		running at COMMAND LEVEL 801 or higher. By default, an *appliance* 
-		based queue manager runs at COMMAND LEVEL 924. To verify the COMMAND 
+		based queue manager runs at COMMAND LEVEL 914. To verify the COMMAND 
 		LEVEL of the queue manager, use the **runmqsc** command shell and enter 
 		the following command: 
 	
@@ -1170,7 +1152,7 @@ contains the following users:
 	DIS QMGR
 	``` 
 	
-	![](./images/pots/mq-appliance/lab5/image96b.png) 
+	![](./images/pots/mq-appliance/lab5/image96.png) 
 	
 	b. If the **CMDLEVEL** is not at a minimum level of 801, run the following 
 	commands to set it: 
@@ -1178,7 +1160,7 @@ contains the following users:
 	```
 	endmqm -i <queue_manager_name> 
 	
-		strmqm -e CMDLEVEL=924 <queue_manager_name> (Or specify a higher CMDLEVEL 
+	strmqm -e CMDLEVEL=914 <queue_manager_name> (Or specify a higher CMDLEVEL 
 	if the installed MQ version supports a higher version)
 	 
 	strmqm <queue_manager_name>
@@ -1199,7 +1181,7 @@ contains the following users:
 	
 	```
 	DEFINE AUTHINFO(USE.LDAP) AUTHTYPE(IDPWLDAP) ADOPTCTX(YES)
-   CONNAME(10.0.0.8) CHCKCLNT(REQUIRED) CLASSGRP('groupOfNames')
+   CONNAME(10.0.0.5) CHCKCLNT(REQUIRED) CLASSGRP('groupOfNames')
    CLASSUSR('inetOrgPerson') FINDGRP('member') BASEDNG('ou=users,
    ou=ibmpot, o=ibm, c=us') BASEDNU('ou=users, ou=ibmpot, o=ibm,
    c=us') LDAPUSER('cn=root') LDAPPWD('passw0rd') SHORTUSR('sn')

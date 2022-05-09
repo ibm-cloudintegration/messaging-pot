@@ -10,17 +10,6 @@ applies_to: [developer,administrator]
 
 # Lab 8 - IBM MQ Appliance Disaster Recovery (DR)
 
-VMs required:
-
-* **Windows 10 x64**
-* **MQAppl1**
-* **MQAppl2**
-* **MQAppl3** 
-
-The lab environment consists of three virtual appliances, **MQAppl1**, **MQAppl2**, and **MQAppl3**, and the Windows image, **Windows 10 x64**, to perform console operations and testing. There are other virtual appliances (MQAppl4, MQAppl5, MQAppl6, and MQAppl7) that will not be used in this lab. You should suspend them.
-
-## Introduction
-
 The MQ Appliance Disaster Recovery (DR) feature supports flexible DR
 topologies consisting of 'live' appliances at multiple sites. DR support
 is provided at the Queue Manager (QM) level, so they can be configured
@@ -79,11 +68,23 @@ two new 2 x 40 GB QSFP+ ports as well as two additional 10GB SPF+ ports.
 Refer to **IP Addresses** in the [Overview the IBM MQ Appliance PoT](mq_appl_pot_overview.html)
 document, to determine the
 network adapters and IP addresses assigned to each appliance. Pay
-particular attention to **eth4** as it is the adapter used for DR on the virtual appliance. 
+particular attention to **eth4** as it is the adapter used for DR on the virtual appliance.
+
+The lab environment consists of three virtual appliances (**MQAppl1**,
+**MQAppl2**, and **MQAppl3**) and a Windows environment (**Windows 10
+x64**) to perform console operations, access the Web UI and run a test
+application. Only MQAppl1, MQAppl2 and MQAppl3 will be used in this lab.
+MQAppl3 is designated as the DR appliance. You need to create a CSIDE
+environment to work based on the "*MQ Appliance PoT 9.1.4 Configured - HA
+Complete - Ready for DR*" template, or you can continue to work on one of
+the other templates as long as Lab 1 and Lab 2 are completed. Log on to
+CSIDE and create a new environment from the template as needed.
 
 ### Start the Environment
 
-1.  Start the environment and wait until all three virtual machines have started. You may shut down **MQAppl4**, **MQApp5**,**MQAppl6**, and **MQAppl7** as they will not be used in this lab.
+1.  Start the environment and wait until all three virtual machines have
+    started. You may shut down **MQAppl4** as it will not be used in
+    this lab.
 
 2.  The MQ appliances will have fully started when they reach the
     **login** prompt.
@@ -108,8 +109,8 @@ to connect the two appliances via the network.
 3.  Take note of the IP addresses for both **eth0** and **eth4**. The
     other IP addresses are not used for Disaster Recovery.
 
-    *Note that your IP addresses may be different than the ones shown
-    above.*
+    **Note that your IP addresses may be different than the ones shown
+    above.**
 
 4.  Repeat this on **MQAppl3** and record the addresses.
 
@@ -159,11 +160,7 @@ manager part of a disaster recovery configuration.
 6. Refresh the queue manager status to make sure it is stopped.
 
     ![](./images/pots/mq-appliance/lab8/image12.png) 
-
-1. Click the *Disaster recovery*.
-
-	![](./images/pots/mq-appliance/lab8/image12a.png) 
-	   
+    
 1. Click the ![](./images/pots/mq-appliance/lab8/image13.png) icon for *QM1* and select *Configure DR*. 
 
 	![](./images/pots/mq-appliance/lab8/image14.png)
@@ -602,7 +599,7 @@ part of the queue manager and are replicated.
 
 4. From the Skytap dashboard, start **MQAppl1**.
 
-    ![](./images/pots/mq-appliance/lab8/image63a.png)
+    ![](./images/pots/mq-appliance/lab8/image63.png)
 
 5. Return to browser tab for MQAppl1. Wait for MQAppl1 to initialize. You will know initialization is complete when the login: prompt is displayed on the MQAppl1 console or you are prompted to refresh the browser on the MQAppl1 browser tab.
 
@@ -723,6 +720,8 @@ The following diagrams provide the detailed sequence of events in
 graphical form between the main appliance and fail over appliance in a
 disaster recovery configuration.
 
+![](./images/pots/mq-appliance/lab8/image81.png)
+
 ![](./images/pots/mq-appliance/lab8/image82.png)
 
 ![](./images/pots/mq-appliance/lab8/image83.png)
@@ -825,20 +824,19 @@ appliance pair MQAppl1 and MQAppl2 need to be running also.
 
     ![](./images/pots/mq-appliance/lab8/image104.png)
 
-    If the HA status shows **Normal**, skip to [Partitioning Resolved - Continue](#partitioning_resolved).
+    If the HA status shows **Normal**, skip to [Partitioning Resolved - Continue](#Partitioning Resolved).
 
     In this instance, the HA status for **HAQM2** shows **Partitioned**
     which is also called split-brain. The amount of data which is out of
     sync is shown to be 137284KB (what you see might differ slightly).
-    This is easily resolved. Click this link to [Resolve Partitioning](#resolve_partitioning). Then return here.
+    This is easily resolved. Click this link to [Resolve Partitioning](#Resolve Partitioning). Then return here.
 
 4. Check the status for **HAQM2** again on MQAppl2's command line.
     Status is now **Normal**.
 
     ![](./images/pots/mq-appliance/lab8/image107.png)
- 
-<a name="partitioning_resolved"></a>   
-#### Partitioning Resolved - Continue
+    
+#### <a name="Partitioning Resolved"></a>Partitioning Resolved - Continue
 
 6. On the **MQAppl2** browser session in *Manage* > *Queue managers*, click *Disaster recovery*. 
 
@@ -1052,9 +1050,7 @@ has both addresses coded.
 
 Congratulations, you have completed Lab 8 Disaster Recovery.
 
-
-<a name="resolve_partitioning"></a>
-## Resolve Partitioning
+## <a name="Resolve Partitioning"></a>Resolve Partitioning
 
 ### Resolving a partitioned problem in a high availability configuration
 
@@ -1199,4 +1195,4 @@ If the two appliances lose the replication interface, the HA status is reported 
 
 If your HA queue manager is configured for disaster recovery, and failed over to the recovery appliance when your HA group went out of service, then you might have to resolve data partitioning between the HA group and the recovery appliance. After you have restored your HA group, and resolved data partitioning between the primary and secondary appliances, you must follow the procedure described in Switching back to the main appliance.
 
-[Partitioning Resolved](#partitioning_resolved)
+[Partitioning Resolved](#Partitioning Resolved)

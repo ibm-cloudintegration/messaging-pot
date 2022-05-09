@@ -1,6 +1,6 @@
 ---
 title: Service and Maintenance
-toc: true
+toc: toc
 sidebar: labs_sidebar
 folder: pots/mq-appliance
 permalink: /mq_appl_pot_lab7.html
@@ -17,12 +17,11 @@ as upgrading the appliance firmware.
 
 ## The virtual environment
 
-VMs required:
-
-* **Windows 10 x64**
-* **MQAppl4**
-
-The lab environment consists of one virtual appliance **MQAppl4** and the Windows image, **Windows 10 x64**, to perform console operations and testing. There are other virtual appliances (MQAppl1, MQAppl2, MQAppl3, MQAppl5, MQAppl6, and MQAppl7) that will not be used in this lab. You should suspend them.
+The lab environment consists of one virtual appliance and a Windows
+environment to perform console operations and testing. The virtual
+appliance you will use for this lab will be **MQAppl4** and the Windows
+image, **Windows 10 x64** in the CSIDE environment. You must suspend or
+shut down all other VMs.
 
 The MQAppl4 appliance is currently running version 9.1.3.0 of the
 firmware. In this lab, you will upgrade the firmware to V9.2.2.0, before
@@ -132,7 +131,7 @@ external storage.
     
     ![](./images/pots/mq-appliance/lab7/image3.png)
 
-9.  The *File Management* tool opens. You used the V9.2.4.0 File Management
+9.  The *File Management* tool opens. You used the V9.2.2.0 File Management
     tool in Lab 3 and Lab 5. It enables you to upload a file from the
     system running your browser to the MQ Appliance; save a file from
     the MQ Appliance to your system; and move, copy, rename and delete
@@ -240,7 +239,7 @@ You will again use the File Management tool to copy the firmware
     right of the **image:** folder. A popup menu opens. Click the
     **Upload Files** link. 
     
-    ![](./images/pots/mq-appliance/lab7/image8a.png)    
+    ![](./images/pots/mq-appliance/lab7/image8.png)    
    
 3. An upload dialog opens. Click the **Browse...** button. 
 
@@ -567,7 +566,7 @@ You can only restore one queue manager at a time.
     
 7. The messages should look familiar. Check the timestamp to prove
     these are the messages you put on the queue before you deleted the
-    queue manager.  
+    queue manager. Click **Close**. 
     
     ![](./images/pots/mq-appliance/lab7/image47.png)
 
@@ -717,7 +716,14 @@ following steps:
 
 Because you are using a virtual appliance, you will simulate the above steps. You will still use PuTTY from the Windows machine and connect to **eth0 -- 10.0.0.4**.
 
+1. On the Windows image, start **Windows Explorer** if need be and
+    navigate to **C:\\Utilities\\Putty**.
+
 2. Double click the **Putty** icon on the desktop to open the configuration window.
+
+	![](./images/pots/mq-appliance/lab7/image60.png)
+	
+	There is also a shortcut on the desktop:
     
     ![](./images/pots/mq-appliance/lab7/image59.png)
 
