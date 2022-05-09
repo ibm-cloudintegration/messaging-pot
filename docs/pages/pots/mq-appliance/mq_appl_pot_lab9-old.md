@@ -8,17 +8,19 @@ summary: Using the REST Interface
 applies_to: [developer,administrator]
 ---
 
+
+
 # Lab 9 - Using the REST Interface
  
 In this lab you will explore the REST interface available for management
 of the appliance.
 
-VMs required:
-
-* **Windows 10 x64**
-* **MQAppl1**
-
-The following instructions assume you are using **MQAppl1**. Any VMs not in use should be suspended or shut down. These include the virtual appliances **MQAppl2,** **MQAppl3**, **MQAppl4**, **MQAppl5**, **MQAppl6** and **MQAppl7**. You will use the Windows VM (**Windows 10 x64**) to perform console operations and testing.
+You can use any of the environments that you have previously completed
+labs for (although the following instructions assume you are using
+**MQAppl1**). Any environments not in use should be suspended or shut
+down. The lab environments consist of multiple virtual appliances
+(**MQAppl1,** **MQAppl2** and **MQAppl3**) and a Windows environment
+(**Windows 10 x64**) to perform console operations and testing.
 
 The network adapters are described in **IP Addresses** in the [Overview the IBM MQ Appliance PoT](mq_appl_pot_overview.html)
 document. Addresses must be configured as indicated in that document.
@@ -120,25 +122,7 @@ First we need to make sure we have no CORS problems.
 1. Open up a **Chrome** browser.
 
     ![](./images/pots/mq-appliance/lab9/image6.png)
-    
-1. If you are prompted that Chrome is not the default, click the *Set as default* button to make chrome the default browser.
 
-	![](./images/pots/mq-appliance/lab9/image6c.png)
-	
-1.	Click the elipsis on the far right of the window, then click *Settings*.
-
-	![](./images/pots/mq-appliance/lab9/image6a.png)
-
-1. When the *Settings* panel appears, select **Default browser**. Click *Make default*.
-
-	![](./images/pots/mq-appliance/lab9/image6e.png)
-	
-1. When the *Default apps* window appears, select **Google Chrome** as the default browser.
-
-	![](./images/pots/mq-appliance/lab9/image6d.png)
-	
-	Close the window. You can also close the *Settings* browser tab.
-	
 2. Enter the following URI into the browser:
 
 	[**https://10.0.0.1:5554/mgmt/**](https://10.0.0.1:5554/mgmt/)
@@ -169,50 +153,51 @@ exception and proceed (this will fix any CORS issues we may have).
 
    ![](./images/pots/mq-appliance/lab9/image8.png)    
 
-5. We will now continue using the *Advanced Rest Client (ARC)*. This is a browser based REST
-    testing tool from Chrome. Open a new tab in *Chrome*, then click **Apps**.
+5. We will now continue using Postman. This is a browser based REST
+    testing tool from Chrome. Open a *new tab* in *Chrome*, then click
+    **Apps**.
 
-    ![](./images/pots/mq-appliance/lab9/image9a.png)
+    ![](./images/pots/mq-appliance/lab9/image9.png)
     
-6. You will see the *ARC* icon. Click the icon to open the ARC tool.
+6. You will see the *Postman* icon. Click the icon to open the Postman
+    tool.
 
-	![](./images/pots/mq-appliance/lab9/image10a.png)
+	![](./images/pots/mq-appliance/lab9/image10.png)
 
-	The tool opens in a new window. You may close the Chrome browser tab after this.
+	If you see the following warning, dismiss it by clicking the **X** at the
+upper right corner.
+
+	![](./images/pots/mq-appliance/lab9/image11.png)
+
+	You may close the Chrome browser tab after this.
+
+	If you see the following, dismiss it by clicking the **X** at the upper
+right corner.
+
+	![](./images/pots/mq-appliance/lab9/image12.png)
 
 7. Set the operation to **GET** from the drop-down list.
 
 8. Enter the URI as before -- **https://10.0.0.1:5554/mgmt/**
 
 9. All requests to the REST management interface require an HTTP basic
-    authentication header. Click *Header name* and select the **Authorization**. 
-    
-    ![](./images/pots/mq-appliance/lab9/image11a.png) 
-    
-1. Click the edit button (pencil) to add the **Basic Auth** (authentication method) credentials. 
+    authentication header. Select the **Authorization** tab. Select
+    **Basic Auth** as the authentication method. Enter the **admin**
+    user and password you had previously set.
 
-	![](./images/pots/mq-appliance/lab9/image11b.png)
+	![](./images/pots/mq-appliance/lab9/image13.png)
 
-1. Enter the **admin** user and password you had previously set. Click *Accept*.
+10. Click **Send**.
 
-	![](./images/pots/mq-appliance/lab9/image11c.png)
+11. You should see a response similar to that shown below.
 
-10. You need to set one more setting. Click the elipsis in the top right corner next to *Send*. 
+	![](./images/pots/mq-appliance/lab9/image14.png)
 
-	![](./images/pots/mq-appliance/lab9/image13a.png)
-	
-	Click the *Use XHR extension* to turn it on. This will generate a pop-up to install the *ARC Proxy Extension*. This will allow you to test by ignoring certificate and cookie errors. Click the install button.
-	
-	![](./images/pots/mq-appliance/lab9/image13b.png)	
-1. Click *Add to Chrome*, then click *Add extension*.
+	Note: The REST Management interface is based on the DataPower ROMA
+interface. DataPower has a concept of domains, which the MQ Appliance
+does not. Any URI which contains a domain must specify "default" as the
+domain.
 
-	![](./images/pots/mq-appliance/lab9/image13c.png)
-		
-	![](./images/pots/mq-appliance/lab9/image13d.png)
-	
-	Then close the *Turn on sync* pop-up. Close the Chrome browser tab and return to the ARC window. Click *Close*. 
-	
-	
 ### Check Resource Status Using REST Interface
 
 As we can see from the diagram above, there are multiple management type
@@ -220,58 +205,53 @@ functions we can perform via the REST interface. One of these is to
 retrieve status information of resources. We can retrieve a list of all
 available status provider classes as follows.
 
-1. Start the *ARC* application again from the *Apps* bookmark, then enter the following URI:
+1. Using the Postman application, enter the following URI:
 
 	[**https://10.0.0.1:5554/mgmt/status/**](https://10.0.0.1:5554/mgmt/status/)
 
-2. You need to repeat the *XHR* switch now that the extension has been added. Click **Send**.
+2. Click **Send**.
 
-3. You may see a response as shown below. You should have a *200 OK* return code and *Response headers*.
+3. You may see a response as shown below. This is not actually an
+    error, it is simply the tool that we are using.
 
-	![](./images/pots/mq-appliance/lab9/image15a.png)
+	![](./images/pots/mq-appliance/lab9/image15.png)
 
-1. Scroll down to see what REST APIs are available. 
+4. Click the **Raw** tab instead and we see the response that looks
+    similar to the following.
 
-	![](./images/pots/mq-appliance/lab9/image15b.png)
-	
-	You will need to scroll more than once to see all of them.
+	![](./images/pots/mq-appliance/lab9/image16.png)
 
-1. To identify the exact formatting of the status provider class name, you
+	To identify the exact formatting of the status provider class name, you
 search the received response payload. There are quite a few things in
 this list that are of interest to us. Let's look at a couple.
 
 	Using one of these, we can check the firmware version of the appliance.
+
+	If you have lost your header information, or need to re-authenticate,
+open a new Postman window.
+
+	![](./images/pots/mq-appliance/lab9/image17.png)
 	
-5. Without changing the headers using the *ARC* application enter the following URI:
+5. Using the Postman application, enter the following URI:
 
-    ```
-    https://10.0.0.1:5554/mgmt/status/default/FirmwareVersion2
-    ```
-    
-    ![](./images/pots/mq-appliance/lab9/image16a.png)
-    
-    Click **Send**.
+    **<https://10.0.0.1:5554/mgmt/status/default/FirmwareVersion2>**
 
-1. You should receive a *200 OK* return code. Scroll down to see the response and headers.
+6. Click **Send**.
 
-	![](./images/pots/mq-appliance/lab9/image17a.png)
+	![](./images/pots/mq-appliance/lab9/image18.png)
 
 7. In the response you will see something similar to the diagram above,
-    indicating that the appliance is at version 9.2.4.0.
+    indicating that the appliance is at version 9.2.2.0.
 
 8. Let's try another one. Enter the following URI:
-
-	```
-	https://10.0.0.1:5554/mgmt/status/default/MQSystemResources
-	```
     
-    ![](./images/pots/mq-appliance/lab9/image18a.png)
+    [**https://10.0.0.1:5554/mgmt/status/default/MQSystemResources**](https://10.0.0.1:5554/mgmt/status/default/MQSystemResources)
 
 9. Click **Send**.
 
 10. You should see a response similar to the following.
 
-    ![](./images/pots/mq-appliance/lab9/image19a.png)
+    ![](./images/pots/mq-appliance/lab9/image19.png)
 
 11. Depending on which environment you are using, your HA information
     may be the same as this or different. What is this response telling
@@ -279,20 +259,18 @@ this list that are of interest to us. Let's look at a couple.
 
 	Running one more status query may give you a hint....
 
-12. Enter the following URI: 
+12. Enter the following URI:
 
-	```
-	https://10.0.0.1:5554/mgmt/status/default/QueueManagersStatus
-	```
-    
-    ![](./images/pots/mq-appliance/lab9/image20a.png)    
+    [**https://10.0.0.1:5554/mgmt/status/default/QueueManagersStatus**](https://10.0.0.1:5554/mgmt/status/default/QueueManagersStatus)
 
 13. Click **Send**.
 
-14. You can see from the result your two HA queue managers, where they are running, and the local queuemanager QM1 which is not running in this case. Again, your results may be different. 
+14. Looks like, in this example, we are using the post-lab1 environment
+    as we have a single queue manager (QM1) which is running but not
+    configured for HA. Again, your results may be different.
+    
+   	![](./images/pots/mq-appliance/lab9/image20.png)
 
-	![](./images/pots/mq-appliance/lab9/image20b.png) 
-	
 ### User Management using REST interface
 
 The REST management interface uses the standard HTTP methods of GET,
@@ -469,6 +447,10 @@ the filestore.
     operation, as both do the same thing but have different URIs. We
     will use the POST.
 
+14. Click the **+** sign to open a new tab on Postman.
+
+    ![](./images/pots/mq-appliance/lab9/image32.png)
+
 15. Enter the following URI, and set the **operation** to **POST**.
 
 	**<https://10.0.0.1:5554/mgmt/filestore/default/local>**
@@ -480,7 +462,7 @@ to be created are specified in the request payload.
     Auth** as the authentication method. Enter the **admin** user and
     password you had previously set.
 
-17. Click the **Body** tab. Click the dropdown for *Body content type* and select **application/json**. Click the dropdown for *Editor view* and select **Raw input**. data type of **Raw input**. Use the
+17. Click the **Body** tab and select data type of **raw**. Use the
     **Text** dropdown list to select a type of **JSON
     (application/json)**.
     
