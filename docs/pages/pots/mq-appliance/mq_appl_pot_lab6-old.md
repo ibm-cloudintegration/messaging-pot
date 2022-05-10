@@ -10,17 +10,17 @@ applies_to: [developer,administrator]
 
 # Lab 6 - Migrating Queue Managers to the IBM MQ Appliance
 
-In this lab, we will explore the steps required to migrate an existing queue manager running on IBM MQ on Windows to the IBM MQ Appliance.
-
-VMs required:
-
-* **Windows 10 x64**
-* **MQAppl1**
-
-The following instructions assume you are using **MQAppl1**. Any VMs not in use should be suspended or shut down. These include the virtual appliances **MQAppl2,** **MQAppl3**, **MQAppl4**, **MQAppl5**, **MQAppl6** and **MQAppl7**. 
+In this lab, we will explore the steps required to migrate an existing queue manager running on IBM MQon Windows to the IBM MQ Appliance.
 
 The lab environment consists of one virtual appliance and a Windows
-environment to perform console operations and testing. The Windows environment also has our existing queue manager that we will migrate to the appliance. 
+environment to perform console operations and testing. The Windows environment also has our existing queue manager that we will migrate to the appliance. The virtual
+appliance you will use for this lab will be **MQAppl1**, and you will use the Windows
+image, **Windows 10 x64**, in the CSIDE environment. You should suspend or
+shut down all other VMs. You need to create a CSIDE
+environment to work based on the "*MQ Appliance PoT Configured - HA
+Complete - Ready for DR*" template, or you can continue to work on one of
+the other templates as long as Lab 1 is completed. Log on to
+CSIDE and create a new environment from the template as needed.
 
 The network adapters are described in **IP Addresses** in the [Overview the IBM MQ Appliance PoT](mq_appl_pot_overview.html)
 document. Addresses must be configured as indicated in that document.
@@ -804,7 +804,7 @@ changes to the mqsc script.
 
     ![](./images/pots/mq-appliance/lab6/image47.png)
 
-8. Find the **DEFINE PROCESS** command starting at line 3795. You do
+8. Find the **DEFINE PROCESS** command starting at line 3673. You do
     not need to alter it, and you will not test this. You simply need to
     understand how to migrate an application that uses triggering. You
     would need to change this to client triggering, and start running
@@ -815,7 +815,7 @@ changes to the mqsc script.
     Unless the name or location of the .exe changes, there should be no
     need to edit the process definition.
 
-    ![](./images/pots/mq-appliance/lab6/image48a.png)
+    ![](./images/pots/mq-appliance/lab6/image48.png)
 
 9. You need to alter the **CONNAME** attribute for the channel,
     **TO.APP2_QMGR**. You need to set this to the IP address of the
@@ -830,40 +830,40 @@ changes to the mqsc script.
     ipconfig
     ```
 
-    ![](./images/pots/mq-appliance/lab6/image49a.png)    
+    ![](./images/pots/mq-appliance/lab6/image49.png)    
     
 11. Make note of the **IPv4 Address** for the Ethernet adapter Ethernet0.
 
 12. Go to the Notepad++ application and find the **DEFINE
     CHANNEL('TO.APP2_QMGR')** command, and then the line with the
-    **CONNAME** attribute (line 4260). Change **localhost** to the IP
+    **CONNAME** attribute (line 4136). Change **localhost** to the IP
     address you obtain above. In this example, you would change it to
     read:
 
-    **CONNAME('10.0.0.8(4415)') +**
+    **CONNAME('10.0.0.5(4415)') +**
 
-    ![](./images/pots/mq-appliance/lab6/image50a.png)
+    ![](./images/pots/mq-appliance/lab6/image50.png)
     
     {% include note.html content="Note that normally this is not something you would need to change in this situation. It is only necessary because you are using a virtual image that can change IP addresses." %}
 
 13. You need to delete the listeners for the Netbios, LU62, and SPX
     protocols. These three definitions are grouped together. Move to
-    line 4392, and then mark lines 4392 through 4420 to include these
+    line 4268, and then mark lines 4268 through 4296 to include these
     three **DEFINE** commands. Press the **Delete** key to remove these
     lines. Be sure to delete any blank lines left by this deletion so
     the line numbers match in the following steps.
 
-     ![](./images/pots/mq-appliance/lab6/image51a.png)
+     ![](./images/pots/mq-appliance/lab6/image51.png)
      
 14. You also need to delete the Service definitions because the MQ
     Appliance does not support services. Find the first DEFINE SERVICE
-    command, just below the listener definitions (now at line 4402).
-    Highlight the entire two DEFINE SERVICE definitions, lines 4402
-    through 4427, and delete it by pressing the **Delete** key. Again, be
+    command, just below the listener definitions (now at line 4278).
+    Highlight the entire two DEFINE SERVICE definitions, lines 4278
+    through 4303, and delete it by pressing the **Delete** key. Again, be
     sure to delete any blank lines left by this deletion so the line
     numbers match in the following steps.
 
-     ![](./images/pots/mq-appliance/lab6/image52a.png)
+     ![](./images/pots/mq-appliance/lab6/image52.png)
 
 15. Now you can remove most of the **SET AUTHREC** commands because
     almost all of them are for default authorities (you did limit how
@@ -887,9 +887,9 @@ changes to the mqsc script.
 	" %}
   
 16. Find the beginning of the **SET AUTHREC** definitions that start at
-    line 4762.
+    line 4638.
 
-    ![](./images/pots/mq-appliance/lab6/image53a.png)
+    ![](./images/pots/mq-appliance/lab6/image53.png)
     
     {% include note.html content=" Note that depending on the exact configuration of the queue manager, youmay end up with a different number of SET AUTHREC definitions generatedby the dmpmqcfg command. For our lab, we only want to keep two. These are the twoAUTHREC definitions that we want to leave, after editing:
     
@@ -898,43 +898,43 @@ changes to the mqsc script.
 	
 	 "%} 
    
-17. Now select all lines, starting at 4762 through 4866 (you can hold down the left mouse buttonstarting at the “S” on the first line and then move the cursor down and to the right to keepselecting lines while you scroll down). Then hit the **Delete** key to remove these lines. Be
+17. Now select all lines, starting at 4638 through 4742 (you can hold down the left mouse buttonstarting at the “S” on the first line and then move the cursor down and to the right to keepselecting lines while you scroll down). Then hit the **Delete** key to remove these lines. Be
     sure to delete any blank lines left by this deletion so the line
     numbers match in the following steps.
     
-    ![](./images/pots/mq-appliance/lab6/image55k.png)
+    ![](./images/pots/mq-appliance/lab6/image55a.png)
   
-18. You should now be at line 4762 and the first SET AUTHREC definition that references potuser,as seen below. 
+18. You should now be at line 4638 and the first SET AUTHREC definition that references potuser,as seen below. 
 
-	![](./images/pots/mq-appliance/lab6/image55l.png)
+	![](./images/pots/mq-appliance/lab6/image55b.png)
 
-19. We need to remove the @DESKTOP-6DSOOH2 domain from the PRINCIPAL attribute. Edit line 4764removing **@DESKTOP-6DSOOH2** so the line now reads **PRINCIPAL(‘potuser’) +** as seen below:
+19. We need to remove the @DESKTOP-6DSOOH2 domain from the PRINCIPAL attribute. Edit line 4640,removing **@DESKTOP-6DSOOH2** so the line now reads **PRINCIPAL(‘potuser’) +** as seen below:
 
-	![](./images/pots/mq-appliance/lab6/image55m.png)
+	![](./images/pots/mq-appliance/lab6/image55c.png)
 
-20. Now skipping over the first SET AUTHREC we want to keep, select lines 4767 through 4611 (use the technique in the previous step). Hit the **Delete** key to remove these lines and be sure to delete any blank lines left by this deletion. 
+20. Now skipping over the first SET AUTHREC we want to keep, select lines 4643 through 4687 (use the technique in the previous step). Hit the **Delete** key to remove these lines and be sure to delete any blank lines left by this deletion. 
 
-	![](./images/pots/mq-appliance/lab6/image55n.png)
+	![](./images/pots/mq-appliance/lab6/image55d.png)
 
-21. Starting now at line 4762, we should have our two Authority records referencing potuser.
+21. Starting now at line 4638, we should have our two Authority records referencing potuser.
 
-	![](./images/pots/mq-appliance/lab6/image55o.png)
+	![](./images/pots/mq-appliance/lab6/image55e.png)
 	
-22. We again need to remove the domain name from the Principal in the second record. Edit line4769, removing **@SDESKTOP-6DSOOH2** so the line now reads **PRINCIPAL(‘potuser’) +** as seen below:
+22. We again need to remove the domain name from the Principal in the second record. Edit line4645, removing **@SDESKTOP-6DSOOH2** so the line now reads **PRINCIPAL(‘potuser’) +** as seen below:
 
-	![](./images/pots/mq-appliance/lab6/image55p.png)
+	![](./images/pots/mq-appliance/lab6/image55f.png)
 
-23. We also need to change the Profile name of @CLASS to be @class on the MQ Appliance (it islowercase on Linux and UNIX systems). Edit line 4768, changing @CLASS to **@class**, so theline reads **PROFILE(‘@class’) +** as seen below:
+23. We also need to change the Profile name of @CLASS to be @class on the MQ Appliance (it islowercase on Linux and UNIX systems). Edit line 4644, changing @CLASS to **@class**, so theline reads **PROFILE(‘@class’) +** as seen below:
 
-	![](./images/pots/mq-appliance/lab6/image55q.png)
+	![](./images/pots/mq-appliance/lab6/image55g.png)
 
-24. Finally, we need to remove the remaining unneeded Authority records. Highlight lines 4772through 4816 and hit the **Delete** key. Be sure to delete any blank lines left by this deletion.
+24. Finally, we need to remove the remaining unneeded Authority records. Highlight lines 4648through 4692 and hit the **Delete** key. Be sure to delete any blank lines left by this deletion.
 
-	![](./images/pots/mq-appliance/lab6/image55r.png)
+	![](./images/pots/mq-appliance/lab6/image55h.png)
 
 25. The section of the file with the two SET AUTHREC commands should look like the below:
 
-	![](./images/pots/mq-appliance/lab6/image55s.png)
+	![](./images/pots/mq-appliance/lab6/image55j.png)
 
 26. Now that all changes have been made, save the file by pressing
     **CTRL-S**.
@@ -947,7 +947,7 @@ changes to the mqsc script.
     line at the top of the file, and then enter **passw0rd** on that
     line. The top of the file should now look like the following:
 
-    ![](./images/pots/mq-appliance/lab6/image56a.png)
+    ![](./images/pots/mq-appliance/lab6/image56.png)
     
     {% include note.html content="You will be running the **runmqsc** command with the **-c** flag on the Windows system, to connect to the APP1_QMGR queue manager on the Appliance, so that you can run this mqsc script to migrate the queue manager from Windows. Because you are running with MQ V9 security, the client must authenticate to the queue manager. The userid and password are checked because the queue manager connection authority (CONNAUTH) configuration refers to an authentication information (AUTHINFO) object named 'SYSTEM.DEFAULT.AUTHINFO.IDPWOS' with CHCKCLNT(REQDADM). 
 	
@@ -1055,7 +1055,8 @@ not include and allow the script to update.
     ```
     DEFINE CHANNEL('SYSTEM.ADMIN.SVRCONN') CHLTYPE(SVRCONN)
 
-    SET CHLAUTH('SYSTEM.ADMIN.SVRCONN') TYPE(BLOCKUSER) USERLIST('*whatever')
+    SET CHLAUTH('SYSTEM.ADMIN.SVRCONN') TYPE(BLOCKUSER)
+    USERLIST('*whatever')
 
     ALTER AUTHINFO('SYSTEM.DEFAULT.AUTHINFO.IDPWOS') AUTHTYPE(IDPWOS) ADOPTCTX(YES)
 
@@ -1094,7 +1095,7 @@ the dmpmqcfg command.
     script. Issue the following command:
 
     ```
-    runmqsc -c -u ibmdemo APP1_QMGR < APP1_QMGR_Migration.mqsc > APP1_QMGR_Results.txt
+    runmqsc -c -u testuser APP1_QMGR < APP1_QMGR_Migration.mqsc > APP1_QMGR_Results.txt
     ``` 
     
     ![](./images/pots/mq-appliance/lab6/image66.png)
@@ -1136,11 +1137,11 @@ the dmpmqcfg command.
     {% include note.html content="If you get an error message, for this or any of the 210 commands that get executed by the script, you will have to go back and correct the command in the APP1_QMGR_Migration.mqsc file in Notepad++, save the file, and then start again at Step 4 in this section. " %}
 
 10. Click **Find Next** to move to the next response message. This time,
-    you should be at line 168, and you should see **AMQ8006I: IBM MQ
+    you should be at line 165, and you should see **AMQ8006I: IBM MQ
     Appliance queue created** as the response to the first DEFINE QLOCAL
     command.
 
-    ![](./images/pots/mq-appliance/lab6/image71a.png)
+    ![](./images/pots/mq-appliance/lab6/image71.png)
 
 11. The script defines 65 queues. Keep clicking **Find Next** in the
     Find dialog and checking for the **AMQ8006** response.
@@ -1148,93 +1149,93 @@ the dmpmqcfg command.
     {% include note.html content="HINT:  Most of the commands in this script file are for objects that you did not change when editing the script file. You only touched and changed a few of these commands, in the [Reviewing the exported queue manager configuration for compatibility with the target IBM MQ Appliance](#review) Section. Therefore, you should be sure to check the response to the execution of those commands that you altered. The rest of them you can probably skip, assuming you were careful in Notepad++ and did not accidentally change something else. " %}
   
 12. After all of the queue definitions, the next Find stop will be at
-    line 3843, after a DEFINE NAMELIST command. You should see
+    line 3728, after a DEFINE NAMELIST command. You should see
     **AMQ8552I: IBM MQ Appliance namelist created.** There are three
     namelists. Click **Find Next** to review each of the other two
     namelists.
 
-    ![](./images/pots/mq-appliance/lab6/image72a.png)
+    ![](./images/pots/mq-appliance/lab6/image72.png)
 
-13. Click **Find Next** again, and you should be at line 3877, the end
+13. Click **Find Next** again, and you should be at line 3755, the end
     of the first process definition. You should see **AMQ8010I: IBM MQ
     Appliance process created.** Click **Find Next** again to review the
     other process definition.
 
-    ![](./images/pots/mq-appliance/lab6/image73a.png)
+    ![](./images/pots/mq-appliance/lab6/image73.png)
 
 14. Click **Find Next** again and you will be at the end of the first
-    channel definition (line 3916). These should have an **AMQ8014I: IBM
+    channel definition (line 3794). These should have an **AMQ8014I: IBM
     MQ Appliance channel created** response.
 
 15. The 12th channel definition is the one you altered, the
     **TO.APP2_QMGR** channel. Therefore, click **Find Next** 10 more
-    times, checking the responses, until you get to line 4334. The next
+    times, checking the responses, until you get to line 4210. The next
     line should be DEFINE CHANNEL('TO.APP2_QMGR').
 
-    ![](./images/pots/mq-appliance/lab6/image74a.png)
+    ![](./images/pots/mq-appliance/lab6/image74.png)
 
-16. Click **Find Next** to advance to line 4385. This will be the
+16. Click **Find Next** to advance to line 4261. This will be the
     response for your channel. Validate that it was created
     successfully.
 
     There is one more channel definition after this one so click **Find
     Next** to review.
 
-    ![](./images/pots/mq-appliance/lab6/image75a.png)
+    ![](./images/pots/mq-appliance/lab6/image75.png)
 
-17. Click **Find Next** again, and you should be at line 4443 and the
+17. Click **Find Next** again, and you should be at line 4319 and the
     end of the first AUTHINFO record definition. You should see
     **AMQ8563I: IBM MQ Appliance authentication information object
     created.** There are three more AUTHINFO definitions, so use **Find
     Next** to click through and review.
 
-    ![](./images/pots/mq-appliance/lab6/image76a.png)
+    ![](./images/pots/mq-appliance/lab6/image76.png)
 
-18. The next **Find Next** will take you to line 4484, the first
+18. The next **Find Next** will take you to line 4360, the first
     listener definition. You should see **AMQ8626I: IBM MQ Appliance
     listener created.** There is one additional listener definition to
     check after the next **Find Next**.
 
-    ![](./images/pots/mq-appliance/lab6/image77a.png)
+    ![](./images/pots/mq-appliance/lab6/image77.png)
 
-19. Another **Find Next** should bring you to line 4513 and a COMMINFO
+19. Another **Find Next** should bring you to line 4389 and a COMMINFO
     definition. You should see **AMQ8858I: IBM MQ Appliance comminfo
     created.**
 
-    ![](./images/pots/mq-appliance/lab6/image78a.png)
+    ![](./images/pots/mq-appliance/lab6/image78.png)
 
 20. Click **Find Next** again, and you will find the topic definition
-    (line 4541. You should see **AMQ8690I: IBM MQ Appliance topic
+    (line 4417). You should see **AMQ8690I: IBM MQ Appliance topic
     created.** There are six more topic definitions. Click **Find Next**
     and validate through these.
 
-    ![](./images/pots/mq-appliance/lab6/image79a.png)
+    ![](./images/pots/mq-appliance/lab6/image79.png)
 
 21. Click **Find Next** again and you will be at the end of the first
-    subscription definition, at line 4764. You should see **AMQ8094I: IBM
+    subscription definition, at line 4640. You should see **AMQ8094I: IBM
     MQ Appliance subscription created.** Click **Find Next** again and
     you can review the second subscription definition.
 
-    ![](./images/pots/mq-appliance/lab6/image80a.png)
+    ![](./images/pots/mq-appliance/lab6/image80.png)
 
 22. Click **Find Next** again and you will be at the end of the first
-    channel authentication definition, at line 4822. You should see
+    channel authentication definition, at line 4698. You should see
     **AMQ8877I: IBM MQ Appliance channel authentication record created.**
     Click **Find Next** twice and validate the two remaining channel
     authentication definitions.
 
-    ![](./images/pots/mq-appliance/lab6/image81a.png)
+    ![](./images/pots/mq-appliance/lab6/image81.png)
 
 23. Finally, click **Find Next** again, and you will be at the end of
-    the first AUTHREC definition, at line 4874. You should see
+    the first AUTHREC definition, at line 4709. You should see
     **AMQ8862I: IBM MQ Appliance authority record set.** There is only
     one more AUTHREC definition. Review it, and then close the Find dialog by
     clicking the **Close** button.
 
-    ![](./images/pots/mq-appliance/lab6/image82a.png)
+    ![](./images/pots/mq-appliance/lab6/image82.png)
 
 24. At the very bottom of the file, you see the final response from
-    runmqsc that **210 command responses received**. Close Notepad++.
+    runmqsc that **208 command responses received**. Close Notepad++.
     
     {% include note.html content="Note that as previously mentioned, the number of commands that are generated by the dmpmqcfg command might be different depending on the exact configuration of the queue manager. As long as all of the commands worked, especially those commands that you had to edit and which you should have just verified, the number does not matter. " %}
 
@@ -1321,10 +1322,10 @@ At this point, you should have the APP1_QMGR running, and are truly
     Return to the **Command Prompt** and enter:
 
     ```
-    SET MQSAMP_USER_ID=ibmdemo
+    SET MQSAMP_USER_ID=testuser
     ```
 
-	![](./images/pots/mq-appliance/lab6/image96a.png)
+	![](./images/pots/mq-appliance/lab6/image96.png)
    
 13. Now you can run amqsputc. The directory where the compiled sample
     is located is in the PATH, so simply enter the following at the
@@ -1334,9 +1335,9 @@ At this point, you should have the APP1_QMGR running, and are truly
     amqsputc IN.ORDERS APP1_QMGR
     ```
 
-     ![](./images/pots/mq-appliance/lab6/image97a.png)
+     ![](./images/pots/mq-appliance/lab6/image97.png)
     
-14. You will be prompted for the password for ibmdemo. Enter
+14. You will be prompted for the password for testuser. Enter
     **passw0rd** and press **Enter**. The amqsputc program will connect
     to the APP1_QMGR and open the IN.ORDERS queue. Note that the
     IN.ORDERS queue is actually an alias queue for the ORDERS.IN queue.
@@ -1418,42 +1419,30 @@ At this point, you should have the APP1_QMGR running, and are truly
     ![](./images/pots/mq-appliance/lab6/image112.png)
 
 27. Click the *APP1_QMGR* breadcrumb, then click **Topics**. 
+
+	![](./images/pots/mq-appliance/lab6/image113.png)
 	
 1. Click the wrench for **ORDERS** topic to view the properties. 
 
     ![](./images/pots/mq-appliance/lab6/image114.png)
 
-28. You can publish messages using the pub/sub utility in MQ Explorer. Return to MQ Explorer. Right-click *Queue Managers* then *Add remote queue manager*. Use the following properties to connect:
+28. You can publish messages using the sample client program *amqspubc* on the Windows VM. Return to the command prompt. Publish a test message with the following command:
 
 	```
-	Queue manager name:      APP1_QMGR
-	Host name or IP address: 10.0.0.1
-	Port number:             4444
-	Userid:                  ibmdemo
-	Pasword:                 passw0rd
+	amqspubc topic_name APP1_QMGR
 	```
-
-	![](./images/pots/mq-appliance/lab6/image180.png)
 	
-	![](./images/pots/mq-appliance/lab6/image181.png)
-	
-1. Expand *APP1_QMGR* > *Topics*. Right-click *Orders* > *Test Subscription*. You receive a *Subscribe* pop-up for Topic String **ORDERS_TOPICSTRING**. Right-click *Orders* again and select *Test Publication*. You receive another pop-up for publishing.
+	 the **Topic String** of
+    **ORDERS_TOPICSTRING** should be filled in. Enter a message in the
+    **Message** field, and click **Publish**. For example:
 
-	![](./images/pots/mq-appliance/lab6/image182.png)
-	
-1. In the *Publish Test Message* pop-up, type some test messages and watch them appear in the *Subscribe* pop-up.
-
-	![](./images/pots/mq-appliance/lab6/image183.png)
-
-1. When finished, close the pop-ups. Click queues under *APP1_QMGR* and you will see the messages you published.
-
-	![](./images/pots/mq-appliance/lab6/image184.png)    
-	
-29. Return to the *Manage* > **Queues** page in your browser and you will notice the queue depth for the **RECORDS** queue. You may need to click **Refresh** to update the queue depth. 
-
-    ![](./images/pots/mq-appliance/lab6/image185.png)
+    ![](./images/pots/mq-appliance/lab6/image114.png)
     
-    View the messages if you want to verify they are what you published.
+29. Return to the *Manage* > **Queues** page. Notice the queue depth for the
+    **RECORDS** queue. You may need to click **Refresh** to update the queue
+    depth.
+
+    ![](./images/pots/mq-appliance/lab6/image115.png)
 
 ## OPTIONAL: Validating user authorities on the MQ Appliance queue manager
 
@@ -1508,7 +1497,7 @@ potuser.
     
     ![](./images/pots/mq-appliance/lab6/image158.png)    
     
-1.  Click the elipsis for queue **BILLING** and select *View configuration*. 
+1.  Click the hyperlink for queue **BILLING** and select *View configuration*. 
     
     ![](./images/pots/mq-appliance/lab6/image159.png)  
       
