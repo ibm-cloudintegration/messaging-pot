@@ -12,9 +12,10 @@ applies_to: [administrator,developer]
 
 ## Requirements
 
-* Openshift 4.6
-* IBM Cloud Pak for Integration V2021.2.1
-* IBM MQ V 9.2.3.0-r1 and mq.ibm.com/v1beta1 Operator ibm-mq.v1.6
+* Openshift 4.7 or higher
+* IBM Cloud Pak for Integration V2021.4.1
+* IBM MQ V 9.2.4.0-r1 and mq.ibm.com/v1beta1 Operator ibm-mq.v1.7
+* Red Hat OpenShift Pipelines Operator v1.5.2
 * A namespace where the MQ Operator is installed
 * An entitlement key called ibm-entitlement-key. IBM Employees can get from [here](https://myibm.ibm.com/products-services/containerlibrary). 
 * A Github account and token 
