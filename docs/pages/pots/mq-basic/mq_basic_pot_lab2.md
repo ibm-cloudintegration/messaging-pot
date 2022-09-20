@@ -163,6 +163,12 @@ Some very good code samples ship with IBM MQ. You will use one of them to create
 
 1.  Open a **command prompt**. A shortcut for this is on the desktop.    
     ![](./images/pots/mq/lab2/image27.png) 
+    
+1.  Initialize environment with the following command:
+
+     ```
+     setmqenv -s
+     ```
 
 2.  Change the directory to C:\\Program Files\\IBM\\MQ\\Tools\\jms\\samples. Enter the following commands to add **Java** to the *Path* and the required *JMS jar files* to your *Classpath*. 
 
