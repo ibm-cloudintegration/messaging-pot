@@ -1,6 +1,6 @@
 ---
 title: Replicated Data Queue Managers (RDQM) for Disaster Recovery 
-toc: false
+toc: true
 sidebar: labs_sidebar
 folder: pots/mq-ha
 permalink: /mq_ha_pot_lab3.html
@@ -42,7 +42,7 @@ While synchronization is in progress, the data on the secondary instance is in a
 This lab provides a demonstration of a new approach to Disaster Recovery in MQ on Linux, with the following key features:
 
 * Use of Distributed Replicated Block Device (DRBD) storage rather than network shared storage* This is still using a Replicated Data Queue Manager (RDQM):	* Takeover will be manual, not automatic	* Both asynchronous and synchronous replication is supported	* An RDQM is active on only one node at any one time
-	* Each node can run different active RDQMs	* An individual DR RDQM is created to use one style of replication and it cannot be changed without recreating the RDQM	* In 9.0.5 (through 9.1.2) an RDQM can be either HA or DR but not both	* As only two nodes are involved, it will be possible to get into a split-brain situation; but only if a user has chosen to promote a DR Secondary and start a DR RDQM when the DR network is disconnected and the DR RDQM is still running, or is also started where it was Primary.
+	* Each node can run different active RDQMs	* An individual DR RDQM is created to use one style of replication and it cannot be changed without recreating the RDQM	* As only two nodes are involved, it will be possible to get into a split-brain situation; but only if a user has chosen to promote a DR Secondary and start a DR RDQM when the DR network is disconnected and the DR RDQM is still running, or is also started where it was Primary.
 
 The goals for RDQM-DR are:* Allow an RDQM to be created which is configured to replicate its data to a single Secondary instance at a given IP address
 	* Asynchronous replication is supported provided the latency is no more than 50ms for a round trip time
@@ -52,11 +52,11 @@ The goals for RDQM-DR are:* Allow an RDQM to be created which is configured to
 In this lab, instructions are provided to show the setup for both.
 ### Lab environment
 
-1. 2 RHEL 7.7 x86_64 systems running in Skytap: 
+1. 2 RHEL 7.7 x86_64 systems running in IBM TechZone: 
 
 	* dr1  - This will be our primary node	* dr2  - This will be a secondary node
 
-	Note: There are four  additional VMs in the Skytap template which are not used; dr3, rdqm1, rdqm2, and rdqm3 should be suspended or powered off.
+	Note: There are four  additional VMs in the IBM TechZone template which are not used; dr3, rdqm1, rdqm2, and rdqm3 should be suspended or powered off.
 	
 1. Network interfaces:
 
@@ -74,17 +74,18 @@ The following steps are necessary for configuring RDQM, and are shown for your r
 
 * Although not required for this Lab, the following Pacemaker dependencies required for RDQM HA have already been installed. This list should be sufficient for a standard installation of RHEL 7.7 Server or Workstation. For your own environment setup, if you are using some other installation, then additional packages may be needed:
 	* cifs-utils
-	* gnutls
 	* libcgroup
 	* libtool-ltdl
+	* lm_sensors-libs
 	* lvm2
+	* net-snmp-agent-libs
 	* net-snmp-libs
 	* nfs-utils
 	* perl-TimeDate
 	* psmisc
-	* PyYAML
+	* redhat-lsb-core
 
-* Extract and Install MQ 9.1.5
+* Extract and Install MQ 
 
 	The code is provided as a compressed tar file in the directory /home/student/Downloads.
 	
@@ -133,26 +134,31 @@ The following steps are necessary for configuring RDQM, and are shown for your r
 The above steps have already been completed on each node so at this point you are ready to begin RDQM configuration. 
 
 
-### Setup the RHEL image (pre-configured on SkyTap):
+### Setup the RHEL image (pre-configured on TechZone):
 
-In the Skytap environment, there are 6 virtual machines rdqm1, rdqm2, rdqm3, dr1, dr2, and dr3 which currently should be in a powered off or paused state.
+In the TechZone environment, there are 6 virtual machines rdqm1, rdqm2, rdqm3, dr1, dr2, and dr3 which currently should be in a powered on state.
 
-![](./images/pots/mq-ha/lab2/image200.png)
+![](./images/pots/mq-ha/lab3/image401.png)
 
-This template is used for multiple labs and has been configured with the maximum number of VMs that are required for all labs. In this lab you will only need dr1 and dr2. The rest of the VMs can remain powered off or suspended.
-1. Leave the labels checked for *dr1* and *dr2*. Uncheck the labels for all other VMs. Then click the **run** button only for dr1 and dr2 to start or resume the VMs.
+This template is used for multiple labs and has been configured with the maximum number of VMs that are required for all labs. In this lab you will only need dr1 and dr2. The rest of the VMs can be ignored.
 
-	![](./images/pots/mq-ha/lab3/image300.png) 
+1. Click the *VM Remote Console* button for **dr1**.
+
+	![](./images/pots/mq-ha/lab3/image402.png) 
+
+1. When the desktop appears, click the *Open in a new window* button. 
+
+	![](./images/pots/mq-ha/lab3/image403.png)
 	
-	Wait for the monitor icons to turn green, approximately three minutes. Once both are green and running you can proceed to the next step.
+1.	A new browser tab is opened. 
+
+	![](./images/pots/mq-ha/lab3/image404.png)
 	
-2. Click the monitor icon for *dr1* which will launch the desktop in another browser tab.
+1. Hit enter to open the login window and log on to the VM as user **ibmuser**, using password **engageibm**. 
 
-	![](./images/pots/mq-ha/lab3/image302.png)
-
-1. Log on to VM *dr1* as user **ibmuser**, using password **engageibm**.
-
-	![](./images/pots/mq-ha/lab2/image203.png)
+	![](./images/pots/mq-ha/lab3/image405.png)
+	
+	![](./images/pots/mq-ha/lab3/image406.png)
 
 ## Configure RDQM-DR
 A primary instance of a disaster recovery queue manager is created on one server. A secondary instance of the same queue manager must be created on another server, which acts as the recovery node. Data is replicated between the queue manager instances. The replication of the data between the two nodes is handled by DRBD.
@@ -185,7 +191,7 @@ This template is used for multiple labs and has been configured with the maximum
 	
 1. You must repeat this on **dr2**. 
 	
-	**Hint:** Click the arrow in the black bar at top of screen to open the Skytap menu. Click the monitors icon on left end. 
+	**Hint:** Click the arrow in the black bar at top of screen to open the TechZone menu. Click the monitors icon on left end. 
 	
 	![](./images/pots/mq-ha/lab2/image213a.png)
 	

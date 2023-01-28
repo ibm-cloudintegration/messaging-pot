@@ -1,6 +1,6 @@
 ---
 title: Multi-instance Queue Managers for High Availability 
-toc: false
+toc: true
 sidebar: labs_sidebar
 folder: pots/mq-ha
 permalink: /mq_ha_pot_lab1.html
@@ -45,16 +45,16 @@ Part 8: Summary
 
 ### Software High Availability Lab Overview
 
-This lab will show how the software high availability feature of WebSphere MQ V9.1.5 can be set up in a Linux x86 environment. Similar steps must be followed in other Unix derived environments. 
+This lab will show how the software high availability feature of IBM MQ can be set up in a Linux x86 environment. Similar steps must be followed in other Unix derived environments. 
 
 ### Lab environment
 
-1. 2 RHEL 7.7 x86_64 systems running in Skytap: 
+1. 3 RHEL 7.7 x86_64 systems running in IBM TechZone: 
 
 	* dr1  - NFS client primary node	* dr2  - NFS client secondary node
 	* dr3  - NFS server
 
-	{% include note.html content="There are three additional VMs in the Skytap template which are not used; rdqm1, rdqm2, and rdqm3 should remain suspended or powered off." %}
+	{% include note.html content="There are three additional VMs in the TechZone template which are not used; rdqm1, rdqm2, and rdqm3 can be ignored." %}
 	
 1. Network interfaces:
 
@@ -62,9 +62,9 @@ This lab will show how the software high availability feature of WebSphere MQ V9
 	|:------:|:--------:|:--------:|:-----:|:--------:|:-------|
 	| Administration | ens34 | 10.0.0.14 |10.0.0.15 | 10.0.0.16 |
 	
-The machines will be running on a Skytap network with the subnet 10.0.0.0. *dr3* is the host (server) for the Network File system. This will not have an MQ Queue manager running but will have the MQ Client installed. The server could be any system capable of exporting an NFSv4 file system.
+The machines will be running on an IBM TechZone network with the subnet 10.0.0.0. *dr3* is the host (server) for the Network File system. This will not have an MQ Queue manager running but will have the MQ Client installed. The server could be any system capable of exporting an NFSv4 file system.
 
-The *dr1* and *dr2* images are machines which will have MQ installed – they will each have MQ 9.1.5 installed and will have the same queue manager defined operating as an active / passive pair. These two systems must be running the same operating system.
+The *dr1* and *dr2* images are machines which will have MQ installed – they will each have IBM MQ installed and will have the same queue manager defined operating as an active / passive pair. These two systems must be running the same operating system.
 
 ### Names used in this lab
 
@@ -98,26 +98,26 @@ The *dr1* and *dr2* images are machines which will have MQ installed – they wi
 
 ### Starting the images
 
-In the Skytap environment, there are 6 virtual machines rdqm1, rdqm2, rdqm3, dr1, dr2, and dr3 which currently should be in a powered off or paused state.
+In the IBM TechZone environment, there are 6 virtual machines rdqm1, rdqm2, rdqm3, dr1, dr2, and dr3 which currently should be in a powered on state.
 
-![](./images/pots/mq-ha/lab1/image36.png)
+![](./images/pots/mq-ha/lab1/image101.png)
 
-This template is used for multiple labs and has been configured with the maximum number of VMs that are required for all labs. In this lab you will only need dr1, dr2 and dr3. The rest of the VMs can remain powered off or suspended.
-1. Leave the labels checked for *dr1*, *dr2*, and *dr3*. Uncheck the labels for all other VMs. Then click the *run* button to start or resume the VMs.
+This template is used for multiple labs and has been configured with the maximum number of VMs that are required for all labs. In this lab you will only need dr1, dr2 and dr3. The rest of the VMs can be ignored.
+1. Click the *VM Remote Console* button for **dr3** which will launch the desktop in another browser tab.
 
-	![](./images/pots/mq-ha/lab1/image37.png) 
+	![](./images/pots/mq-ha/lab1/image102.png) 
+
+1. When the desktop appears, click the *Open in a new window* button. 
+
+	![](./images/pots/mq-ha/lab1/image103.png)
 	
-	Wait for the monitor icons to turn green, approximately three minutes. Once they are green and running you can proceed to the next step.
+1.	A new browser tab is opened. Hit enter to open the login window and log on to the VM as user **ibmuser**, using password **engageibm**. 
+
+	![](./images/pots/mq-ha/lab1/image104.png)
 	
-2. Click the monitor icon for *dr3* which will launch the desktop in another browser tab.
-
-	![](./images/pots/mq-ha/lab1/image38.png)
-
-1. Log on to VM *dr3* as user **ibmuser**, using password **engageibm**.
-
-	![](./images/pots/mq-ha/lab1/image39.png)
+	![](./images/pots/mq-ha/lab1/image105.png)
 	
-	![](./images/pots/mq-ha/lab1/image40.png)
+1. Return to the original browser tab and click the browser back arrow to return to the reservation window. Scroll down to the VM Remote Console list and repeat the open and login for **dr1** and **dr2**. 
 
 ### Configure NFS server 
 
