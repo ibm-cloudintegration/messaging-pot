@@ -1,6 +1,6 @@
 ---
 title: High Availability for IBM MQ
-toc: false
+toc: true
 sidebar: labs_sidebar
 folder: pots/mq-ha
 permalink: /mq_ha_pot_overview.html
