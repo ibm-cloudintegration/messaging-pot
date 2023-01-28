@@ -1,6 +1,6 @@
 ---
-title: Replicated Data Queue Managers (RDQM) for High Availability (9.1.5)
-toc: false
+title: Replicated Data Queue Managers (RDQM) for High Availability
+toc: true
 sidebar: labs_sidebar
 folder: pots/mq-ha
 permalink: /mq_ha_pot_lab2.html
@@ -44,10 +44,9 @@ Although the above are all drivers of why to consider the new capability, there 
  Each RedHat Linux server requires a dedicated logical volume for the RDQM data. This normally means a separate disk associated with the VM or bare metal machine dedicated to the RDQM data. If the server is being specially provisioned for IBM MQ, this is unlikely to be a major issue.
 * **Split Brain**: 
  The quorum based approach to electing primaries greatly reduces the chances of a split brain situation occurring, but does not completely remove all edge cases.
-* **RedHat Enterprise Linux 7.3, 7.4, 7.5, 7.6, or 7.7**: 
- The RDQM capability is currently supported on RedHat Enterprise Linux 7.3, 7.4, 7.5, 7.6, and 7.7. Depending on the environment, this may or may not be a significant restriction.
-
- 
+* **RedHat Enterprise Linux x86-64**: 
+ The RDQM capability is currently supported on RedHat Enterprise Linux x86-64 7.3 or higher, 8, and 9. 
+  
 To assist with the setup of RDQM, we’ve created a number of scripts and helper files. The following is based on the process required for a base RedHat Enterprise Linux 7.7 install.
 
 ## Lab Introduction
@@ -58,7 +57,7 @@ This lab provides a demonstration of a new approach to High Availability in MQ o
 
 ### Lab environment
 
-* Three RHEL 7.7 x86_64 systems running in Skytap:
+* Three RHEL 7.7 x86_64 systems running in IBM TechZone:
 	* rdqm1	-	This will be our primary node.	* rdqm2	-	This will be a secondary node.	* rdqm3	-	This will be another secondary node.
 	* dr1		-	DR Fail over primary node.
 	* dr2		-	DR Fail over secondary node.
@@ -66,7 +65,7 @@ This lab provides a demonstration of a new approach to High Availability in MQ o
 
 * VMWare Workstation virtual networks: 
 
-	|Name   | Type | SkyTap Network |  Subnet  | DHCP |
+	|Name   | Type | TechZone Network |  Subnet  | DHCP |
 	|:-----:|:--------:|:--------:|:-----:|:-----:|
 	| ens34 | Administration | ens34 | 10.0.1.0 | no |
 	| ens35 | HA Replication | ens35 | 10.0.1.0 | no |
@@ -97,55 +96,55 @@ This lab provides a demonstration of a new approach to High Availability in MQ o
 | root | IBMDem0s! | superuser |  |
 | ibmuser | engageibm | host vm user - MQ user |mqm     |
 * Firewall (firewalld) enabled, and ports 1500 & 1501 will be defined during the lab.
-* The following Pacemaker dependencies have already been installed. This list should be sufficient for a standard installation of MQ 9.1.5 on RHEL 7.7 Server or Workstation. For your own environment setup, or if you are using some other installation, additional packages may be needed:
+* The following Pacemaker dependencies have already been installed. This list should be sufficient for a standard installation of MQ 9.3.1 on RHEL 7.7 Server or Workstation. For your own environment setup, or if you are using some other installation, additional packages may be needed:
 
 	* cifs-utils
-	* gnutls
 	* libcgroup
 	* libtool-ltdl
+	* lm_sensors-libs
 	* lvm2
+	* net-snmp-agent-libs
 	* net-snmp-libs
 	* nfs-utils
 	* perl-TimeDate
 	* psmisc
-	* PyYAML
+	* redhat-lsb-core
+	
 
 Depending on your security configuration, there are three different ways to configure the RDQM feature:
 1. The simplest way is if the mqm user can ssh between the three nodes of the cluster without a password and can sudo to run the necessary commands.
 2. The intermediate option is if the mqm user can sudo but not ssh. It is preferable if the actual users are also in the haclient group. 
 3. The default is that the mqm user cannot ssh or sudo. In this lab, instructions are provided to setup and test using the intermediate method. 
 
-## Setup the RHEL image (pre-configured on SkyTap):
+## Setup the RHEL image (pre-configured on IBM TechZone):
 
-In the Skytap environment, there are six virtual machines: rdqm1, rdqm2, rdqm3, dr1, dr2, and dr3 which currently should be in a powered off or paused state.
+In the TechZone environment, there are six virtual machines: rdqm1, rdqm2, rdqm3, dr1, dr2, and dr3 which currently should be in a powered on state. dr1, dr2, and dr3 will not be used in this lab, so you can ignore them for now. 
+1. Click the *VM Remote Console* button for **rdqm1**.
 
-![](./images/pots/mq-ha/lab2/image200.png)
+	![](./images/pots/mq-ha/lab2/image266.png) 
 
-1. dr1, dr2, and dr3 will not be used in this lab, so you can leave them powered off by unchecking their labels. 
+1. When the desktop appears, click the *Open in a new window* button. 
 
-	![](./images/pots/mq-ha/lab2/image201b.png)
-1. Click the **run** button to start or resume the VMs.
+	![](./images/pots/mq-ha/lab2/image267.png)
+	
+1.	A new browser tab is opened. 
 
-	![](./images/pots/mq-ha/lab2/image201c.png) 
+	![](./images/pots/mq-ha/lab2/image268.png)	
+1. Hit enter to open the login window and log on to the VM as user **ibmuser**, using password **engageibm**. 
 
-1. Wait for the monitor icons to turn green, approximately three minutes. Click the monitor icon for *rdqm1* which will launch the desktop in another browser tab.
-
-	![](./images/pots/mq-ha/lab2/image202.png)
-
-1. Log on to VM *rdqm1* as user **ibmuser**, using password **engageibm**. 
-
-	![](./images/pots/mq-ha/lab2/image203.png)### Pre-configuration steps 
+	![](./images/pots/mq-ha/lab2/image269.png)
+	
+1. Return to the original browser tab and click the browser back arrow to return to the reservation window. Scroll down to the VM Remote Console list and repeat the open and login for **rdqm2** and **rdqm3**. ### Pre-configuration steps 
 
 The following steps are necessary for configuring RDQM, and are shown for your reference. They have **already been completed** on the VMs. 
 
-* Extract and Install MQ 9.1.5 
+* Extract and Install MQ.
 
 	The code is provided as a compressed tar file in the directory /home/ibmuser/.
 	
 * Install the MQ and RDQM code 
 
-	RDQM is a single feature which now supports HA and DR and DR for the HA group. The RDQM support requires the Server and Runtime packages. 
-	Run the installation script.		
+	RDQM is a single feature which now supports HA and DR and DR for the HA group. The RDQM support requires the Server and Runtime packages. 	
 
 * Configure the RedHat firewall 
 
@@ -176,96 +175,187 @@ The above steps were completed on each node so at this point	 you are ready to b
 
 ### Install RDQM support
 
-As previously stated, MQ 9.1.5 has already been installed on all VMs. The advanced feature RDQM support has also been installed on all the VMs *except* on **rdqm1**. You will need to install RDQM support on rdqm1 so you can see how easy it is to install. You will review the requirements for RDQM and scripts for installation and configuration.
+As previously stated, MQ has already been installed on all VMs *except* **rdqm1**. The advanced feature RDQM support has also been installed on all the VMs *except* on **rdqm1**. You will need to install RDQM support on **rdqm1** so you can see how easy it is to install. You will review the requirements for RDQM and scripts for installation and configuration.
 
 1. On **rdqm1** open a new terminal window by right-clicking on the desktop and select Open Terminal.
 
 	 ![](./images/pots/mq-ha/lab2/image203a.png)
 	 
-1. Switch user to root using the following command:
+1. Change the directory to the preconfigured directory **mqrdqm**.
 
 	```
-	su -
+	cd mqrdqm
 	```
 
+1. The MQ install media has been previously downloaded to /home/ibmuser/Download directory. Enter the following command to extract the installation media.
+
+	```
+	sudo tar -zxvf ~/Downloads/IBM_MQ_9.3.1_LINUX_X86-64.tar.gz
+	```
+	
 	When prompted, enter root's password *IBMDem0s!*.
 	
-1. Change to the /home/ibmuser/mq915/MQServer/Advanced/RDQM/. 
+	![](./images/pots/mq-ha/lab2/image271.png)
 	
-	```
-	cd /home/ibmuser/mq915/MQServer/Advanced/RDQM
-	```
- 
-	![](./images/pots/mq-ha/lab2/image204.png)1. List the members of the directory. You will the see the RPM file for installing RDQM along with the scripts to install and uninstall the RDQM support. Also included is a subdirectory for the RDQM prerequisites. 1. List the members of directory *PreReqs* to see the important prerequisites of RDQM.
+1. As a result, a new subdirectory **MQServer** has been created in the **mqrdqm** directory. Change to the **MQServer** directory and list the contents. You will find all the MQ RPM files for installing.
+
+	![](./images/pots/mq-ha/lab2/image272.png)
+	
+To install support for RDQM (replicated data queue managers), you complete the following tasks:
+
+* Install DRBD on each node.
+* Install Pacemaker on each node.
+* Install IBM MQ on each node.
+* Install RDQM on each node.
+
+#### Install RDQM prereqs
+
+The DRBD and Pacemaker RPM packages are supplied on the IBM MQ media. You should install the versions supplied with IBM MQ. Do not download your own versions. 
+
+1. The DRBD and Pacemaker packages are signed with the LINBIT GPG key. Use the following command to import the public LINBIT GPG key:
 
 	```
-	ls PreReqs
+	sudo rpm --import https://packages.linbit.com/package-signing-pubkey.asc
 	```
 	
-	![](./images/pots/mq-ha/lab2/image205.png)	Here you see Pacemaker and DRBD. If you drill into those subdirectories, you will see the RPM packages for installing these prerequisites.
+	![](./images/pots/mq-ha/lab2/image274a.png)
+
+	For supported levels of RHEL 7, the components are found under the Advanced/RDQM/PreReqs/el7/ directory. For supported levels of RHEL 8, components are found under the Advanced/RDQM/PreReqs/el8/ directory. For supported levels of RHEL 9, components are found under the Advanced/RDQM/PreReqs/el9/ directory. We are using RHEL 7.7 VMs for this lab.	
 	
-	![](./images/pots/mq-ha/lab2/image206.png)
+1. Change to the Advanced/RDQM/Prereqs/el7 and list the members of directory *el7* to see the important prerequisites of RDQM.
 	
-1. Enter the command to edit the *installRDQMsupport* shell script.
+	```
+	cd Advanced/RDQM/PreReqs/el7
+	ls
+	```
+	
+	![](./images/pots/mq-ha/lab2/image273.png)
+	
+	Here you see Pacemaker and DRBD. If you drill into those subdirectories, you will see the RPM packages for installing these prerequisites.
+	
+1. Determine which DRBD kernel module is needed for the system on which RDQM is being installed. For example, on a RHEL 7 system, running the helper script Advanced/RDQM/PreReqs/el7/kmod-drbd-9/modver returns the kernel module that you need to install. Run the following command to identify the module:
+	
+	```
+	./kmod-drbd-9/modver
+	```
+	
+	![](./images/pots/mq-ha/lab2/image275.png)
+	
+	Verify that the module for RHEL 7 is **kmod-drbd-9.1.11_3.10.0_1062-1.x86_64.rpm**. Copy the value returned to be used for the first installation command.
+	
+1. Change back to the MQServer directory with the following command: 
 
 	```
-	gedit installRDQMsupport
+	cd ~/mqrdqm/MQServer
 	```
 	
-	![](./images/pots/mq-ha/lab2/image207.png)
+1. Install the appropriate DRBD kernel module that you identified in run the following command:
 	
-	Review the script noting:
-	
-	* current directory RDQM
-	* defining packages for RPMs
-		* DRBD-KMOD, DRBD, PACEMAKER
-		* MQ_DEPENDENCIES, RDQM_PACKAGES, ADDITIONAL_MQ_PACKAGES
-	* yum install for packages
-
-1. No changes are required, so close the editor by click the "X". 
-
-	![](./images/pots/mq-ha/lab2/image208.png)
-	1. Run the script to install RDQM with the following command.
-
 	```
-	./installRDQMsupport
+	sudo yum install Advanced/RDQM/PreReqs/el7/kmod-drbd-9/kmod-drbd-9.1.11_3.10.0_1062-1.x86_64.rpm
 	```
 	
-	![](./images/pots/mq-ha/lab2/image209.png)
+	![](./images/pots/mq-ha/lab2/image277.png)
 	
-	Observe the script as it runs. It will take approximately three minutes. You will be notified of the results when complete.
+	Reply **y** to confirm the installation. After a few minutes and numerous messages, the script will show *Complete!*.
 	
-	 ![](./images/pots/mq-ha/lab2/image210.png)	
-1. RDQM is now ready as it has been installed with the prereqs on all of the VMs.
+	![](./images/pots/mq-ha/lab2/image278.png)	
+1. In the same terminal window, install the required DRBD utilities for RHEL 7 with the following command:
+
+	```
+	sudo yum install Advanced/RDQM/PreReqs/el7/drbd-utils-9/*
+	```
+	
+	![](./images/pots/mq-ha/lab2/image279.png)
+	
+	Reply **y** to confirm the installation. This command runs faster with fewer messages, the script will show *Complete!*. 
+
+	![](./images/pots/mq-ha/lab2/image280.png)
+
+1. Install Pacemaker for RHEL 7 with the following command:
+
+	```
+	sudo yum install Advanced/RDQM/PreReqs/el7/pacemaker-1/*
+	```
+	
+	![](./images/pots/mq-ha/lab2/image281.png)
+	
+	Reply **y** to confirm the installation. The script will show *Complete!*. 
+
+	![](./images/pots/mq-ha/lab2/image282.png)
+
+	The Pacemaker installer will report any missing packages that also need to be installed before the install can complete successfully.
+	
+### Install MQ
+
+1. In the same terminal window in the *MQServer* directory, you will continue with the normal installation of MQ on RHEL. First you need to accept the IBM MQ license. Enter the following command:
+
+	```
+	./mqlicense.sh
+	```
+	
+	![](./images/pots/mq-ha/lab2/image283.png)
+	
+	In the pop-up click **Accept** to accept the MQ license.
+	
+	![](./images/pots/mq-ha/lab2/image284.png)
+	
+	You are then returned to the command prompt.
+
+1. Install IBM MQ. This is like a standard IBM MQ install. Enter the following:
+	
+	```
+	sudo yum install MQSeries*
+	```
+	
+	![](./images/pots/mq-ha/lab2/image285.png)
+		
+	This command will install all of the MQ RPMs in the required order. Reply **y** to confirm the installation when prompted. The script will show *Complete!*.  
+	
+	![](./images/pots/mq-ha/lab2/image286.png)
+	
+1. Once MQ is installed, it is a good idea to set the path for the MQ installation. Enter the following command:
+
+	```
+	sudo /opt/mqm/bin/setmqinst -i -p /opt/mqm
+	```
+	
+	![](./images/pots/mq-ha/lab2/image291.png)
+	
+1. Now you can finish the installation of IBM RDQM. Enter the following command:
+	
+	```
+	sudo yum install Advanced/RDQM/MQSeriesRDQM*
+	```
+	
+	![](./images/pots/mq-ha/lab2/image287.png)
+		
+	This command will install all of the RDQM. Reply **y** to confirm the installation when prompted. The script will show *Complete!*.  
+	
+	![](./images/pots/mq-ha/lab2/image288.png)
+		
+	RDQM is now ready as it has been installed with the prereqs on all of the VMs.
 	### Configure the firewallNormally, the firewall would have been configured as a pre-req. However during preparation of this environment, the default RHEL firewall was not configured. You need to do that now for the RDQM cluster. 
 
-1. While still logged in as root on **rdqm1** start the firewall with following command:
+1. As root on **rdqm1** start the firewall with following command:
 
 	```
-	systemctl start firewalld
+	sudo systemctl start firewalld
 	```
 
 1. Run the following command to allow MQ, DRDB, and Pacemaker ports opened in the firewall:
 
 	```
-	/opt/mqm/samp/rdqm/firewalld/configure.sh
+	sudo /opt/mqm/samp/rdqm/firewalld/configure.sh
 	```
 	
-	![](./images/pots/mq-ha/lab2/image211.png)
-	
-1. Exit from the root user.	
-
-	```
-	exit
-	```
-
-**Be sure to exit out of root before continuing with the next section.**
-### Configure the clusterThe cluster must first be created, and then an RDQM instance defined containing one or more queue managers. The RDQM code expects the rdqm.ini file to be in the /var/mqm directory.The cluster is defined using the rdqm.ini file. The /home/ibmuser/ directory contains the rdqm.ini file we will use. 
+	![](./images/pots/mq-ha/lab2/image289.png)
+	### Configure the clusterThe cluster must first be created, and then an RDQM instance defined containing one or more queue managers. The RDQM code expects the rdqm.ini file to be in the /var/mqm directory.The cluster is defined using the rdqm.ini file. The /home/ibmuser/ directory contains the rdqm.ini file we will use. 
 
 1. Return to rdqm1 and make sure you have exited your su session. Review this file with command:
 
 	```
-	cd ~/mq915
+	cd ~/mqrdqm
 	cat rdqm-ha.ini
 	```    
 
@@ -275,10 +365,10 @@ As previously stated, MQ 9.1.5 has already been installed on all VMs. The advanc
 
     ```
     cd /var/mqm
-    cp ~/mq915/rdqm-ha.ini rdqm.ini
+    cp ~/mqrdqm/rdqm-ha.ini rdqm.ini
     ```
     
-    ![](./images/pots/mq-ha/lab2/image213.png)
+    ![](./images/pots/mq-ha/lab2/image290.png)
     
 1. **IMPORTANT:** Repeat these commands on **rdqm2** and **rdqm3** before continuing. 
 
