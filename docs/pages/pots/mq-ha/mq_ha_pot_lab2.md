@@ -368,11 +368,13 @@ The DRBD and Pacemaker RPM packages are supplied on the IBM MQ media. You should
     cp ~/mqrdqm/rdqm-ha.ini rdqm.ini
     ```
     
-    ![](./images/pots/mq-ha/lab2/image292.png)
+    ![](./images/pots/mq-ha/lab2/image290.png)
     
 1. **IMPORTANT:** Repeat these commands on **rdqm2** and **rdqm3** before continuing. 
 
-	**Hint:**  Click the browser tabs for rdqm2 and rdqm3 which will return you to those desktops. You should have 
+	**Hint:**  Click the browser tabs for rdqm2 and rdqm3 which will return you to those desktops. You should have logged onto those VMs at the beginning of this lab.
+	
+	![](./images/pots/mq-ha/lab2/image292.png)
 	    
 1. Return to the primary node **rdqm1**. Enter the following command to see the options for the *rdqmadm* command:
 
