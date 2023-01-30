@@ -291,7 +291,7 @@ The DRBD and Pacemaker RPM packages are supplied on the IBM MQ media. You should
 1. In the same terminal window in the *MQServer* directory, you will continue with the normal installation of MQ on RHEL. First you need to accept the IBM MQ license. Enter the following command:
 
 	```
-	./mqlicense.sh
+	sudo ./mqlicense.sh
 	```
 	
 	![](./images/pots/mq-ha/lab2/image283.png)
