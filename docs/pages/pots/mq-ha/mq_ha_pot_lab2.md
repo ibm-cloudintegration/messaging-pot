@@ -363,8 +363,8 @@ The DRBD and Pacemaker RPM packages are supplied on the IBM MQ media. You should
 	
 	```
 	cat rdqm-mq.xml
-	cat rdqm-drbd.xm
-	cat pacemaker-1
+	cat rdqm-drbd.xml
+	cat pacemaker.xml
 	```
 	
 	![](./images/pots/mq-ha/lab2/image290a.png)
