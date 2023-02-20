@@ -52,11 +52,12 @@ The goals for RDQM-DR are:* Allow an RDQM to be created which is configured to
 In this lab, instructions are provided to show the setup for both.
 ### Lab environment
 
-1. 2 RHEL 7.7 x86_64 systems running in IBM TechZone: 
+1. Two RHEL 7.7 x86_64 systems and one Windows desktop running in IBM TechZone: 
 
-	* dr1  - This will be our primary node	* dr2  - This will be a secondary node
+	* dr1  	- This will be our primary node	* dr2  	- This will be a secondary node
+	* mq-pot 	- Windows desktop for connecting to the two RHEL machines
 
-	Note: There are four  additional VMs in the IBM TechZone template which are not used; dr3, rdqm1, rdqm2, and rdqm3 should be suspended or powered off.
+	Note: There are four  additional VMs in the IBM TechZone template which are not used; dr3, rdqm1, rdqm2, and rdqm3 can be ignored.
 	
 1. Network interfaces:
 
@@ -134,31 +135,39 @@ The following steps are necessary for configuring RDQM, and are shown for your r
 The above steps have already been completed on each node so at this point you are ready to begin RDQM configuration. 
 
 
-### Setup the RHEL image (pre-configured on TechZone):
+### Setup the environment (pre-configured on TechZone):
 
-In the TechZone environment, there are 6 virtual machines rdqm1, rdqm2, rdqm3, dr1, dr2, and dr3 which currently should be in a powered on state.
+In the TechZone environment, there are seven virtual machines: rdqm1, rdqm2, rdqm3, dr1, dr2, dr3, and mq-pot which currently should be in a powered on state. This template is used for multiple labs and has been configured with the maximum number of VMs that are required for all labs. dr3, rdqm1, rdqm2, and rdqm3 will not be used in this lab. You will only need dr1, dr2, and mq-pot. The rest of the VMs can be ignored. 
+1. Click the *VM Remote Console* button for **mq-pot**.
 
-![](./images/pots/mq-ha/lab3/image401.png)
-
-This template is used for multiple labs and has been configured with the maximum number of VMs that are required for all labs. In this lab you will only need dr1 and dr2. The rest of the VMs can be ignored.
-
-1. Click the *VM Remote Console* button for **dr1**.
-
-	![](./images/pots/mq-ha/lab3/image402.png) 
+	![](./images/pots/mq-ha/lab2/image266a.png) 
 
 1. When the desktop appears, click the *Open in a new window* button. 
 
-	![](./images/pots/mq-ha/lab3/image403.png)
+	![](./images/pots/mq-ha/lab2/image267a.png)
 	
-1.	A new browser tab is opened. 
+1.	A new browser tab is opened. Click the desktop, enter *passw0rd* for ibmdemo's password and hit enter.
 
-	![](./images/pots/mq-ha/lab3/image404.png)
-	
-1. Hit enter to open the login window and log on to the VM as user **ibmuser**, using password **engageibm**. 
+	![](./images/pots/mq-ha/lab2/image268a.png)	
+1. You will use *putty* to connect to each of the RHEL VMs. Double click the *putty* icon on the desktop.
 
-	![](./images/pots/mq-ha/lab3/image405.png)
+	![](./images/pots/mq-ha/lab2/image269a.png)
+
+1. The IP address for *dr1* is **10.0.0.14**. Enter that address in the *Host Name* field and click *Open*. 
+
+	![](./images/pots/mq-ha/lab3/image402a.png)
+
+1. A new terminal window appears:
+
+	![](./images/pots/mq-ha/lab3/image403a.png)
 	
-	![](./images/pots/mq-ha/lab3/image406.png)
+1. Log on to the VM as user **ibmuser**, using password **engageibm**. 
+
+	![](./images/pots/mq-ha/lab3/image403b.png)
+	
+1. Open new *putty* window **dr2** using 10.0.0.15. 
+
+	![](./images/pots/mq-ha/lab3/image404a.png)1. You will use the putty terminal windows for interactions with the RHEL VMs. When instructed to open a additional terminals for a VM, just open another *putty* window for that VM.
 
 ## Configure RDQM-DR
 A primary instance of a disaster recovery queue manager is created on one server. A secondary instance of the same queue manager must be created on another server, which acts as the recovery node. Data is replicated between the queue manager instances. The replication of the data between the two nodes is handled by DRBD.
@@ -167,82 +176,56 @@ This template is used for multiple labs and has been configured with the maximum
 You will configure a DR RDQM that uses asynchronous replication.
 
 ### Create the DR RDQM
-You will create a DR RDQM with asynchronous replication. You must first create a primary RDQM DR queue manager. Then you will create a secondary instance of the same queue manager on another node. The primary and secondary instances must have the same name and be allocated the same amount of storage.
-
+You will create a DR RDQM with asynchronous replication. You must first create a primary RDQM DR queue manager. Then you will create a secondary instance of the same queue manager on another node. The primary and secondary instances must have the same name and be allocated the same amount of storage.	
 #### Update firewall rules	
 
-1. You should be logged on as *ibmuser* on **dr1**.
+1. On each of the nodes, open the firewall port defined (1502) for the queue manager.
 
-1. On each of the nodes, open the firewall port defined. Open the firewall from the top left of the screen, under *Applications -> Sundry -> Firewall*.
-
-	![](./images/pots/mq-ha/lab3/image305.png)
+	```
+	sudo firewall-cmd --add-port=1502/tcp
+	```
 	
-1. Enter the password for ibmuser, **engageibm**, then click *Authenticate*.
-
-	![](./images/pots/mq-ha/lab3/image306.png)
+	![](./images/pots/mq-ha/lab3/image407.png)
 	
-1. In the Ports pane, add TCP port 1502.
+1. To verify the ports are now open, enter the following command: 
 
-	![](./images/pots/mq-ha/lab3/image307.png)
-	
+	```
+	sudo firewall-cmd --list-ports
+	```
+
 	Results should look like this:
 	
-	![](./images/pots/mq-ha/lab3/image308.png)
+	![](./images/pots/mq-ha/lab3/image408.png)
 	
-1. You must repeat this on **dr2**. 
-	
-	**Hint:** Click the arrow in the black bar at top of screen to open the TechZone menu. Click the monitors icon on left end. 
-	
-	![](./images/pots/mq-ha/lab2/image213a.png)
-	
-	Click *View all VMs (6)* to show the VMs.
-	 
-	![](./images/pots/mq-ha/lab2/image213c.png)	
-	Then ou can click the monitor icon for **dr2** which will launch the desktop in a new browser tab.
-	
-	![](./images/pots/mq-ha/lab2/image213b.png)
-	
-	Now open the firewall menu as you did on **dr1** and add port *1502*.
-
-1. Right-click on the desktop and select *Open Terminal* 
-
-	![](./images/pots/mq-ha/lab3/image303.png)
-
-1. Switch to root user with the command:
-
-	```
-	su -
-	```
-	
-	Enter the *IBMDem0s!* for root's password.
-	
-	![](./images/pots/mq-ha/lab3/image304.png)
+1. Don't forget, each node must have this port opened in the firewall.
 	
 1. Start firewall by entering the following command.
 
 	```
-	systemctl start firewalld
+	sudo systemctl start firewalld
 	```
 	
-	![](./images/pots/mq-ha/lab3/image309.png)
+	![](./images/pots/mq-ha/lab3/image409.png)
 	
 1. Return to **dr1** and repeat the previous step to start the firewall there also. 
+
+#### Create queue manager	
 
 1.	Create a primary queue manager on node **dr1**. It will use asynchronous replication. The local IP for DR replication is 10.0.2.14. The recovery IP used for replication on the secondary instance is 10.0.2.15. Replication will take place using port 7001. The queue manager listener port will be 1502. The queue manager will be QMDR. 
 
 	In the terminal window, create the primary node: 
 
 	```
-	crtmqm -rr p -rt a -rl 10.0.2.14 -ri 10.0.2.15 -rn dr2 -rp 7001 -p 1502 QMDR
+	sudo crtmqm -rr p -rt a -rl 10.0.2.14 -ri 10.0.2.15 -rn dr2 -rp 7001 -p 1502 QMDR
 	```
 	
 	![](./images/pots/mq-ha/lab3/image310.png)
 	
 	Notice at the end, the command needed to create the secondary instance is provided for you.
 	
-1. Switch to the **dr2** VM. In the terminal window as *root* create a secondary instance of the queue manager on node **dr2** with the following command: 
+1. Switch to the **dr2** terminal and create a secondary instance of the queue manager on node **dr2** with the following command: 
  	```
-	crtmqm -rr s -rt a -rl 10.0.2.15 -ri 10.0.2.14 -rn dr1 -rp 7001 QMDR
+	sudo crtmqm -rr s -rt a -rl 10.0.2.15 -ri 10.0.2.14 -rn dr1 -rp 7001 QMDR
 	```
 
 	![](./images/pots/mq-ha/lab3/image312.png)
@@ -375,26 +358,30 @@ This template is used for multiple labs and has been configured with the maximum
 Suppose the loss of the primary node was due to a failure, which resulted in the node having to be replaced. You would want to replace the primary node while the queue manager runs on the secondary node. Then restore the original disaster recovery configuration.### Simulate the loss of the Primary node
 Although the node has not been lost, you will simulate it by disabling the DR Replication Network adapter and deleting the queue manager. 
 
-1. On node **dr1**, navigate to **Applications -> System Tools -> Settings**:
+1. On node **dr1**, display the status of the ethernet adapters with the following command: 
 
-	![](./images/pots/mq-ha/lab3/image328.png)
+	```
+	nmcli device status
+	```
 
-1. On the left list of entries, scroll down and select **Network**.
+	![](./images/pots/mq-ha/lab3/image328a.png)
 
-1. Click the **Settings** gear symbol on the **ens36** network adapter, to verify that it is the DR Replication adapter (IP address 10.0.2.14):
+1. **ens36** network adapter is the DR Replication adapter (IP address 10.0.2.14). Turn off the network adapter with the following command:
 
-	![](./images/pots/mq-ha/lab3/image329.png)
+	```
+	sudo nmcli con down ens36
+	```
 	
-1. In the window that opens, validate the IP address of **10.0.2.14**, then click **Cancel**:
-
-	![](./images/pots/mq-ha/lab3/image330.png)
+	![](./images/pots/mq-ha/lab3/image331a.png)
 	
-1. For the **ens36** adapter, click the button to switch it *off*.
+1. Verify that the adapter has stopped with following command:
 
-	![](./images/pots/mq-ha/lab3/image331.png)
+	```
+	nmcli device status
+	```
 	
-	Note: You can leave the Network window open as you will need it in a later step.
-
+	![](./images/pots/mq-ha/lab3/image331b.png)
+	
 1. On node **dr1**, stop the queue manager:	
 	```
 	endmqm QMDR
@@ -449,9 +436,19 @@ This template is used for multiple labs and has been configured with the maximum
 	
 	![](./images/pots/mq-ha/lab3/image336.png)
 	
-1. Restart the DR Replication network interface. You should still have the network settings window open on node **dr1**. If not, go to **Applications -> System Tools -> Settings -> Network**. Click the button to turn on **ens36**.  
+1. Restart the DR Replication network interface **ens36** on **dr1** with the following command:
+
+	```
+	sudo nmcli con up ens36
+	```   
+	
+	Display the adapters to verify it reconnects with following command:
+	
+	```
+	nmcli device status
+	```
  
-	![](./images/pots/mq-ha/lab3/image337.png)
+	![](./images/pots/mq-ha/lab3/image337a.png)
 
 1. Copy the command (as highlighted above) into the command line of the new Primary node, **dr1**, to run it:	
 	```
@@ -522,17 +519,27 @@ This template is used for multiple labs and has been configured with the maximum
 To simulate this, there is no need to change the DR designations prior to the Secondary node being replaced. You will simply disable the DR Replication Network adapter.
 For the replacement node to be brought back into the DR configuration, again it must assume the identity of the failed node -- the name and IP address must be the same.
 
-1. On node **dr2**, go to **Applications -> System Tools -> Settings**.
+1. On node **dr2**, display the status of the ethernet adapters with the following command: 
 
-	![](./images/pots/mq-ha/lab3/image345.png)
+	```
+	nmcli device status
+	```
 
-	Select **Network**. 
+	![](./images/pots/mq-ha/lab3/image345a.png)
+
+1. **ens36** network adapter is the DR Replication adapter (IP address 10.0.2.14). Turn off the network adapter with the following command:
+
+	```
+	sudo nmcli con down ens36
+	```
 	
-1. The DR Replication adapter (IP address 10.0.2.15) is the **ens36** adapter. Click the button to switch it off. 
+1. Verify that the adapter has stopped with following command:
 
-	![](./images/pots/mq-ha/lab3/image346.png)
+	```
+	nmcli device status
+	```
 	
-	Note: You can leave the Network window open as you will need it in a later step.
+	![](./images/pots/mq-ha/lab3/image346a.png)
 
 1. Still on **dr2** with root access delete the queue manager.
 
@@ -549,9 +556,20 @@ This template is used for multiple labs and has been configured with the maximum
 	
 	![](./images/pots/mq-ha/lab3/image348.png)
 	
-1. On node **dr2**, go to **Applications -> System Tools -> Settings -> Network**. Click the button for the DR Replication adapter **ens36** (IP address 10.0.2.15), to switch it back on.
+1. On node **dr2**, turn on **ens36** network adapter with the following command:
 
-	![](./images/pots/mq-ha/lab3/image349.png)
+
+	```
+	sudo nmcli con up ens36
+	```
+	
+1. Verify that the adapter has reconnected with following command:
+
+	```
+	nmcli device status
+	```
+	
+	![](./images/pots/mq-ha/lab3/image349a.png)
 
 1. Copy this command, that was displayed on **dr1** into the command line of the new Secondary node, **dr2**, then run it:	
 	```
