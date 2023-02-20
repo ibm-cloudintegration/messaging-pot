@@ -1,6 +1,6 @@
 ---
 title: Replicated Data Queue Managers (RDQM) - DR for HA Group 
-toc: false
+toc: true
 sidebar: labs_sidebar
 folder: pots/mq-ha
 permalink: /mq_ha_pot_lab4.html
@@ -41,15 +41,16 @@ This lab is concerned with demonstrating the failover of an HA group to an HA gr
 
 ## Lab Introduction
 
-* Six RHEL 7.7 x86_64 systems running in Skytap:
+* Seven virtual machines running in IBM TechZone - six RHEL 7.7 x86_64 systems and one Windows desktop:
 	* rdqm1	-	This will be our primary node.	* rdqm2	-	This will be a secondary node.	* rdqm3	-	This will be another secondary node.
 	* dr1		-	DR Fail over primary node.
 	* dr2		-	DR Fail over secondary node.
 	* dr3		-	DR Fail over other secondary node.
+	* mq-pot  -	Windows desktop for connecting to the six RHEL machines.
+	 
+* VMWare virtual networks primary HA group: 
 
-* VMWare Workstation virtual networks primary HA group: 
-
-	|Name   | Type | SkyTap Network |  Subnet  | DHCP |
+	|Name   | Type | TechZone Network |  Subnet  | DHCP |
 	|:-----:|:--------:|:--------:|:-----:|:-----:|
 	| ens34 | Administration | ens34 | 10.0.0.0 | no |
 	| ens35 | HA Replication | ens35 | 10.0.1.0 | no |
@@ -69,7 +70,7 @@ This lab is concerned with demonstrating the failover of an HA group to an HA gr
 	* HA Primary - to monitor the nodes in the cluster	* HA Alternate - backup for monitoring the cluster if the HA Primary network fails	* HA Replication - for synchronous data replication (the higher the bandwidth the better and the lower the latency the better)	
 * VMWare Workstation virtual networks secondary DR HA group: 
 
-	|Name   | Type | SkyTap Network |  Subnet  | DHCP |
+	|Name   | Type | TechZone Network |  Subnet  | DHCP |
 	|:-----:|:--------:|:--------:|:-----:|:-----:|
 	| ens34 | Administration | ens34 | 10.0.0.0 | no |
 	| ens35 | HA Replication | ens35 | 10.0.1.0 | no |
@@ -103,47 +104,68 @@ This lab is concerned with demonstrating the failover of an HA group to an HA gr
 * The following Pacemaker dependencies have already been installed. This list should be sufficient for a standard installation of RHEL 7.7 Server or Workstation. For your own environment setup, or if you are using some other installation, additional packages may be needed:
 
 	* cifs-utils
-	* gnutls
 	* libcgroup
 	* libtool-ltdl
+	* lm_sensors-libs
 	* lvm2
+	* net-snmp-agent-libs
 	* net-snmp-libs
 	* nfs-utils
 	* perl-TimeDate
 	* psmisc
-	* PyYAML
+	* redhat-lsb-core
 
 Depending on your security configuration, there are three different ways to configure the RDQM feature:
 1. The simplest way is if the mqm user can ssh between the three nodes of the cluster without a password and can sudo to run the necessary commands.
 2. The intermediate option is if the mqm user can sudo but not ssh. It is preferable if the actual users are also in the haclient group. 
 3. The default is that the mqm user cannot ssh or sudo. In this lab, instructions are provided to setup and test using the intermediate method. 
 
-## Setup the RHEL image (pre-configured on SkyTap):
+## Setup the RHEL image (pre-configured on IBM TechZone):
 
-In the Skytap environment there are 6 virtual machines: rdqm1, rdqm2, rdqm3, dr1, dr2, and dr3 which should be in a powered off or paused state. 
+In the TechZone environment, there are six virtual machines: rdqm1, rdqm2, rdqm3, dr1, dr2, and dr3 which currently should be in a powered on state.
+1. Click the *VM Remote Console* button for **rdqm1**.
 
-![](./images/pots/mq-ha/lab4/image1.png)
-1. Click the run button to start or resume the VMs. Wait for the VM icons to become active, when they turn green. 
+	![](./images/pots/mq-ha/lab2/image266a.png) 
 
-1. Click the monitor icon for *rdqm1* which will launch the desktop in another browser tab.
+1. When the desktop appears, click the *Open in a new window* button. 
 
-	![](./images/pots/mq-ha/lab4/image2.png)
+	![](./images/pots/mq-ha/lab2/image267a.png)
+	
+1.	A new browser tab is opened. 
 
-1. Log on to VM *rdqm1* as user **ibmuser**, using password **engageibm**. 
+	![](./images/pots/mq-ha/lab2/image268a.png)
+	
+1. You will use *putty* to connect to each of the RHEL VMs. Double click the *putty* icon on the desktop.
 
-	![](./images/pots/mq-ha/lab4/image3.png)### Pre-configuration steps 
+	![](./images/pots/mq-ha/lab2/image269a.png)
+	
+1. The IP address for *rdqm1* is **10.0.0.1**. Enter that address in the *Host Name* field and click *Open*. 
 
-The following steps are necessary for configuring RDQM. They have already been completed on the VMs. 
+	![](./images/pots/mq-ha/lab2/image270a.png)
 
-* Extract and Install MQ 9.1.5 
+1. A new terminal window appears:
+
+	![](./images/pots/mq-ha/lab2/image270b.png)
+	
+1. Log on to the VM as user **ibmuser**, using password **engageibm**. 
+
+	![](./images/pots/mq-ha/lab2/image270c.png)
+	
+1. Open new *putty* windows **rdqm2** and **rdqm3** using 10.0.0.2 for rdqm2 and 10.0.0.3 for rdqm3. 
+
+	![](./images/pots/mq-ha/lab2/image270d.png)1. Also open new *putty* windows **dr1** (10.0.0.14), **dr2** (10.0.0.15), and **dr3** (10.0.0.16).
+
+	![](./images/pots/mq-ha/lab2/image270e.png)1. You will use the putty terminal windows for interactions with the RHEL VMs. When instructed to open a additional terminals for a VM, just open another *putty* window for that VM.	### Pre-configuration steps 
+
+The following steps are necessary for configuring RDQM. They have **already been completed** on the VMs. 
+
+* Extract and Install MQ  
 
 	The code is provided as a compressed tar file in the directory /home/ibmuser/.
 	
 * Install the MQ and RDQM code 
 
-	RDQM is a single feature which now supports HA and/or DR. The RDQM support requires the Server and Runtime packages. 
-	
-	Run the installation script.		
+	RDQM is a single feature which now supports HA and/or DR. The RDQM support requires the Server and Runtime packages. 	
 
 * Configure the RedHat firewall 
 
@@ -173,81 +195,191 @@ The above steps must be completed on each node before RDQM can be configured. At
 
 ## Configure RDQM
 
-This lab assumes that HA and DR have not been configured. If you have attempted or completed either of the previous labs (12 - 13) using this Skytap environment, you must ensure that all RDQM queue managers have been deleted and the Pacemaker cluster removed using the Cleanup instructions at the end of Lab 12 (HA) and Lab 13 (DR). If you did not complete the Cleanup instructions in the previous labs, do so now before continuing with this lab.
+This lab assumes that HA and DR have not been configured. If you have attempted or completed either of the previous labs (2 - 3) using this TechZone environment, you must ensure that all RDQM queue managers have been deleted and the Pacemaker cluster removed using the Cleanup instructions at the end of Lab 2 (HA) and Lab 3 (DR). If you did not complete the Cleanup instructions in the previous labs, do so now before continuing with this lab.
 
-If you have not attempted or completed the previous labs using this Skytap environment, you should skip ahead to "Install RDQM support". ### Install RDQM support
-
-As previously stated, MQ 9.1.5 has already been installed on all VMs. The advanced feature RDQM support has also been installed on all the VMs *except* on **rdqm1**. You will need to install RDQM support on rdqm1 so you can see how easy it is to install. You will review the requirements for RDQM and scripts for installation and configuration.
-
-1. On **rdqm1** open a new terminal window and change to the directory for RDQM support. The installation tar file was extracted to */home/ibmuser/mq915*. 
+If you have not attempted or completed the previous labs using this TechZone environment, you should continue here. If you already completed those labs and RDQM support installed on rdqm1, skip ahead to [Configure RDQM support](#confhadr).### Install RDQM support
 	
-	Change to the /home/ibmuser/mq915/MQServer/Advanced/RDQM/ with the following coommand:
-	
-	```
-	cd ~/mq915/MQServer/Advanced/RDQM
-	```1. List the members of directory *PreReqs* to see the important prerequisites of RDQM.
+As previously stated, MQ has already been installed on all VMs *except* **rdqm1**. The advanced feature RDQM support has also been installed on all the VMs *except* on **rdqm1**. You will need to install RDQM support on **rdqm1** so you can see how easy it is to install. You will review the requirements for RDQM and scripts for installation and configuration.
+
+1. On **rdqm1** change the directory to the preconfigured directory **mqrdqm**.
 
 	```
-	ls PreReqs
+	cd mqrdqm
 	```
-	
-	![](./images/pots/mq-ha/lab4/image4.png)	Here you see Pacemaker and DRBD. If you drill into those subdirectories, you will see the RPM packages for installing these prerequisites.
-	
-	![](./images/pots/mq-ha/lab4/image5.png)
-	
-1. Enter the command to edit the *installRDQMsupport* shell script.
+
+1. The MQ install media has been previously downloaded to /home/ibmuser/Download directory. Enter the following command to extract the installation media.
 
 	```
-	gedit installRDQMsupport
+	sudo tar -zxvf ~/Downloads/IBM_MQ_9.3.1_LINUX_X86-64.tar.gz
 	```
 	
-	Review the script noting:
+	When prompted, enter root's password *IBMDem0s!*.
 	
-	* current directory RDQM
-	* defining packages for RPMs
-		* DRBD-KMOD, DRBD, PACEMAKER
-		* MQ_DEPENDENCIES, RDQM_PACKAGES, ADDITIONAL_MQ_PACKAGES
-	* yum install for packages
+	![](./images/pots/mq-ha/lab2/image271.png)
+	
+1. As a result, a new subdirectory **MQServer** has been created in the **mqrdqm** directory. Change to the **MQServer** directory and list the contents. You will find all the MQ RPM files for installing.
 
-1. No changes are required, so close the editor by clicking the "X". 
+	![](./images/pots/mq-ha/lab2/image272.png)
+	
+To install support for RDQM (replicated data queue managers), you complete the following tasks:
 
-	![](./images/pots/mq-ha/lab4/image6.png)
-	1. Run the script to install RDQM with the following command:
+* Install DRBD on each node.
+* Install Pacemaker on each node.
+* Install IBM MQ on each node.
+* Install RDQM on each node.
+
+#### Install RDQM prereqs
+
+The DRBD and Pacemaker RPM packages are supplied on the IBM MQ media. You should install the versions supplied with IBM MQ. Do not download your own versions. 
+
+1. The DRBD and Pacemaker packages are signed with the LINBIT GPG key. Use the following command to import the public LINBIT GPG key:
 
 	```
-	sudo ./installRDQMsupport
+	sudo rpm --import https://packages.linbit.com/package-signing-pubkey.asc
 	```
 	
-	![](./images/pots/mq-ha/lab4/image7.png)
+	![](./images/pots/mq-ha/lab2/image274a.png)
+
+	For supported levels of RHEL 7, the components are found under the Advanced/RDQM/PreReqs/el7/ directory. For supported levels of RHEL 8, components are found under the Advanced/RDQM/PreReqs/el8/ directory. For supported levels of RHEL 9, components are found under the Advanced/RDQM/PreReqs/el9/ directory. We are using RHEL 7.7 VMs for this lab.	
 	
-	Observe the script as it runs. It will take approximately three minutes. You will be notified of the results when complete.
+1. Change to the Advanced/RDQM/Prereqs/el7 and list the members of directory *el7* to see the important prerequisites of RDQM.
 	
-	 ![](./images/pots/mq-ha/lab4/image8.png)
-	 
-	 % include note.html content="The script will fail if you have done Lab 12 or 13 because the RDQM support is already installed." %}
-	 
+	```
+	cd Advanced/RDQM/PreReqs/el7
+	ls
+	```
+	
+	![](./images/pots/mq-ha/lab2/image273.png)
+	
+	Here you see Pacemaker and DRBD. If you drill into those subdirectories, you will see the RPM packages for installing these prerequisites.
+	
+1. Determine which DRBD kernel module is needed for the system on which RDQM is being installed. For example, on a RHEL 7 system, running the helper script Advanced/RDQM/PreReqs/el7/kmod-drbd-9/modver returns the kernel module that you need to install. Run the following command to identify the module:
+	
+	```
+	./kmod-drbd-9/modver
+	```
+	
+	![](./images/pots/mq-ha/lab2/image275.png)
+	
+	Verify that the module for RHEL 7 is **kmod-drbd-9.1.11_3.10.0_1062-1.x86_64.rpm**. Copy the value returned to be used for the first installation command.
+	
+1. Change back to the MQServer directory with the following command: 
+
+	```
+	cd ~/mqrdqm/MQServer
+	```
+	
+1. Install the appropriate DRBD kernel module that you identified in run the following command:
+	
+	```
+	sudo yum install Advanced/RDQM/PreReqs/el7/kmod-drbd-9/kmod-drbd-9.1.11_3.10.0_1062-1.x86_64.rpm
+	```
+	
+	![](./images/pots/mq-ha/lab2/image277.png)
+	
+	Reply **y** to confirm the installation. After a few minutes and numerous messages, the script will show *Complete!*.
+	
+	![](./images/pots/mq-ha/lab2/image278.png)	
+1. In the same terminal window, install the required DRBD utilities for RHEL 7 with the following command:
+
+	```
+	sudo yum install Advanced/RDQM/PreReqs/el7/drbd-utils-9/*
+	```
+	
+	![](./images/pots/mq-ha/lab2/image279.png)
+	
+	Reply **y** to confirm the installation. This command runs faster with fewer messages, the script will show *Complete!*. 
+
+	![](./images/pots/mq-ha/lab2/image280.png)
+
+1. Install Pacemaker for RHEL 7 with the following command:
+
+	```
+	sudo yum install Advanced/RDQM/PreReqs/el7/pacemaker-1/*
+	```
+	
+	![](./images/pots/mq-ha/lab2/image281.png)
+	
+	Reply **y** to confirm the installation. The script will show *Complete!*. 
+
+	![](./images/pots/mq-ha/lab2/image282.png)
+
+	The Pacemaker installer will report any missing packages that also need to be installed before the install can complete successfully.
+	
+### Install MQ
+
+1. In the same terminal window in the *MQServer* directory, you will continue with the normal installation of MQ on RHEL. First you need to accept the IBM MQ license. Enter the following command:
+
+	```
+	sudo ./mqlicense.sh
+	```
+	
+	When prompted, enter **1** to accept the MQ license.
+	
+	![](./images/pots/mq-ha/lab2/image283a.png)
+	
+	You are then returned to the command prompt.
+
+1. Install IBM MQ. This is like a standard IBM MQ install. Enter the following:
+	
+	```
+	sudo yum install MQSeries*
+	```
+	
+	![](./images/pots/mq-ha/lab2/image285.png)
 		
-1. RDQM is now ready as it has been installed with prereqs on all of the VMs.
+	This command will install all of the MQ RPMs in the required order. Reply **y** to confirm the installation when prompted. The script will show *Complete!*.  
+	
+	![](./images/pots/mq-ha/lab2/image286.png)
+	
+1. Once MQ is installed, it is a good idea to set the path for the MQ installation. Enter the following command:
 
+	```
+	sudo /opt/mqm/bin/setmqinst -i -p /opt/mqm
+	```
+	
+	![](./images/pots/mq-ha/lab2/image291.png)
+	
+1. Now you can finish the installation of IBM RDQM. Enter the following command:
+	
+	```
+	sudo yum install Advanced/RDQM/MQSeriesRDQM*
+	```
+	
+	![](./images/pots/mq-ha/lab2/image287.png)
+		
+	This command will install all of the RDQM. Reply **y** to confirm the installation when prompted. The script will show *Complete!*.  
+	
+	![](./images/pots/mq-ha/lab2/image288.png)
+		
+	RDQM is now ready as it has been installed with the prereqs on all of the VMs.
+	### Configure the firewallNormally, the firewall is configured during the pre-req installations.  
 
-	{% include note.html content="RHEL default time before the screen locks is very short. If you need it to be longer, you can turn off the screen lock in settings. Applications \> System Tools \> Settings \> Power \> Power Saving \> Blank screen \> Never." %}
-	### Configure the firewallNormally, the firewall would have been configured as a pre-req. However during preparation of this environment, the default RHEL firewall was not configured. You need to do that now for the RDQM cluster. 
-
-1. Start the firewall with following command:
+1. As root on **rdqm1** start the firewall with following command:
 
 	```
 	sudo systemctl start firewalld
 	```
 
-1. Run the following command to allow MQ, DRDB, and Pacemaker ports to be opened in the firewall:
+1. To verify that the MQ, DRDB, and Pacemaker ports are opened in the firewall, run the following commands:
 
 	```
-	sudo /opt/mqm/samp/rdqm/firewalld/configure.sh
+	cd /usr/lib/firewalld/services/
 	```
 	
-	![](./images/pots/mq-ha/lab4/image9.png)
+	![](./images/pots/mq-ha/lab2/image289a.png)	
 	
-1. Normally you would repeat the above steps on the other VMs, but it is not necessary for this lab as it was preconfigured. ## Configure the HA and DR - HA clusters
+	```
+	cat rdqm-mq.xml
+	cat rdqm-drbd.xm
+	cat pacemaker-1
+	```
+	
+	![](./images/pots/mq-ha/lab2/image290a.png)
+	
+1. Normally you would repeat the above steps on the other VMs, but it is not necessary for this lab as it was preconfigured. 
+<a name="confhadr"></a>
+## Configure the HA and DR - HA clusters
 ### Configure the HA clusterThe cluster must first be created, and then an RDQM instance defined containing one or more queue managers. The RDQM code expects the rdqm.ini file to be in the /var/mqm directory.	
 1. On node rdqm1, in a terminal window (as **ibmuser**), navigate to /var/mqm. 
 
@@ -255,10 +387,10 @@ As previously stated, MQ 9.1.5 has already been installed on all VMs. The advanc
 
     ```
     cd /var/mqm
-    sudo cp ~/mq915/rdqm-hadr.ini rdqm.ini 
+    sudo cp ~/mqrdqm/rdqm-hadr.ini rdqm.ini 
     ```
     
-    ![](./images/pots/mq-ha/lab4/image10.png)
+    ![](./images/pots/mq-ha/lab4/image10a.png)
     
 1. **IMPORTANT:** Repeat the above commands to copy rdqm-hadr.ini on **rdqm2** and **rdqm3** before continuing.
 
@@ -285,8 +417,6 @@ As previously stated, MQ 9.1.5 has already been installed on all VMs. The advanc
    sudo rdqmadm -c 
    ```
     
-    ![](./images/pots/mq-ha/lab4/image11a.png)
-    
     Wait for the configuration to complete, approximately two minutes.
     
 1. You have received the messages that the replicated data system has been configured on this node and also on remote nodes **rdqm2** and **rdqm3**. You also receive a message that says configuration is complete for your HA group at the primary site.
@@ -305,7 +435,7 @@ The simulated disaster recovery site has been preconfigured. Let's review the co
 
 	```
 	cd /var/mqm
-	cp ~/mq915/rdqm-hadr.ini rdqm.ini
+	cp ~/mqrdqm/rdqm-hadr.ini rdqm.ini
 	```
 	
 1. Display the *rdqm.ini* file. This file is the same on all of the VMs for the DR site; dr1, dr2 and dr3. This file will be used to create another HA group at the secondary site.
@@ -314,7 +444,7 @@ The simulated disaster recovery site has been preconfigured. Let's review the co
 	cat rdqm.ini
 	```
 	
-	![](./images/pots/mq-ha/lab4/image13.png)
+	![](./images/pots/mq-ha/lab4/image13a.png)
 	
 	The secondary HA cluster must be configured using the same subnets as the primary HA cluster. You will notice that the node definitions for the secondary site have the local IP addresses for dr1, dr2, and dr3. The HA-Replication subnet (10.0.1.x) is the same subnet for HA_Replication on the primary site. Likewise the DR-Replication subnet (10.0.2.x) is the same subnet for DR-Replication on the primary site.
 	
@@ -402,7 +532,7 @@ The following steps create a DR/HA RDQM named QMHADR that runs on **main-rdqm1**
 
 	![](./images/pots/mq-ha/lab4/image27a.png)
 	
-	{% include important.html content="Be careful when copying / pasting the command from **rdqm1**. On **rdqm1**, copy the command to the Skytap clipboard, then copy from rdqm1's Skytap clipboard and paste it into dr1's Skytap clipboard. Then you can paste the command on the command line in **dr1**. Ask your instructor for assistance if you don't get the correct command pasted." %}
+	{% include important.html content="Be careful when copying / pasting the command from **rdqm1**. On **rdqm1**, copy the command to the VM clipboard, then copy from rdqm1's VM clipboard and paste it into dr1's VM clipboard. Then you can paste the command on the command line in **dr1**. Ask your instructor for assistance if you don't get the correct command pasted." %}
 
 ### Create a floating IP address for the HA / DR queue manager
 
@@ -410,7 +540,7 @@ You can create floating IP addresses for each of your HA groups in a DR/HA RDQM 
 
 A floating IP address enables a client to use the same IP address for a DR/HA RDQM regardless of which node in an HA group it is running on. If your two HA groups have private/isolated networks for application connectivity, then the same floating IP address can be defined for both groups. You must still define that floating IP address twice, however, once on each of your HA groups. 
 
-Since our Skytap template is using one network, we can create one floating IP that can be used on either HA group. The floating IP address must be defined in the same subnet as the HA_Replication parameter in the rdqm.ini file.
+Since our TechZone template is using one network, we can create one floating IP that can be used on either HA group. The floating IP address must be defined in the same subnet as the HA_Replication parameter in the rdqm.ini file.
 
 1. Return to **rdqm1** and in the terminal window run the following command to create the floating IP.
 
@@ -500,26 +630,29 @@ You will also turn off CHLAUTH and CONNAUTH completely to keep things simple.
 	The first listener is the one created because -p **1414** was specified on the *crtmqm* command. This listener is listening on port 1414 on every IP address. The second listener, however, is listening on port **1420** on the floating IP address only.
 		
 ### Update the firewall
-
-1. Update the firewall to allow port 1420. Click *Applications > Sundry > Firewall*.
-
-	![](./images/pots/mq-ha/lab4/image39.png)
-	
-1. Enter the password for ibmuser - **enageibm** and click *Authenticate*.
-
-	![](./images/pots/mq-ha/lab4/image40.png)
-	
-1. Click *Ports*, *Add*, then enter **1420** and click *OK*. Repeat to add port **1415** for an additional queue manager to be defined later.
-
-	![](./images/pots/mq-ha/lab4/image41.png)
-	
-   Close the *Firewall Configuration* window.
    
-1. Repeat the firewall update on all other servers - **rdqm2**, **rdqm3**, **dr1**, **dr2**, and **dr3**.
+1. On each of the nodes, open the firewall port defined (1420) for the queue manager.
+
+	```
+	sudo firewall-cmd --add-port=1420/tcp
+	```
+		
+1. To verify the ports are now open, enter the following command: 
+
+	```
+	sudo firewall-cmd --list-ports
+	```
+
+	Results should look like this:
+	
+	![](./images/pots/mq-ha/lab4/image33a.png)
+	
+1. Don't forget, each node must have these ports opened in the firewall. Repeat the firewall update on all other servers - **rdqm2**, **rdqm3**, **dr1**, **dr2**, and **dr3**.
 	
 1. Now that you have a floating IP address associated with QMHADR, you can change the MQSERVER environment variable to CHANNEL1/TCP/10.0.2.0(1420) when you run applications.	```
 	export MQSERVER='CHANNEL1/TCP/10.0.2.20(1420)'
 	```
+	
 
 ## Simple testing of RDQMNow that you have two active HA groups, one primary with the primary queue manager and a secondary with the secondary queue manager created, you can proceed to test the failover of the HA group. 
 
@@ -935,28 +1068,49 @@ You will now use the approach of controlling where the RDQM runs by suspending H
 ### Move the RDQM to DR - HA cluster
 The floating address 10.0.1.20 is using virtual adapter ens35, where currently you also have a fixed IP address configured on each virtual machine. You will disable ens35 on each node in the local main HA cluster to simulate a failover to the DR HA cluster.
 
-Since the RDQM QMHADR is currently running on **rdqm1**, you will start by disabling the adapter on the standby nodes, so the RDQM cannot failover to them and must failover to the remote HA cluster.	
-1. On **rdqm3**, open the network settings: *Applications > System Tools > Settings*.
+Since the RDQM QMHADR is currently running on **rdqm1**, you will start by disabling the adapter on the standby nodes, so the RDQM cannot failover to them and must failover to the remote HA cluster.
 
-	![](./images/pots/mq-ha/lab4/image89.png) 
+Although the node has not been lost, you will simulate it by disabling the DR Replication Network adapter and deleting the queue manager. 
+	
+1. On node **rdqm3**, display the status of the ethernet adapters with the following command: 
 
-1. Select *Network*. Click the blank switch next to *ON* for *Ethernet (ens35)*.
+	```
+	nmcli device status
+	```
+
+	![](./images/pots/mq-ha/lab4/image89a.png)
+
+1. **ens35** network adapter is the DR Replication adapter (IP address 10.0.2.14). Turn off the network adapter with the following command:
+
+	```
+	sudo nmcli con down ens35
+	```
 	
-	![](./images/pots/mq-ha/lab4/image90.png)
+	![](./images/pots/mq-ha/lab4/image90a.png)
 	
-1. The adapter now shows that it is *OFF*.
+1. Verify that the adapter has stopped with following command:
+
+	```
+	nmcli device status
+	```
 	
-	![](./images/pots/mq-ha/lab4/image91.png)
-	
-	Leave the Network settings open as you will use it again later.
+	![](./images/pots/mq-ha/lab4/image91a.png)
 	
 1. Turn off the adapter *ens35* on **rdqm2** just as you did on **rdqm3**. 
 
-	Leave the Network settings open as you will use it again later.
-
 1. Using the same procedure, finally turn off the adapter *ens35* **rdqm1** to cause a DR situation. 
-
-	Leave the Network settings open as you will use it again later.
+	
+1. On node **dr1**, stop the queue manager:	
+	```
+	endmqm QMDR
+	```
+	
+1. With root access remove the queue manager:	
+	```
+	sudo dltmqm QMDR
+	```
+	
+	![](./images/pots/mq-ha/lab3/image332.png)
 	
 1. Switch to **dr1**. Make this node the primary node with the following command.
 
@@ -980,9 +1134,13 @@ Since the RDQM QMHADR is currently running on **rdqm1**, you will start by disab
 	
 	You see the queue manager is now running on dr1 in the DR HA cluster. This node is primary for both HA and DR. Notice the floating IP is also listed.
 	
-1. In our simulation, you will need to re-enable the network adapters. Return to the nodes in the main HA cluster. Start with **rdqm1**. You should have left the network settings window open. Turn the network adapter for *ens35* back on by clicking the *ON* switch. 
+1. In our simulation, you will need to re-enable the network adapters. Return to the nodes in the main HA cluster. Start with **rdqm1**. Turn the network adapter for *ens35* back on with the following command:
 
-	![](./images/pots/mq-ha/lab4/image92a.png)
+	```
+	sudo nmcli con up ens35
+	``` 
+
+	![](./images/pots/mq-ha/lab4/image92b.png)
 	
 	Repeat this on **rdqm2** and **rdqm3**, re-enabling the *ens35* network adapter on those nodes.
 

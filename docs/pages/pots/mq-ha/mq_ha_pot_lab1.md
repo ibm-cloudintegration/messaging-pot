@@ -49,12 +49,14 @@ This lab will show how the software high availability feature of IBM MQ can be s
 
 ### Lab environment
 
-1. 3 RHEL 7.7 x86_64 systems running in IBM TechZone: 
-
+1. Seven virtual machines running in IBM TechZone - six RHEL 7.7 x86_64 systems and one Windows desktop:
+	
 	* dr1  - NFS client primary node	* dr2  - NFS client secondary node
-	* dr3  - NFS server
-
-	{% include note.html content="There are three additional VMs in the TechZone template which are not used; rdqm1, rdqm2, and rdqm3 can be ignored." %}
+	* dr3  - NFS server	
+	* mq-pot  -	Windows desktop for connecting to the RHEL machines
+	* rdqm1	-	not used	* rdqm2	-	not used	* rdqm3	-	not used
+	
+	{% include note.html content="There are three VMs in the TechZone template which are not used for this lab; rdqm1, rdqm2, and rdqm3 can be ignored." %}
 	
 1. Network interfaces:
 
@@ -98,34 +100,43 @@ The *dr1* and *dr2* images are machines which will have MQ installed – they wi
 
 ### Starting the images
 
-In the IBM TechZone environment, there are 6 virtual machines rdqm1, rdqm2, rdqm3, dr1, dr2, and dr3 which currently should be in a powered on state.
+In the TechZone environment, there are seven virtual machines: rdqm1, rdqm2, rdqm3, dr1, dr2, dr3, and mq-pot which currently should be in a powered on state. rdqm1, rdqm2, and rdqm3 will not be used in this lab, so you can ignore them for now. 
+1. Click the *VM Remote Console* button for **mq-pot**.
 
-![](./images/pots/mq-ha/lab1/image101.png)
-
-This template is used for multiple labs and has been configured with the maximum number of VMs that are required for all labs. In this lab you will only need dr1, dr2 and dr3. The rest of the VMs can be ignored.
-1. Click the *VM Remote Console* button for **dr3** which will launch the desktop in another browser tab.
-
-	![](./images/pots/mq-ha/lab1/image102.png) 
+	![](./images/pots/mq-ha/lab2/image266a.png) 
 
 1. When the desktop appears, click the *Open in a new window* button. 
 
-	![](./images/pots/mq-ha/lab1/image103.png)
+	![](./images/pots/mq-ha/lab2/image267a.png)
 	
-1.	A new browser tab is opened. Hit enter to open the login window and log on to the VM as user **ibmuser**, using password **engageibm**. 
+1.	A new browser tab is opened. Click the desktop, enter *passw0rd* for ibmdemo's password and hit enter.
 
-	![](./images/pots/mq-ha/lab1/image104.png)
+	![](./images/pots/mq-ha/lab2/image268a.png)	
+1. You will use *putty* to connect to each of the RHEL VMs. Double click the *putty* icon on the desktop.
+
+	![](./images/pots/mq-ha/lab2/image269a.png)
+
+1. The IP address for *dr3* is **10.0.0.16**. Enter that address in the *Host Name* field and click *Open*. 
+
+	![](./images/pots/mq-ha/lab1/image102a.png)
+
+1. A new terminal window appears:
+
+	![](./images/pots/mq-ha/lab1/image103a.png)
 	
-	![](./images/pots/mq-ha/lab1/image105.png)
+1. Log on to the VM as user **ibmuser**, using password **engageibm**. 
+
+	![](./images/pots/mq-ha/lab1/image104a.png)
 	
-1. Return to the original browser tab and click the browser back arrow to return to the reservation window. Scroll down to the VM Remote Console list and repeat the open and login for **dr1** and **dr2**. 
+1. Open new *putty* windows **dr1** and **dr2** using 10.0.0.14 for dr1 and 10.0.0.15 for dr2. 
+
+	![](./images/pots/mq-ha/lab1/image105a.png)1. You will use the putty terminal windows for interactions with the RHEL VMs. When instructed to open a additional terminals for a VM, just open another *putty* window for that VM.
 
 ### Configure NFS server 
 
 The first step is setting up the Network File System. This must be created as an NFSv4 system and must be made available to the two other systems.We wish the MQ systems on the other two computers to be able to have unfettered read /write access to (at least part of) the file system. In order to allow this we will need to create “mqm” users and groups that have the same UID and GID numbers on each computer. The users and groups have been pre-configured on this environment.
 
-1. You should still be logged onto *dr3*. Right click on the desktop and select *Open terminal*. 
-
-	![](./images/pots/mq-ha/lab1/image41.png)
+1. Return to the terminal window for *dr3*. 
  	
 1. Stop the firewall for initial testing. You can restart firewall later to test with firewall running. Use the following command to stop firewalld.
 
@@ -160,24 +171,31 @@ The first step is setting up the Network File System. This must be created as an
 1. 	You need to edit two system files. The first is */etc/exports*. You need root permissions to edit these files. Enter the following command to open the editor:
 
 	```
-	sudo gedit /etc/exports
+	sudo nano /etc/exports
 	```
 	
-	Add the following line to the file then click *Save*.
+	![](./images/pots/mq-ha/lab1/image46a.png)
+	
+	Add the following line to the file. 
 
 	```
 	/NFS4FileSystem *(rw,sync,no_wdelay,fsid=0)
 	```
 	
-	![](./images/pots/mq-ha/lab1/image46.png)
+	To save the file, enter *ctrl-X*, then enter *Y*, and finally hit enter to complete.
+	
+	![](./images/pots/mq-ha/lab1/image46b.png)
+	![](./images/pots/mq-ha/lab1/image46c.png)
  	
-1. Now edit the file */etc/sysconfig/nfs*. Still in *gedit* click *Open*. Type */etc/sysconfig/nfs* and select **nfs**. 
+1. Now edit the file */etc/sysconfig/nfs*. Using nano again use the following command: 
 
-	![](./images/pots/mq-ha/lab1/image47.png)
+	```
+	sudo nano /etc/sysconfig/nfs
+	```
  	
-1. Scroll down to the parameter *RPCMOUNTDOPTS* and add **-p 829** between the quotation marks. Click *Save*.
+1. Scroll down to the parameter *RPCMOUNTDOPTS* and add **-p 829** between the quotation marks. Enter *ctrl-X*, then enter *Y*, and finally hit enter to save the file.
 
-	![](./images/pots/mq-ha/lab1/image42.png)
+	![](./images/pots/mq-ha/lab1/image47a.png)
 	
 1. After editing the file, you need to restart two services, nfs-config and nfs-server. Open another terminal window and run the following commands:
 
@@ -199,7 +217,7 @@ The first step is setting up the Network File System. This must be created as an
 	
 ### Configure NFS clients	Now each machine that is to access the NFS4 file system must be configured. We wish the MQ systems on the other two computers to be able to have unfettered read/write access to (at least part of) the file system. In order to allow this we will need to create “mqm” users and groups that have the same UID and GID numbers on each computer. As stated previously, these were pre-configured on this environment so there is nothing to do.
 
-1. Start the *dr1* desktop and open a terminal window. 
+1. Click in the *dr1* terminal window. 
 
 1. On the NFS clients you need to add the shared file system to */etc/fstab*. Root access is required for this file also so open the editor with the following command: 
 
@@ -213,7 +231,7 @@ The first step is setting up the Network File System. This must be created as an
 	dr3:/NFS4FileSystem /mnt/NFS4FileSystem nfs options 0 0
 	```
 	
-	Click *Save*.
+	Save the file.
 	
 	![](./images/pots/mq-ha/lab1/image48.png)
 	
@@ -400,28 +418,28 @@ The IBM MQ client code has been pre-installed on the NFSv4 host computer (*dr3*)
 
 Two sample programs that illustrate the client reconnect program are shipped with IBM MQ. They are *amqsphac* and *amqsghac* which show putting and getting respectively.
 
-1. On *dr3*, open a terminal window and open a gedit session to examine the sample program *amqsphac*.
+1. In the *dr3* terminal window, open a nano session to examine the sample program *amqsphac*.
 
 	```
-	gedit /opt/mqm/samp/amqsphac.c
+	nano /opt/mqm/samp/amqsphac.c
 	```
 	
-	![](./images/pots/mq-ha/lab1/image62.png)	
-1. Click the hamburger menu in the top right corner and select *Find*. 
+	![](./images/pots/mq-ha/lab1/image62a.png)	
+1. Use *ctrl-W* for searching. Enter *ctrl-W* in the search field, then type in **cno.Options** to find the reconnection code.
 
-	![](./images/pots/mq-ha/lab1/image63.png)
+	![](./images/pots/mq-ha/lab1/image64a.png)
 	
-1. In the search field type in **cno.Options** to find the reconnection code. Examining the source code of the program (fragment shown below) shows the use of the new MQCONNX options.
+1.  Examining the source code of the program (fragment shown below) shows the use of the new MQCONNX options.
 
 	![](./images/pots/mq-ha/lab1/image64.png)
 
-1. Do another find for **EventHandler** to examine the callback function to be notified of reconnect events.
+1. Do another find (twice) for **EventHandler** to examine the callback function to be notified of reconnect events. (you may nee
 
 	![](./images/pots/mq-ha/lab1/image65.png)
 	
 1.  If you wish, continue to review the full program before closing the edit session.
 
-1. You will need two command windows; one for the get application and one for the put application. Open a terminal window logged in as *ibmuser / engageibm*. If you are still root, just enter *exit*.
+1. You will need two command windows so open another putty session for **dr3**. One is for the get application and one is for the put application. Log in as *ibmuser / engageibm*. 
 
 1. Set the environment variable *MQSERVER* with the following command:
 
@@ -524,17 +542,11 @@ During this failover demonstration we have:
 
 ### MQ Explorer
 
-The MQ client code and the MQ Explorer were pre-installed on the NFS server - *dr3s*. In order to demonstrate multi-instance queue managers on MQ Explorer, we must return to *dr3* and start the MQ Explorer eclipse workbench.
+The MQ client code was pre-installed on the NFS server - *dr3s*. And the MQ Explorer was pre-installed on the Windows desktop. We will demonstrate multi-instance queue managers using MQ Explorer.
 
-1. On the NFS server machine *dr3* in a terminal logged in as *ibmuser*, enter the following command:
-
-	```
-	MQExplorer
-	```
+1. On the Windows desktop double-click the MQ Exporer icon to launch the eclipse based *MQ Explorer*.
 	
-	This will launch the eclipse based *MQ Explorer*.
-	
-	![](./images/pots/mq-ha/lab1/image75.png)
+	![](./images/pots/mq-ha/lab1/image75a.png)
 	
 1.  In the left hand navigation bar, right-click on *Queue Managers* and select *Add Remote Queue Manager*.
 
@@ -543,17 +555,17 @@ The MQ client code and the MQ Explorer were pre-installed on the NFS server - *d
 
     ![](./images/pots/mq-ha/lab1/image77.png)
 
-4.  Enter the connection details, either the IP address 10.0.0.15 or host name *dr2*. Leave the port and channel values at the default.  Mark the checkbox for *Is this a multi-instance queue manager?* 
+4.  Enter the connection details, the IP address 10.0.0.15 for *dr2*. Leave the port and channel values at the default.  Mark the checkbox for *Is this a multi-instance queue manager?* 
 
-	Enter the connection details for the second instance, either the IP address 10.0.0.14 or host name *dr1*. Leave the port and channel values at the default. Then click *Next*.
+	Enter the connection details for the second instance, the IP address 10.0.0.14 for *dr1*. Leave the port and channel values at the default. Then click *Next*.
 	
-	![](./images/pots/mq-ha/lab1/image78.png)
+	![](./images/pots/mq-ha/lab1/image78c.png)
 	
 1. Click *Next* at the "Specify security exit details" screen.
 
-1. On the "Specify user identification details" screen check the *Enable user identification* checkbox. Enter *ibmuser* in the Userid field. Check the *Prompt for password* radio button. Notice the error message that *Prompt for password* is not allowed for multi-instance queue managers. 
+1. On the "Specify user identification details" screen check the *Enable user identification* and *User identification compatibility mode* checkbox. Enter *ibmuser* in the Userid field. Check the *Prompt for password* radio button. Notice the error message that *Prompt for password* is not allowed for multi-instance queue managers. 
 
-	![](./images/pots/mq-ha/lab1/image78a.png)
+	![](./images/pots/mq-ha/lab1/image78d.png)
 
 1. On the *Preferences* page check the radio button for *Save passwords to file* then click *Apply and Close*.
 
@@ -750,11 +762,6 @@ On other servers where you have previously created instances of the queue manage
 	```
 	
 	![](./images/pots/mq-ha/lab1/image99.png)
-
-
-1. Finally power off the VMs. Click the pull down menu and go to the *View VMs* display. The three VMs for this lab should still be running and their labels checked. Click the power icon and select *Power off*.
-
-	![](./images/pots/mq-ha/lab1/image100.png)
 	
 	
 ## CONGRATULATIONS! 

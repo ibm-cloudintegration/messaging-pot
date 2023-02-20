@@ -53,21 +53,23 @@ To assist with the setup of RDQM, we’ve created a number of scripts and helper
 
 This lab provides a demonstration of a new approach to High Availability in MQ on Linux, with the following key features:
 
-* Use of Distributed Replicated Block Device (DRBD) storage rather than network shared storage* Use of a cluster resource manager (Pacemaker) to manage a cluster of three nodes* A new kind of queue manager called a Replicated Data Queue Manager (RDQM):	* an RDQM is active on only one node at any one time	* each node can run different active RDQMs	* each RDQM has a preferred location (node) in normal operation	* a quorum prevents an RDQM from running on more than one node at the same time	* a RDQM can have a floating IP address associated with it to simplify configuration of clients and other queue managers that need to communicate with the RDQM
+* Use of Distributed Replicated Block Device (DRBD) storage rather than network shared storage* Use of a cluster resource manager (Pacemaker) to manage a cluster of three nodes* A new kind of queue manager called a Replicated Data Queue Manager (RDQM):	* an RDQM is active on only one node at any one time	* each node can run different active RDQMs	* each RDQM has a preferred location (node) in normal operation	* a quorum prevents an RDQM from running on more than one node at the same time	* an RDQM can have a floating IP address associated with it to simplify configuration of clients and other queue managers that need to communicate with the RDQM
 
 ### Lab environment
 
-* Three RHEL 7.7 x86_64 systems running in IBM TechZone:
-	* rdqm1	-	This will be our primary node.	* rdqm2	-	This will be a secondary node.	* rdqm3	-	This will be another secondary node.
+* Seven virtual machines running in IBM TechZone - six RHEL 7.7 x86_64 systems and one Windows desktop:
+
+	* rdqm1	-	This will be our primary node.	* rdqm2	-	This will be a secondary node.	* rdqm3	-	This will be another secondary node.
 	* dr1		-	DR Fail over primary node.
 	* dr2		-	DR Fail over secondary node.
 	* dr3		-	DR Fail over other secondary node.
+	* mq-pot  -	Windows desktop for connecting to the six RHEL machines.
 
-* VMWare Workstation virtual networks: 
+* VMWare virtual networks: 
 
 	|Name   | Type | TechZone Network |  Subnet  | DHCP |
 	|:-----:|:--------:|:--------:|:-----:|:-----:|
-	| ens34 | Administration | ens34 | 10.0.1.0 | no |
+	| ens34 | Administration | ens34 | 10.0.0.0 | no |
 	| ens35 | HA Replication | ens35 | 10.0.1.0 | no |
 	| ens36 | DR Replication | ens36 | 10.0.2.0 | no |
 	| ens37 | Pacemaker primary | ens37 | 10.0.3.0 | no |
@@ -116,29 +118,43 @@ Depending on your security configuration, there are three different ways to conf
 2. The intermediate option is if the mqm user can sudo but not ssh. It is preferable if the actual users are also in the haclient group. 
 3. The default is that the mqm user cannot ssh or sudo. In this lab, instructions are provided to setup and test using the intermediate method. 
 
-## Setup the RHEL image (pre-configured on IBM TechZone):
+## Setup the environment (pre-configured on IBM TechZone):
 
-In the TechZone environment, there are six virtual machines: rdqm1, rdqm2, rdqm3, dr1, dr2, and dr3 which currently should be in a powered on state. dr1, dr2, and dr3 will not be used in this lab, so you can ignore them for now. 
-1. Click the *VM Remote Console* button for **rdqm1**.
+In the TechZone environment, there are seven virtual machines: rdqm1, rdqm2, rdqm3, dr1, dr2, dr3, and mq-pot which currently should be in a powered on state. dr1, dr2, and dr3 will not be used in this lab, so you can ignore them for now. 
+1. Click the *VM Remote Console* button for **mq-pot**.
 
-	![](./images/pots/mq-ha/lab2/image266.png) 
+	![](./images/pots/mq-ha/lab2/image266a.png) 
 
 1. When the desktop appears, click the *Open in a new window* button. 
 
-	![](./images/pots/mq-ha/lab2/image267.png)
+	![](./images/pots/mq-ha/lab2/image267a.png)
 	
-1.	A new browser tab is opened. 
+1.	A new browser tab is opened. Click the desktop, enter *passw0rd* for ibmdemo's password and hit enter.
 
-	![](./images/pots/mq-ha/lab2/image268.png)	
-1. Hit enter to open the login window and log on to the VM as user **ibmuser**, using password **engageibm**. 
+	![](./images/pots/mq-ha/lab2/image268a.png)	
+1. You will use *putty* to connect to each of the RHEL VMs. Double click the *putty* icon on the desktop.
 
-	![](./images/pots/mq-ha/lab2/image269.png)
+	![](./images/pots/mq-ha/lab2/image269a.png)
+
+1. The IP address for *rdqm1* is **10.0.0.1**. Enter that address in the *Host Name* field and click *Open*. 
+
+	![](./images/pots/mq-ha/lab2/image270a.png)
+
+1. A new terminal window appears:
+
+	![](./images/pots/mq-ha/lab2/image270b.png)
 	
-1. Return to the original browser tab and click the browser back arrow to return to the reservation window. Scroll down to the VM Remote Console list and repeat the open and login for **rdqm2** and **rdqm3**. ### Pre-configuration steps 
+1. Log on to the VM as user **ibmuser**, using password **engageibm**. 
+
+	![](./images/pots/mq-ha/lab2/image270c.png)
+	
+1. Open new *putty* windows **rdqm2** and **rdqm3** using 10.0.0.2 for rdqm2 and 10.0.0.3 for rdqm3. 
+
+	![](./images/pots/mq-ha/lab2/image270d.png)1. You will use the putty terminal windows for interactions with the RHEL VMs. When instructed to open a additional terminals for a VM, just open another *putty* window for that VM.### Pre-configuration steps 
 
 The following steps are necessary for configuring RDQM, and are shown for your reference. They have **already been completed** on the VMs. 
 
-* Extract and Install MQ.
+* Extract and Install MQ
 
 	The code is provided as a compressed tar file in the directory /home/ibmuser/.
 	
@@ -169,7 +185,7 @@ The following steps are necessary for configuring RDQM, and are shown for your r
 
 	Each node requires a volume group named drbdpool. The storage for each replicated data queue manager is allocated as a separate logical volume per queue manager from this volume group. For the best performance, this volume group should be made up of one or more physical volumes that correspond to internal disk drives (preferably SSDs). 
 	
-The above steps were completed on each node so at this point	 you are ready to begin RDQM configuration. 
+The above steps were completed on each node so at this point you are ready to begin RDQM configuration. 
 
 ## Configure RDQM
 
@@ -177,11 +193,7 @@ The above steps were completed on each node so at this point	 you are ready to b
 
 As previously stated, MQ has already been installed on all VMs *except* **rdqm1**. The advanced feature RDQM support has also been installed on all the VMs *except* on **rdqm1**. You will need to install RDQM support on **rdqm1** so you can see how easy it is to install. You will review the requirements for RDQM and scripts for installation and configuration.
 
-1. On **rdqm1** open a new terminal window by right-clicking on the desktop and select Open Terminal.
-
-	 ![](./images/pots/mq-ha/lab2/image203a.png)
-	 
-1. Change the directory to the preconfigured directory **mqrdqm**.
+1. On **rdqm1** change the directory to the preconfigured directory **mqrdqm**.
 
 	```
 	cd mqrdqm
@@ -294,11 +306,9 @@ The DRBD and Pacemaker RPM packages are supplied on the IBM MQ media. You should
 	sudo ./mqlicense.sh
 	```
 	
-	![](./images/pots/mq-ha/lab2/image283.png)
+	When prompted, enter **1** to accept the MQ license.
 	
-	In the pop-up click **Accept** to accept the MQ license.
-	
-	![](./images/pots/mq-ha/lab2/image284.png)
+	![](./images/pots/mq-ha/lab2/image283a.png)
 	
 	You are then returned to the command prompt.
 
@@ -335,7 +345,7 @@ The DRBD and Pacemaker RPM packages are supplied on the IBM MQ media. You should
 	![](./images/pots/mq-ha/lab2/image288.png)
 		
 	RDQM is now ready as it has been installed with the prereqs on all of the VMs.
-	### Configure the firewallNormally, the firewall would have been configured as a pre-req. However during preparation of this environment, the default RHEL firewall was not configured. You need to do that now for the RDQM cluster. 
+	### Configure the firewallNormally, the firewall is configured during the pre-req installations.  
 
 1. As root on **rdqm1** start the firewall with following command:
 
@@ -343,16 +353,24 @@ The DRBD and Pacemaker RPM packages are supplied on the IBM MQ media. You should
 	sudo systemctl start firewalld
 	```
 
-1. Run the following command to allow MQ, DRDB, and Pacemaker ports opened in the firewall:
+1. To verify that the MQ, DRDB, and Pacemaker ports are opened in the firewall, run the following commands:
 
 	```
-	sudo /opt/mqm/samp/rdqm/firewalld/configure.sh
+	cd /usr/lib/firewalld/services/
 	```
 	
-	![](./images/pots/mq-ha/lab2/image289.png)
+	![](./images/pots/mq-ha/lab2/image289a.png)	
+	
+	```
+	cat rdqm-mq.xml
+	cat rdqm-drbd.xm
+	cat pacemaker-1
+	```
+	
+	![](./images/pots/mq-ha/lab2/image290a.png)
 	### Configure the clusterThe cluster must first be created, and then an RDQM instance defined containing one or more queue managers. The RDQM code expects the rdqm.ini file to be in the /var/mqm directory.The cluster is defined using the rdqm.ini file. The /home/ibmuser/ directory contains the rdqm.ini file we will use. 
 
-1. Return to rdqm1 and make sure you have exited your su session. Review this file with command:
+1. Return to **rdqm1** putty window. Review this file with command:
 
 	```
 	cd ~/mqrdqm
@@ -372,9 +390,9 @@ The DRBD and Pacemaker RPM packages are supplied on the IBM MQ media. You should
     
 1. **IMPORTANT:** Repeat these commands on **rdqm2** and **rdqm3** before continuing. 
 
-	**Hint:**  Click the browser tabs for rdqm2 and rdqm3 which will return you to those desktops. You should have logged onto those VMs at the beginning of this lab.
+	**Hint:**  Use the putty windows for rdqm2 and rdqm3. You should have logged onto those VMs at the beginning of this lab.
 	
-	![](./images/pots/mq-ha/lab2/image292.png)
+	![](./images/pots/mq-ha/lab2/image292a.png)
 	    
 1. Return to the primary node **rdqm1**. Enter the following command to see the options for the *rdqmadm* command:
 
@@ -497,7 +515,7 @@ The default location for RDQM is rdqm1. You will fail the RDQM instance to node 
 	Check the status again to see it is now running on **rdqm1**.
 	
 	```
-	sudo sudo rdqmstatus -m QMHA
+	sudo rdqmstatus -m QMHA
 	```
 	
 	![](./images/pots/mq-ha/lab2/image227.png)
@@ -577,23 +595,31 @@ The default location for RDQM is rdqm1. You will fail the RDQM instance to node 
 
 #### Update firewall rules	
 
-1. On each of the nodes, open the firewall port defined. Open the firewall from the top left of the screen, under *Applications -> Sundry -> Firewall*.
+1. On each of the nodes, open the firewall port defined (1500) for the queue manager.
 
-	![](./images/pots/mq-ha/lab2/image233.png)
+	```
+	sudo firewall-cmd --add-port=1500/tcp
+	```
 	
-1. Enter the password for ibmuser, **engageibm**, then click *Authenticate*.
+	 Also open port 1501 as you will need it later.
+	 
+	 ```
+	 sudo firewall-cmd --add-port=1501/tcp
+	 ```
 
-	![](./images/pots/mq-ha/lab2/image234.png)
+	![](./images/pots/mq-ha/lab2/image235a.png)
 	
-1. In the Ports pane, add TCP ports 1500 and 1501 (the latter will be used later).
+1. To verify the ports are now open, enter the following command: 
 
-	![](./images/pots/mq-ha/lab2/image235.png)
-	
+	```
+	sudo firewall-cmd --list-ports
+	```
+
 	Results should look like this:
 	
-	![](./images/pots/mq-ha/lab2/image236.png)
+	![](./images/pots/mq-ha/lab2/image236a.png)
 	
-Don't forget, each node must have these ports opened in the firewall.
+1. Don't forget, each node must have these ports opened in the firewall.
 	
 ### Start the HA sample programsThe easiest way to configure access to the queue manager from the sample programs is to use the MQSERVER environment variable. Again, as there are 3 possible nodes where our queue manager could run, each needs to be specified, along with the listener port for the queue manager. 
 
@@ -653,7 +679,7 @@ CHANNEL1/TCP/**10.0.1.1(1500)**,10.0.1.2(1500),10.0.1.3(1500)
 
 ### Move the RDQM
 
-You will now use the approach of controlling where the RDQM runs by changing its preferred location, in this case to rdqm2.1. Switch to **rdqm2**. In a new terminal window, run the following command as ibmuser:
+You will now use the approach of controlling where the RDQM runs by changing its preferred location, in this case to rdqm2.1. Open a new *putty* window for **rdqm2** (10.0.0.2). In a new terminal window, run the following command as ibmuser:
 	```
 	sudo rdqmadm –m QMHA –p
 	```
@@ -849,10 +875,7 @@ You will now use the approach of controlling where the RDQM runs by changing its
 
 	![](./images/pots/mq-ha/lab2/image262.png)
 	![](./images/pots/mq-ha/lab2/image263.png)
-
-1. Finally power off the VMs. Click the pull down menu and go to the *View VMs* display. The three VMs for this lab should still be running and their labels checked. Click the power icon and select *Power off*.
-
-	![](./images/pots/mq-ha/lab2/image265.png)	
+	
 ## CONGRATULATIONS! ### You have completed this hands-on lab.
 You have created replicated data queue managers to provide high availability for IBM MQ, and you have tested failing over. 
 
