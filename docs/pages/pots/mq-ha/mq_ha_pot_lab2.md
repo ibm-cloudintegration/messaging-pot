@@ -795,11 +795,10 @@ You will now use the approach of controlling where the RDQM runs by changing its
 	a. On **rdqm3**, in the another terminal window as user ibmuser.  
 	
 	b. Issue the command to move the RDQM to **rdqm3**.
-	 
 	
-		```
-		sudo rdqmadm -p -m QMHA
-		```
+	```
+	sudo rdqmadm -p -m QMHA
+	```
 	
 	![](./images/pots/mq-ha/lab2/image252.png)
 	
@@ -826,7 +825,7 @@ You will now use the approach of controlling where the RDQM runs by changing its
 1. On **rdqm3**, open a terminal window and stop running queue managers. Issue the following commands. Your displays and queue managers may not match the screenshots. Substitute your queue managers.
 
 	```
-	dsmpmq -o all 
+	dspmq -o all 
 	```
 	
 	```
