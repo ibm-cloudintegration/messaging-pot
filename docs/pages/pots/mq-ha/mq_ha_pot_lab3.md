@@ -624,7 +624,7 @@ In the TechZone environment, there are seven virtual machines: rdqm1, rdqm2, rdq
 	sudo rdqmstatus -m QMDR
 	```
 	
-1. In this section you will simulate a failure of the DR replication network adapter. You should still have the network settings open. You will simulate the outage as you did before by turning off the *ens36* adapter on **dr1** when instructed to do so.
+1. In this section you will simulate a failure of the DR replication network adapter. You will simulate the outage as you did before by turning off the *ens36* adapter on **dr1** when instructed to do so.
 	
 1. In the *ibmuser* window on **dr1**, start putting some messages onto the queue. Use the amqsblst sample to do this with the following commands:	
 	```
@@ -638,8 +638,13 @@ In the TechZone environment, there are seven virtual machines: rdqm1, rdqm2, rdq
 	![](./images/pots/mq-ha/lab3/image355.png)
 
 	
-1. Before all the messages have been put onto the queue (approimately 50,000 messages), turn off the *ens36* network adapter in the network settings. This will simulate a network outage on node **dr1**.
-	There will be a short pause, then the placing of messages will resume.
+1. Before all the messages have been put onto the queue (approimately 50,000 messages), turn off the *ens36* network adapter in the network settings. 
+
+	```
+	sudo nmcli con down ens36
+	```
+	
+	This will simulate a network outage on node **dr1**. There will be a short pause, then the placing of messages will resume.
 	
 	![](./images/pots/mq-ha/lab3/image356.png)
 
@@ -663,6 +668,10 @@ In the TechZone environment, there are seven virtual machines: rdqm1, rdqm2, rdq
    {% include warning.html content="When you restore the network, synchronization will complete very quickly. If you don't display the status immediately you may not see the 'synchronization in progress' message. Be ready to run the status command as soon as you flip the network switch to *ON*. Once you run the status commands, immediately turn the switch *OFF* again."%}   
 
 1. Simulate the restoration of the network outage on node **dr1** by turning on the *ens36* adapter in network settings. 
+
+	```
+	sudo nmcli con up ens36
+	```
 	
 1. The nodes will start synchronizing as soon as this happens. Check the status on both nodes immediately, before switching off the network. They will look similar to the following:	
 	```
@@ -763,7 +772,7 @@ In the TechZone environment, there are seven virtual machines: rdqm1, rdqm2, rdq
 
 1. On node **dr1**, as user **root**, issue the command to recreate the queue manager:	
 	```
-	sudo crtmqm -rr s -rl 10.0.2.1 -ri 10.0.2.2 -rn dr2 -rp 7001 QMDR
+	sudo crtmqm -rr s -rl 10.0.2.14 -ri 10.0.2.15 -rn dr2 -rp 7001 QMDR
 	```
 	
 	![](./images/pots/mq-ha/lab3/image370.png)
@@ -876,7 +885,7 @@ Before continuing to Lab 4, you must clean the environment by removing any RDQM 
 
 
 	```
-	dsmpmq -o all 
+	dspmq -o all 
 	```
 	
 	There should not be any remaining queue managers, but if you have defined any then stop and delete the queue managers.
@@ -891,7 +900,7 @@ Before continuing to Lab 4, you must clean the environment by removing any RDQM 
 1. On **dr2**, open a terminal window and stop running queue managers. Issue the following commands. Your displays and queue managers may not match the screenshots. Substitute your queue managers.
 
 	```
-	dsmpmq -o all 
+	dspmq -o all 
 	```
 	There should not be any remaining queue managers, but if you have defined any then stop and delete the queue managers.
 		
