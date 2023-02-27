@@ -20,12 +20,12 @@ VMs required:
 
 The lab environment consists of two virtual appliances (MQAppl5 and
 MQAppl6) and a Windows environment to perform console operations and
-testing. There are other virtual appliances (MQAppl1, MQAppl2, MQAppl3, MQAppl4, and MQAppl7) that will not be used in this lab. You should suspend them.
+testing. There are other virtual appliances (MQAppl1, MQAppl2, MQAppl3, MQAppl4, and MQAppl7)
+that will not be used in this lab. You can just ignore them for now. 
 
 ## Start the environment
 
-1. Wait for the virtual machines to power on. MQAppl5 is shown below.
-    MQAppl6 should appear the same.
+1. Wait for the virtual machines to power on. MQAppl5 is shown below. MQAppl6 should appear the same.
     
     ![](./images/pots/mq-appliance/lab2/image9.png)
 
@@ -34,6 +34,10 @@ testing. There are other virtual appliances (MQAppl1, MQAppl2, MQAppl3, MQAppl4,
 	![](./images/pots/mq-appliance/lab2/image11a.png)
 
 	{% include note.html content="If you see a message that states *Notice: startup config contains errors*, you can ignore the message." %}
+	
+### Sync the appliance clocks
+ 
+{% include important.html content="For this lab, the appliance clocks need to be synchronized. Automatic time sync is not available on the Skytap virtual MQ Appliances. Therefore the time on the appliance will start from the time the VM was last shut down or suspended. You should make sure the appliance time is in sync with the Windows desktop time. Use the \"show clock\" to display the time. If it doesn't match, use the \"clock\" command to set the appliance time to sync with the Windows time. " %}
 
 ## The virtual environment
 
@@ -42,6 +46,9 @@ Prior to MQ 9.2.3, the normal process is to use the command line interface (CLI)
 As of MQ 9.2.3 you now have the option to use the MQ Console user interface (UI) to configure HA between the appliances. If you would rather use the MQ console go to [Configure HA Using MQ Console](#configure). When you reach the end of that section make sure to click the "Process Messages" hyperlink to continue testing persistent messages when failing over in an HA environment.
 
 <a name="cli"></a>
+
+{% include important.html content="Use Putty when you are instructed to open a command window to enter CLI commands on an appliance." %}
+
 ### Virtual appliance MQAppl5 
 
 1. The first virtual appliance you will look at is MQAppl5. Check that
@@ -200,6 +207,7 @@ You will now create the HA group on the two appliances. You should be at the mqc
 	You are now ready to start testing HA, but first you need to set up the
 MQ Explorer.
 
+<a name="mqexplorer"></a>
 ## Set up MQ Explorer	
 
 We will use the *ibmdemo* messaging user that was created in Lab 1. 
@@ -443,7 +451,7 @@ interface to the appliance queue managers.
 
     ![](./images/pots/mq-appliance/lab2/image143a.png)
 
-14. You are returned to the list of queues and **Q1** is now in the list. This summary screen of queues shows the *Type* of queue, *Depth %* percentage, and *Maximum depth* which shows the number of messages on the queue over the max depth. 
+14. You are returned to the list of queues and **Q1** is now in the list. This summary screen of queues shows the *Type* of queue, *Depth* percentage, and *Maximum depth* which shows the number of messages on the queue over the max depth. 
 
     ![](./images/pots/mq-appliance/lab2/image144a.png)
     
@@ -485,7 +493,7 @@ interface to the appliance queue managers.
 
 25. Suspend the appliance using the **sethagrp -s** command as before.
 
-26. Use the **dspmq** command to verify that the HAQM1 is running elsewhere (as before, if this takes a little time, continue to run the command until the results are as shown below).
+26. Use the **dspmq** command to verify that the HAQM5 is running elsewhere (as before, if this takes a little time, continue to run the command until the results are as shown below).
 
     ![](./images/pots/mq-appliance/lab2/image53a.png)
 
@@ -499,7 +507,7 @@ interface to the appliance queue managers.
 
 	![](./images/pots/mq-appliance/lab2/image152a.png)
 
-31. As you can see, the 13 messages are all present on Q1 (on *HAQM5* on *MQAppl6*).
+31. As you can see, the 13 messages are all present on Q1 (on *MQAppl6*).
 
     ![](./images/pots/mq-appliance/lab2/image153a.png)
 
@@ -598,8 +606,6 @@ please speak to the instructor.
 
 [Return MQ Appliance Menu](mq_appl_pot_overview.html)
 
-[Continue with Lab 3](mq_appl_pot_lab3.html)
-
 <a name="configure"></a>
 ## Configure HA Using MQ Console
 
@@ -681,13 +687,29 @@ managers using the MQ Console.
     
 12. Ater you make the *eth0* selection, the IP adress to be used for the floating IP address is displayed and can be set. Using the arrow, increase the value to **15** (making the floating IP address 10.0.0.15).
     
-    ![](./images/pots/mq-appliance/lab2/image171d.png) 
+    ![](./images/pots/mq-appliance/lab2/image171e.png) 
        
+13. Click **Next**.
+
+1.  IBM MQ Appliance 9.3 enabled disk encryption. Click the toggle switch to *On* for *Enable file system encryption*.
+
+	![](./images/pots/mq-appliance/lab2/image172b.png)
+	
+1. Enter a passphrase in *Enter file system passphrase* and confirm it with the same value. You can click the *Show passphrase* icon to view what you entered.
+
+	![](./images/pots/mq-appliance/lab2/image172c.png)
+
+	{% include note.html content="Pick a passphrase that you can remember. 'mqappl' was used in this case. Be sure to store the passphrase in a secure manner for future reference. " %}
+	
 13. Click **Create**.
 		
-14. The queue manager status temporarily shows *Deploying* while it is being created and replicated to the second appliance. This will take a few minutes. Then you will receive a green success message and the status changes to *Running*. 
+14. The queue manager status temporarily shows *Deploying* while it is being created and replicated to the second appliance. This will take a few minutes. 
 
-    ![](./images/pots/mq-appliance/lab2/image172a.png)
+	![](./images/pots/mq-appliance/lab2/image172d.png)
+
+1.  The queue manager status will change to *Stopped*. Then you will receive a green success message and the status changes to *Running*. 
+
+    ![](./images/pots/mq-appliance/lab2/image172e.png)
 
 15. Switch to the *MQAppl6* browser. Click the **Queue managers** tab. You will see *HAQM5* in the *Queue Managers* display but this time it shows running on the other appliance.
 
@@ -713,9 +735,15 @@ managers using the MQ Console.
 	
 1. After you make the *eth0* selection, the IP adress to be used for the floating IP address is displayed and can be set. Using the arrow, increase the value to **16** (making the floating IP address 10.0.0.16). 
 
-	![](./images/pots/mq-appliance/lab2/image174e.png)
+	![](./images/pots/mq-appliance/lab2/image174f.png)
 
-1. Click **Create**.
+1. Click **Next**.
+  	
+1. The *Encryption* toggle is automatically set for this one. Enter the same passphrase you used for HAQM5 in *Enter file system passphrase* and confirm it with the same value. You click the *Show passphrase* icon to view what you entered.
+
+	![](./images/pots/mq-appliance/lab2/image174g.png)
+	
+13. Click **Create**.  	
   	
 1. 	The queue manager status temporarily shows *Deploying* while it is being created and replicated to the second appliance. This will take a few minutes. 
 
@@ -761,7 +789,6 @@ managers using the MQ Console.
 
     ![](./images/pots/mq-appliance/lab2/image183a.png)
 
-25. Repeat the process by suspending MQAppl6 and observe the queue manager statuses on both appliances.
+25. Repeat the process by suspending MQAppl6 and observe the queue manager statuses on both appliances. 
 
-125. Return to [Process Messages](#processmessages) to process messages on HA queue managers. 
-
+1.  Return to [Setup MQ Explorer](#mqexplorer) to add the queue managers to MQ Explorer, test failover, and process messages on HA queue managers. 

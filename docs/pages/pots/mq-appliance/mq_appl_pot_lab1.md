@@ -22,13 +22,25 @@ Please be sure you have read the introductory details in the [IBM MQ Appliance P
 
 This lab simulates the initial configuration of a physical MQ Appliance. When you are setting up a new MQ Appliance for the first time, you must connect a serial cable to the appliance through the Serial "Console Connector." When shipped, this is the ONLY port that is available to use -- all others are unconfigured. So this process configures the network adapters, as well as optionally (which you do in this lab) remote access via SSH and the MQ web console.
 
+
 ## Open the virtual appliance (MQAppl7)
 
-1.  Start the environment.
 
+1.  Click the *MQAppl7* VM. If you are still on the Windows VM, return to the main environment page according to the instructions in the *Environment Setup*.
+
+	![](./images/pots/mq-appliance/lab1/image00.png)
+	
 2.  Wait for the virtual machine to power on.
 
     ![](./images/pots/mq-appliance/lab1/image3.png)
+    
+1.  Click the *Open in a new window* button. 
+
+	![](./images/pots/mq-appliance/lab1/image3b.png)
+	
+1.  You now have three browser tabs open, Windows in one, the current appliance console for MQAppl7, and one to return to the environment.
+
+	![](./images/pots/mq-appliance/lab1/image3c.png)
 
 ## Basic appliance configuration 
 
@@ -169,9 +181,9 @@ appliance.**
 
 41. Go to the Windows VM in your environment.
 
-42. Log on to Windows with the user name **ibmdemo** and password **passw0rd**
+42. You should already be logged on. If not, log on to Windows with the user name **ibmdemo** and password **passw0rd**
 
-43. Start a web browser session.
+43. Start FireFox web browser session.
 
 44. Navigate to **https://\<address of eth0\>:9090** (or use the
     shortcut that is there for you). If you receive any warnings, allow the exception and continue.
@@ -180,13 +192,18 @@ appliance.**
 
 45. You will now see the console log in screen.
 
-	![](./images/pots/mq-appliance/lab1/image20a.png)
-
 46. Enter **admin** as the User name.
 
 47. Enter **passw0rd** (or whatever you chose earlier) as the Password.
 
 48. Click **Login**.
+
+	![](./images/pots/mq-appliance/lab1/image20b.png)
+	
+1.  If you receive any security exceptions, click *Advanced*, then *Accept the Risk and Continue*. 
+
+	![](./images/pots/mq-appliance/lab1/image20c.png)
+	![](./images/pots/mq-appliance/lab1/image20d.png)
 
 49. Click **I agree** to accept the license agreement.
 
@@ -198,11 +215,15 @@ appliance.**
 
 51. After waiting a couple of minutes, you will see the log in screen again.
 
+	![](./images/pots/mq-appliance/lab1/image20b.png)
+
 52. Log in with the **admin** user name.
 
 53. You are now logged on to the console.
 
-	![](./images/pots/mq-appliance/lab1/image23a.png)
+	![](./images/pots/mq-appliance/lab1/image23b.png)
+	
+After the setup of the MQApp7 in Lab 1 and for all other labs, you should use *putty* to SSH to the appliances when you want to use the appliance CLI. With *putty*, you can easily scroll and copy/paste.
 
 ## Create and configure a queue manager
  
@@ -218,7 +239,17 @@ can be used to change to MQ administration mode. Once in MQ
 administration mode, the normal administration commands are not
 available. To exit from MQ administration mode, use the **exit** command.
 
-1. Return to the MQAppl7 image.
+1. Open a *putty* session by double-clicking the icon on the Windows desktop.
+
+	![](./images/pots/mq-appliance/lab1/image24a.png)
+	
+1. In the *putty* window, enter the IP address for *MQAppl7* **10.0.0.7** and click *Open*. 
+
+	![](./images/pots/mq-appliance/lab1/image24b.png)
+	
+1. Click *Yes* to the security alert.
+
+	![](./images/pots/mq-appliance/lab1/image24c.png)
 
 2. You will need to log on again as **admin**.
 
@@ -283,7 +314,7 @@ available. To exit from MQ administration mode, use the **exit** command.
 
 	![](./images/pots/mq-appliance/lab1/image30a.png)
 
-13. Execute the **strmqm QM1** command to start the queue manager.
+13. Execute the **strmqm QM7** command to start the queue manager.
 
 	```
 	strmqm QM7

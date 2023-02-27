@@ -1,6 +1,6 @@
 ---
 title: Setup Information for MQ Appliance PoT Environment
-toc: false
+toc: true
 sidebar: labs_sidebar
 folder: pots/mq-appl
 permalink: /mq_appl_pot_setup.html
@@ -14,7 +14,7 @@ The lab environment consists of multiple virtual appliances - **MQAppl1**, **MQA
 
 Use this PoT on TechZone for configuring the appliance at power-up (Lab 1), and upon successful completion, you may use it for Labs 3 - 6 and 9. Please read the section below for details.
 
-Please make sure to suspend or shut down the VMs **not being used** in a lab. You will be provided a URL to a TechZone environment to work in based on the template *MQ Appliance PoT*. Log on to the environment provided in an email or by the instructor. 
+You will be provided a URL to a TechZone environment to work in based on the template *MQ Appliance PoT*. Log on to the environment provided in an email or by the instructor. 
 
 ## Labs 
 
@@ -55,6 +55,29 @@ There are three snapshots to work from:
 	* **Windows 10 x64**
 	* **MQAppl1**
 
+### Start Windows desktop
+The environment should be started. You will use the Windows desktop in all of the labs, so start it now.
+
+1. Click the *win10-93* VM. 
+
+	![](./images/pots/mq-appliance/lab1/image0a.png)
+	
+1. The Windows desktop opens. To login, hit enter or click the mouse anywhere on the desktop.
+
+	![](./images/pots/mq-appliance/lab1/image1a.png)
+	
+1. You will sign on as **ibmdemo**. Enter **passw0rd** for the password and hit enter or click the arrow.
+
+	![](./images/pots/mq-appliance/lab1/image0b.png)
+	
+1. Ignore and close any pop-ups. Click *Open in a new window*.
+
+	![](./images/pots/mq-appliance/lab1/image0c.png)
+
+1. Return to the previous browser tab. Click the browser back button to return to the main environment page. There you can open any of the other VMs. This is especially important for Lab 1 to open the MQAppl7 VM.
+	
+	![](./images/pots/mq-appliance/lab1/image0d.png)
+	
 ### MQ Appliance Console
 
 {% include tip.html content="Be aware when using the MQ Appliance Console on the virtual appliance you will not be able to copy / paste commands from the lab guides. You may want to use Putty on the Windows VM to connect to the appliances. Using Putty you can adjust the screen size, scroll up and down, and copy / paste. You will also only need to work on one VM instead of switching between the VMs. Be aware that you cannot use Putty in Lab 1 until you have completed the Install Wizard (which enables the use of SSH). " %}
