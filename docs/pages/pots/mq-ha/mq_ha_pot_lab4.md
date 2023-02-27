@@ -219,6 +219,11 @@ As previously stated, MQ has already been installed on all VMs *except* **rdqm1*
 	
 1. As a result, a new subdirectory **MQServer** has been created in the **mqrdqm** directory. Change to the **MQServer** directory and list the contents. You will find all the MQ RPM files for installing.
 
+	```
+	cd MQServer
+	ls
+	```
+
 	![](./images/pots/mq-ha/lab2/image272.png)
 	
 To install support for RDQM (replicated data queue managers), you complete the following tasks:
@@ -371,8 +376,8 @@ The DRBD and Pacemaker RPM packages are supplied on the IBM MQ media. You should
 	
 	```
 	cat rdqm-mq.xml
-	cat rdqm-drbd.xm
-	cat pacemaker-1
+	cat rdqm-drbd.xml
+	cat pacemaker.xml
 	```
 	
 	![](./images/pots/mq-ha/lab2/image290a.png)
