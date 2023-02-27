@@ -142,7 +142,11 @@ In the TechZone environment, there are six virtual machines: rdqm1, rdqm2, rdqm3
 1. The IP address for *rdqm1* is **10.0.0.1**. Enter that address in the *Host Name* field and click *Open*. 
 
 	![](./images/pots/mq-ha/lab2/image270a.png)
-
+	
+1. If you receive a pop-up saying *host key is not cached*, click *Accept*.
+	
+	![](./images/pots/mq-ha/lab2/image269b.png)
+	
 1. A new terminal window appears:
 
 	![](./images/pots/mq-ha/lab2/image270b.png)
@@ -213,7 +217,7 @@ As previously stated, MQ has already been installed on all VMs *except* **rdqm1*
 	sudo tar -zxvf ~/Downloads/IBM_MQ_9.3.1_LINUX_X86-64.tar.gz
 	```
 	
-	When prompted, enter root's password *IBMDem0s!*.
+	If prompted, enter root's password *IBMDem0s!*.
 	
 	![](./images/pots/mq-ha/lab2/image271.png)
 	
@@ -256,7 +260,7 @@ The DRBD and Pacemaker RPM packages are supplied on the IBM MQ media. You should
 	
 	![](./images/pots/mq-ha/lab2/image273.png)
 	
-	Here you see Pacemaker and DRBD. If you drill into those subdirectories, you will see the RPM packages for installing these prerequisites.
+	Here you see directories for Pacemaker and DRBD. If you drill into those subdirectories, you will see the RPM packages for installing these prerequisites.
 	
 1. Determine which DRBD kernel module is needed for the system on which RDQM is being installed. For example, on a RHEL 7 system, running the helper script Advanced/RDQM/PreReqs/el7/kmod-drbd-9/modver returns the kernel module that you need to install. Run the following command to identify the module:
 	
@@ -377,7 +381,7 @@ The DRBD and Pacemaker RPM packages are supplied on the IBM MQ media. You should
 	```
 	cat rdqm-mq.xml
 	cat rdqm-drbd.xml
-	cat pacemaker.xml
+	cat rdqm-pacemaker.xml
 	```
 	
 	![](./images/pots/mq-ha/lab2/image290a.png)
@@ -528,7 +532,7 @@ The following steps create a DR/HA RDQM named QMHADR that runs on **main-rdqm1**
 			
 1. The primary/primary queue manager has been created. And the command to run on the secondary/primary nodes has been provided.
 	
-	```	sudo crtmqm -sx -rr p -rl 10.0.2.14,10.0.2.15,10.0.2.16 -ri 10.0.2.1,10.0.2.2,10.0.2.3 -rp 7001 -fs 3 QMHADR
+	```	sudo crtmqm -sx -rr s -rl 10.0.2.14,10.0.2.15,10.0.2.16 -ri 10.0.2.1,10.0.2.2,10.0.2.3 -rp 7001 -fs 3 QMHADR
 	``` 
 	
 1. Copy the provided command provided in the output.
@@ -746,13 +750,13 @@ You must be a user in the mqm and haclient groups to run the rdqmstatus command 
 	sudo rdqmstatus
 	```
 	
-	![](./images/pots/mq-ha/lab4/image53.png)
+	![](./images/pots/mq-ha/lab4/image53a.png)
 	
 	The result is similar to the dspmq display.
 	
 1. Issue the command on **dr1**.
 
-	![](./images/pots/mq-ha/lab4/image57.png)
+	![](./images/pots/mq-ha/lab4/image57a.png)
 	
 	Again the displays are very similar to that of dspmq.
 	
