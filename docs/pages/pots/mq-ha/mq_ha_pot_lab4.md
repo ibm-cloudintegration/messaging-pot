@@ -559,7 +559,7 @@ Since our TechZone template is using one network, we can create one floating IP 
 	
 	![](./images/pots/mq-ha/lab4/image30.png)
 	
-1. Enter the same command on **dr1**. 
+	Enter the same command on **dr1**.
 	
 ### Create MQ resources
 To run sample programs you will define two queues: for *SOURCE* and *TARGET*. You will also create a new channel using the ‘MQ’ IP address for each of the three nodes in our cluster (as the queue manager could run on any one of them) and the listener port for the queue manager. 
@@ -634,7 +634,7 @@ You will also turn off CHLAUTH and CONNAUTH completely to keep things simple.
 	netstat -ant | grep 14
 	```
 
-	![](./images/pots/mq-ha/lab4/image33.png)
+	![](./images/pots/mq-ha/lab4/image33c.png)
 	
 	The first listener is the one created because -p **1414** was specified on the *crtmqm* command. This listener is listening on port 1414 on every IP address. The second listener, however, is listening on port **1420** on the floating IP address only.
 		
@@ -655,6 +655,8 @@ You will also turn off CHLAUTH and CONNAUTH completely to keep things simple.
 	Results should look like this:
 	
 	![](./images/pots/mq-ha/lab4/image33a.png)
+	
+	{% include note.html content="Your result may differ depending on whether Labs 2 - 3 were previously completed." %}
 	
 1. Don't forget, each node must have these ports opened in the firewall. Repeat the firewall update on all other servers - **rdqm2**, **rdqm3**, **dr1**, **dr2**, and **dr3**.
 	
@@ -765,7 +767,7 @@ You must be a user in the mqm and haclient groups to run the rdqmstatus command 
 	```
 	sudo rdqmstatus -m QMHADR 
 	```
-	![](./images/pots/mq-ha/lab4/image56.png)
+	![](./images/pots/mq-ha/lab4/image56a.png)
 	
 	Look closely at the HA and DR fields. The HA role is currently *Primary* (that's why it is running here), HA status is *Normal* and HA control is *enabled*. Both the HA preferred and current locations are *This node*. The HA floating IP interface and address are displayed.
 	 
@@ -787,7 +789,7 @@ The default location for RDQM is **rdqm1**. You will fail the RDQM instance to M
 	sudo rdqmstatus -m QMHADR
 	```
 	
-	![](./images/pots/mq-ha/lab4/image58.png)
+	![](./images/pots/mq-ha/lab4/image58a.png)
 	
 1. Now you can move the queue manager back to rdqm1. Return to **rdqm1** and run the **sudo rdqmadm** command again. 
 
@@ -801,12 +803,12 @@ The default location for RDQM is **rdqm1**. You will fail the RDQM instance to M
 	sudo sudo rdqmstatus -m QMHADR
 	```
 	
-	![](./images/pots/mq-ha/lab4/image59.png)#### 	Move the RDQM by suspending a nodeAnother test is to move a RDQM by suspending the node on which it is running, as you may want to do when applying a Fix Pack.
+	![](./images/pots/mq-ha/lab4/image59a.png)#### 	Move the RDQM by suspending a nodeAnother test is to move a RDQM by suspending the node on which it is running, as you may want to do when applying a Fix Pack.
 
 1. On the node where QMHADR is running (**rdqm1**), return to ibmuser's terminal window. As the user **ibmuser**, issue the command to suspend the queue manager:
 	
 	```
-	sudo rdqmadm –s
+	sudo rdqmadm -n rdqm1 –s
 	```
 	
 1. Check the status of the RDQM with the following command:
@@ -817,25 +819,26 @@ The default location for RDQM is **rdqm1**. You will fail the RDQM instance to M
 
 	As shown in the display, the replicated data node is suspended and goes into standby.
 
-	![](./images/pots/mq-ha/lab4/image60.png)
+	![](./images/pots/mq-ha/lab4/image60a.png)
 	
-1. Switch to **rdqm2** and issue the command to display the status of QMHADR and you see that it is now running on rdqm2.
+1. Pacemaker determines which node to failover to. Switch to **rdqm2** and **rdqm3** and issue the command to display the status of QMHADR. One of the nodes will show QMHADR *Running* and the other will show QMHADR *Running elsewhere*. On both nodes **rdqm1** will be shown as *Remote node in standby*.
 
 	```
 	sudo rdqmstatus -m QMHADR
 	```
 	
-	![](./images/pots/mq-ha/lab4/image61.png)
+	![](./images/pots/mq-ha/lab4/image61a.png)
+	![](./images/pots/mq-ha/lab4/image61b.png)
 	
 1. Return to **rdqm1**, issue the command to resume the replicated data node in the cluster. 
 
 	```
-	sudo rdqmadm -r
+	sudo rdqmadm -n rdqm1 -r
 	```
 	
 	Quickly run the status command again. QMHADR will initially run in a secondary role on this node. If you aren't quick enough, you may not catch this transitory state.  
 	
-	![](./images/pots/mq-ha/lab4/image62.png)
+	![](./images/pots/mq-ha/lab4/image62a.png)
 	
 1. After the node has fully resumed, QMHADR will run in a primary role on this node, as it was prior to being suspending. Issue the status command again to confirm that this has indeed happened.
 
@@ -843,7 +846,7 @@ The default location for RDQM is **rdqm1**. You will fail the RDQM instance to M
 	sudo rdqmstatus -m QMHAHR
 	```
 	
-	![](./images/pots/mq-ha/lab4/image63.png)#### Failing over the RDQM to another HA remote cluster
+	![](./images/pots/mq-ha/lab4/image63a.png)#### Failing over the RDQM to another HA remote cluster
 
 1. To test the disaster recovery features of QMHADR, stop the queue manager on Main site node **rdqm1**.
 
@@ -865,9 +868,9 @@ The default location for RDQM is **rdqm1**. You will fail the RDQM instance to M
 	sudo rdqmstatus -m QMHADR
 	```
 	
-	![](./images/pots/mq-ha/lab4/image64.png)
+	![](./images/pots/mq-ha/lab4/image64a.png)
 	
-	Notice that the queue manager has ended and its *DRRole is Secondary*.  Although its HARole is stil Primary.
+	Notice that the queue manager has ended and its *DRRole is Secondary*.  Although its HARole is still Primary.
 	
 1. Run the following command on DR site node **dr1** to make QMHADR the DR primary instance on that node:
 
@@ -877,9 +880,10 @@ The default location for RDQM is **rdqm1**. You will fail the RDQM instance to M
 	
 	Queue manager *QMHADR* has been made the DR primary on this node.
 	
-	![](./images/pots/mq-ha/lab4/image65.png)	
-1. Start RDQM *QMHADR*.
+	![](./images/pots/mq-ha/lab4/image65.png)
 	
+1. Start the queue manager on **dr1**.
+
 	```
 	strmqm QMHADR
 	```
@@ -890,13 +894,13 @@ The default location for RDQM is **rdqm1**. You will fail the RDQM instance to M
 	sudo rdqmstatus -m QMHADR
 	```
 	
-	![](./images/pots/mq-ha/lab4/image66.png)
+	![](./images/pots/mq-ha/lab4/image66a.png)
 	#### 	Move the RDQM by suspending a node on the DR HA clusterNow you can test the HA functionality on the DR site HA cluster. Move a RDQM by suspending the node on which it is running.
 
 1. On the node where QMHADR is running (**dr1**), return to ibmuser's terminal window. As the user **ibmuser**, issue the command to suspend the queue manager:
 	
 	```
-	sudo rdqmadm –s
+	sudo rdqmadm –s -n dr1
 	```
 	
 1. Check the status of the RDQM with the following command:
@@ -907,25 +911,25 @@ The default location for RDQM is **rdqm1**. You will fail the RDQM instance to M
 
 	As shown in the display, the replicated data node is suspended and goes into standby.
 
-	![](./images/pots/mq-ha/lab4/image67.png)
+	![](./images/pots/mq-ha/lab4/image67a.png)
 	
-1. Switch to DR site node **dr2** and issue the command to display the status of QMHADR and you see that it is now running on dr2.
+1. Switch to DR site nodes **dr2** and **dr3** and issue the command to display the status of QMHADR and you see that it is now running on dr2.
 
 	```
 	sudo rdqmstatus -m QMHADR
 	```
 	
-	![](./images/pots/mq-ha/lab4/image68.png)
+	![](./images/pots/mq-ha/lab4/image68a.png)
 	
 1. Return to **dr1**, issue the command to resume the replicated data node in the cluster. 
 
 	```
-	sudo rdqmadm -r
+	sudo rdqmadm -r -n dr1
 	```
 	
 	Quickly run the status command again. QMHADR will initially run in a secondary role on this node. If you aren't quick enough, you may not catch this transitory state.  
 	
-	![](./images/pots/mq-ha/lab4/image69.png)
+	![](./images/pots/mq-ha/lab4/image69a.png)
 	
 1. After the node has fully resumed, QMHADR will run in a primary role on this node, as it was prior to being suspending. Issue the status command again to confirm that this has indeed happened.
 
@@ -933,7 +937,7 @@ The default location for RDQM is **rdqm1**. You will fail the RDQM instance to M
 	sudo rdqmstatus -m QMHAHR
 	```
 	
-	![](./images/pots/mq-ha/lab4/image70.png)#### Move RDQM QMHADR to Main site HA cluster
+	![](./images/pots/mq-ha/lab4/image70a.png)#### Move RDQM QMHADR to Main site HA cluster
 
 1. Stop the queue manager on DR site node **dr1**.
 
@@ -1025,10 +1029,10 @@ CHANNEL1/TCP/**10.0.1.20(1420)**
 
 You will now use the approach of controlling where the RDQM runs by suspending HA on node **rdqm1**. 1. Still on **rdqm1**. In a new terminal window, run the following command as ibmuser:
 	```
-	sudo rdqmadm -s
+	sudo rdqmadm -n rdqm1 -s
 	```
 	
-	![](./images/pots/mq-ha/lab4/image83.png)
+	![](./images/pots/mq-ha/lab4/image83a.png)
 	
 	{% include note.html content="You suspended HA on rdqm1. Since you did not specify the preferred node Pacemaker can move the queue manager to either standby node. Check both rdqm2 and rdqm3 to see which node QMHADR is running on. In either case the applications will reconnect." %}
 	1. Check if the queue manager is running on **rdqm2**, by issuing command:
@@ -1059,10 +1063,10 @@ You will now use the approach of controlling where the RDQM runs by suspending H
 1. Still on **rdqm1** resume HA on this node with command:
 
 	```
-	sudo rdqmadm -r
+	sudo rdqmadm -n rdqm1 -r
 	```
 	
-	![](./images/pots/mq-ha/lab4/image87.png)
+	![](./images/pots/mq-ha/lab4/image87a.png)
 	
 1. Ensure that QMHADR is now running on **rdqm1**.
 
@@ -1070,7 +1074,7 @@ You will now use the approach of controlling where the RDQM runs by suspending H
 	sudo rdqmstatus -m QMHADR
 	```	
 
-	![](./images/pots/mq-ha/lab4/image88.png)
+	![](./images/pots/mq-ha/lab4/image88a.png)
 	
 1. Leave the sample programs running.
 	
@@ -1108,18 +1112,6 @@ Although the node has not been lost, you will simulate it by disabling the DR Re
 1. Turn off the adapter *ens35* on **rdqm2** just as you did on **rdqm3**. 
 
 1. Using the same procedure, finally turn off the adapter *ens35* **rdqm1** to cause a DR situation. 
-	
-1. On node **dr1**, stop the queue manager:	
-	```
-	endmqm QMDR
-	```
-	
-1. With root access remove the queue manager:	
-	```
-	sudo dltmqm QMDR
-	```
-	
-	![](./images/pots/mq-ha/lab3/image332.png)
 	
 1. Switch to **dr1**. Make this node the primary node with the following command.
 
