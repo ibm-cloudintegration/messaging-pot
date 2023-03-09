@@ -1131,7 +1131,7 @@ Although the node has not been lost, you will simulate it by disabling the DR Re
 	sudo rdqmstatus -m QMHADR
 	```
 	
-	![](./images/pots/mq-ha/lab4/image92.png)
+	![](./images/pots/mq-ha/lab4/image92c.png)
 	
 	You see the queue manager is now running on dr1 in the DR HA cluster. This node is primary for both HA and DR. Notice the floating IP is also listed.
 	
