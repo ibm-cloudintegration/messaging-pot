@@ -808,7 +808,7 @@ The default location for RDQM is **rdqm1**. You will fail the RDQM instance to M
 1. On the node where QMHADR is running (**rdqm1**), return to ibmuser's terminal window. As the user **ibmuser**, issue the command to suspend the queue manager:
 	
 	```
-	sudo rdqmadm -n rdqm1 –s
+	sudo rdqmadm -s -n rdqm1
 	```
 	
 1. Check the status of the RDQM with the following command:
